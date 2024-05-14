@@ -1,0 +1,384 @@
+/*========================== APP =================================*/
+
+#app {
+  width: 100vw;
+  overflow-x: hidden;
+  background-color: black;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+::selection {
+  color: black;
+  background: #FF8C71;
+}
+
+/*===================== GENERAL STYLES ================================*/
+
+.hero-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.hero-nav p {
+width: 80%;
+line-height: 150%;
+font-size: 18px;
+}
+
+.hero-nav #header {
+  font-size: 48px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.hero-overlay button img {
+filter: invert(1);
+width: 1.5rem;
+margin-right: 1rem;
+}
+
+.hero-overlay .nasa-data {
+display: flex;
+flex-direction: row;
+gap: 0.5rem;
+align-items: center;
+}
+
+.hero-overlay .nasa-data img {
+height: 40px;
+}
+
+.main-container {
+  width: 100vw;
+  position: relative;
+  color: white;
+  font-family: 'Exo 2', sans-serif;
+  box-sizing: border-box;
+  padding: 0 150px;
+  background-color: black;
+}
+
+.hero-container {
+  width: 100vw;
+  height: 100vh;
+}
+
+.hero-overlay {
+  position: relative;
+  z-index: 100;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 40%;
+}
+
+.block-count {
+  font-weight: 700;
+  font-size: 3rem;
+  margin-bottom: 20px;
+  color: #FFC8C2;
+  position: relative;
+  z-index: 1000;
+}
+
+.header-mid {
+  font-size: 2.25rem;
+  line-height: 100%;
+  font-weight: 700;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 1000;
+  line-height: 130%;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+  height: fit-content;
+  position: relative;
+  z-index: 1000;
+}
+
+.header-container img {
+  height: 28px;
+}
+
+.block-header {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  gap: 1.5rem;
+  font-size: 18px;
+  position: relative;
+  z-index: 1000;
+  line-height: 150%;
+}
+
+.fill {
+  background-color: #4C5CBC;
+  border: 0;
+  padding: 10px 25px;
+}
+
+.stroke {
+  border: 3px solid #4C5CBC;
+  background: none;
+  padding: 8px 25px;
+}
+
+button {
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.4);
+  display: flex;
+  font-size: 20px;
+  font-weight: 500;
+  justify-content: center;
+  align-items: center;
+  line-height: 150%;
+  border-radius: 8px;
+  color: white;
+  transition: 0.5s;
+  font-family: 'Exo 2', sans-serif;
+  cursor: pointer;
+  width: fit-content;
+}
+
+button:hover {
+  box-shadow: 0 0 10px 0 rgba(48, 62, 144, 0.8);
+}
+
+.fill:hover {
+  background-color: #303E90;
+}
+
+.stroke:hover {
+  border: 3px solid #303E90;
+}
+
+/*==================== ASTEROIDS ========================*/
+
+.hero-container #asteroid1 {
+  position: absolute;
+  width: 250px;
+  bottom: 5%;
+  right: -20%;
+  transform: rotate(50deg);
+  transition: 2s;
+}
+
+.hero-container #asteroid1:hover {
+  transform: rotate(60deg);
+  right: -15%;
+}
+
+.hero-container #asteroid2 {
+  position: absolute;
+  width: 250px;
+  bottom: 50%;
+  right: -70%;
+  transition: 2s;
+}
+
+.hero-container #asteroid2:hover {
+  transform: rotate(10deg);
+  right: -65%;
+}
+
+.hero-container #asteroid3 {
+  position: absolute;
+  width: 70px;
+  top: 12%;
+  right: -10%;
+  transform: rotate(60deg);
+  transition: 2s;
+}
+
+.hero-container #asteroid3:hover {
+  transform: rotate(50deg);
+  top: 10%;
+  right: -10%;
+}
+
+/*====================== SCROLLBAR ==================================*/
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+background: rgb(0, 0, 0, 1);
+}
+
+::-webkit-scrollbar-thumb {
+background: rgb(41, 41, 41);
+border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+background: rgb(56, 56, 56);
+}
+
+
+/*=============== NO UNDERLINE ===================*/
+
+#no-underline, 
+#no-underline-footer {
+  text-decoration: none;
+  color: white;
+}
+
+#no-underline.router-link-active {
+  color: #FF8C71;
+  font-weight: 700;
+}
+
+/*===================== SETTINGS STYLES ================================*/
+
+.settings-header {
+  font-size: 36px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 2.5rem;
+}
+
+#settings-container {
+  width: 100vw;
+  position: relative;
+  color: white;
+  font-family: 'Exo 2', sans-serif;
+  box-sizing: border-box;
+  padding: 0 150px;
+  background-image: url("../assets/background-textures/bg.png");
+  background-size: 100%;
+  height: fit-content;
+}
+
+#main-container {
+  width: 100%;
+  margin: 130px 0;
+  box-sizing: border-box;
+  font-size: 18px;
+  line-height: 150%;
+  display: flex;
+  flex-direction: row;
+  gap: 50px;
+}
+
+.settings-header-mid {
+  font-size: 18px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.forms-container {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  border: 3px solid black;
+  border-radius: 0.5rem;
+}
+
+.form-container {
+  box-sizing: border-box;
+  padding: 30px 30px 40px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: black;
+  border: 2px solid #00142D;
+  border-radius: 0.5rem;
+}
+
+.form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-container p {
+  font-size: 18px;
+  color: #A1A1A1;
+  line-height: 150%;
+}
+
+/*===================== CONTACT BLOCK STYLES ================================*/
+
+#contact-us-block {
+  width: 100%;
+  background-size: cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  gap: 3rem;
+  box-sizing: border-box;
+  padding: 150px 0;
+}
+
+#contact-us-block .block-header {
+  width: 40%;
+}
+
+#contact-us-block #contact-us-background {
+  position: absolute;
+  left: -150px;
+  top: 0px; 
+  bottom: 0px;
+  z-index: 0;
+  border-top: 2px solid #00142D;
+  border-bottom: 2px solid #00142D;
+  background-image: url("../assets/background-textures/contact-bg.png");
+  width: 100vw;
+  height: 100%;
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+#contact-us-block #short-form {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  position: relative;
+  z-index: 1000;
+}
+
+#contact-us-block #short-form > div {
+  width: 20rem;
+  border-radius: 0.5rem;
+  background-color: #054A8B;
+}
+
+#contact-us-block #short-form > input {
+  width: 20rem;
+  height: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  border: 0;
+  background: black;
+  color: #A1A1A1;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: 0.5s;
+}
+
+#contact-us-block #short-form > input:focus {
+  outline: none;
+  box-shadow: 0px 0px 8.8px 7px rgba(0, 20, 45, 0.85);
+}
