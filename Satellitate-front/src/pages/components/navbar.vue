@@ -44,10 +44,8 @@
 </template>
 
 <script>
-
-
 export default {
-  name: 'Navbar',
+  name: 'Navbar-component',
   data () {
     document.addEventListener("click", (event) => {
       let dropdown = document.getElementById("user-dropdown")

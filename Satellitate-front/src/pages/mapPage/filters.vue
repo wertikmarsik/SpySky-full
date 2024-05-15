@@ -2,7 +2,7 @@
   <div id="left-filters">
     <div id="filters">
       <div id="arrow" @click="showFilters()">
-        <img src="../../assets/icons/arrows-filter.svg" alt="">
+        <img src="../../assets/icons/arrows-filter.svg" alt="" />
       </div>
 
       <!-- =================== SEARCH FILTERS ======================================= -->
@@ -11,9 +11,13 @@
         <p>Search</p>
         <div class="satellite-names">
           <p>Satellite name</p>
-          <img src="../../assets/icons/caret-down-fill.svg">
+          <img src="../../assets/icons/caret-down-fill.svg" />
           <ul class="satellite-names-options">
-            <li class="satellite-name" v-for="satellite in this.$props.data" :key="satellite.object_id">
+            <li
+              class="satellite-name"
+              v-for="satellite in this.$props.data"
+              :key="satellite.object_id"
+            >
               {{ satellite.object_name }}
             </li>
           </ul>
@@ -21,9 +25,13 @@
 
         <div class="object-ids">
           <p>Object's ID</p>
-          <img src="../../assets/icons/caret-down-fill.svg">
+          <img src="../../assets/icons/caret-down-fill.svg" />
           <ul class="objects-id-options">
-            <li class="object-id" v-for="satellite in this.$props.data" :key="satellite.object_id">
+            <li
+              class="object-id"
+              v-for="satellite in this.$props.data"
+              :key="satellite.object_id"
+            >
               {{ satellite.object_id }}
             </li>
           </ul>
@@ -36,17 +44,19 @@
         <p>Object type</p>
         <div class="object-types">
           <p>Object types</p>
-          <img src="../../assets/icons/caret-down-fill.svg">
+          <img src="../../assets/icons/caret-down-fill.svg" />
           <ul class="objects-type-options">
             <li class="object-type">
-              <label class="objects-type-checkbox-container">Satellites
-                <input type="checkbox" name="Satellite"/>
+              <label class="objects-type-checkbox-container"
+                >Satellites
+                <input type="checkbox" name="Satellite" />
                 <div class="checkmark"></div>
               </label>
             </li>
             <li class="object-type">
-              <label class="objects-type-checkbox-container">Debris
-                <input type="checkbox" name="Satellite"/>
+              <label class="objects-type-checkbox-container"
+                >Debris
+                <input type="checkbox" name="Satellite" />
                 <div class="checkmark"></div>
               </label>
             </li>
@@ -61,8 +71,20 @@
         <div id="slider">
           <div id="progress"></div>
           <div class="range-input">
-            <input type="range" class="range-min" min="1900" max="2020" value="1900">
-            <input type="range" class="range-max" min="1900" max="2020" value="1960">
+            <input
+              type="range"
+              class="range-min"
+              min="1900"
+              max="2020"
+              value="1900"
+            />
+            <input
+              type="range"
+              class="range-max"
+              min="1900"
+              max="2020"
+              value="1960"
+            />
           </div>
         </div>
         <div class="value-input">
@@ -70,37 +92,45 @@
           <p>To: {{ this.maxValue }}</p>
         </div>
       </div>
-
     </div>
   </div>
 </template>
 
 <script setup>
-import {onMounted} from "vue";
+import { onMounted } from "vue";
 
 /*=============================== DROPDOWNS =================================*/
 onMounted(() => {
   const selectedName = document.querySelector(".satellite-names > p");
-  const nameOptions = document.querySelectorAll(".satellite-names .satellite-names-options li");
+  const nameOptions = document.querySelectorAll(
+    ".satellite-names .satellite-names-options li"
+  );
   const satelliteNames = document.querySelector(".satellite-names");
-  const satelliteNamesDropdown = document.querySelector(".satellite-names .satellite-names-options");
+  const satelliteNamesDropdown = document.querySelector(
+    ".satellite-names .satellite-names-options"
+  );
 
   satelliteNames.addEventListener("click", showNamesDropdown);
 
   const selectedId = document.querySelector(".object-ids > p");
-  const idOptions = document.querySelectorAll(".object-ids .objects-id-options li");
+  const idOptions = document.querySelectorAll(
+    ".object-ids .objects-id-options li"
+  );
   const objectIds = document.querySelector(".object-ids");
-  const objectIdDropdown = document.querySelector(".object-ids .objects-id-options");
+  const objectIdDropdown = document.querySelector(
+    ".object-ids .objects-id-options"
+  );
 
   objectIds.addEventListener("click", showIdsDropdown);
 
   const objectTypes = document.querySelector(".object-types");
-  const objectTypesDropdown = document.querySelector(".object-types .objects-type-options");
+  const objectTypesDropdown = document.querySelector(
+    ".object-types .objects-type-options"
+  );
 
   objectTypes.addEventListener("click", showTypesDropdown);
 
   document.addEventListener("click", (event) => {
-
     const isInsideNamesDropdown = satelliteNames.contains(event.target);
     const isInsideIdsDropdown = objectIds.contains(event.target);
     const isInsideTypesDropdown = objectTypes.contains(event.target);
@@ -116,37 +146,39 @@ onMounted(() => {
     }
   });
 
-  nameOptions.forEach(option => {
+  nameOptions.forEach((option) => {
     option.addEventListener("click", () => {
-      nameOptions.forEach(e => {
+      nameOptions.forEach((e) => {
         e.classList.remove("show");
-      })
+      });
       let text = option.innerHTML;
       selectedName.innerHTML = text;
       option.classList.toggle("show");
-    })
+    });
   });
 
-  idOptions.forEach(option => {
+  idOptions.forEach((option) => {
     option.addEventListener("click", () => {
-      idOptions.forEach(e => {
+      idOptions.forEach((e) => {
         e.classList.remove("show");
-      })
+      });
       let text = option.innerHTML;
       selectedId.innerHTML = text;
       option.classList.toggle("show");
-    })
+    });
   });
 
   /*=============================== SLIDER =================================*/
 
   const rangeInput = document.querySelectorAll(".range-input input");
   const progress = document.querySelector(".range-slider-container #progress");
-  const values = document.querySelectorAll(".range-slider-container .value-input p");
+  const values = document.querySelectorAll(
+    ".range-slider-container .value-input p"
+  );
   const gap = 10;
 
-  rangeInput.forEach(input => {
-    input.addEventListener("input", e => {
+  rangeInput.forEach((input) => {
+    input.addEventListener("input", (e) => {
       const minV = parseInt(rangeInput[0].value);
       const maxV = parseInt(rangeInput[1].value);
 
@@ -158,19 +190,28 @@ onMounted(() => {
           rangeInput[1].value = minV + gap;
           values[1].innerHTML = "To: year " + (minV + gap);
         }
-
       } else {
         values[0].innerHTML = "From: year " + minV;
         values[1].innerHTML = "To: year " + maxV;
-        progress.style.left = ((minV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
-        progress.style.right = 100 - ((maxV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
+        progress.style.left =
+          ((minV - rangeInput[0].min) /
+            (rangeInput[0].max - rangeInput[0].min)) *
+            100 +
+          "%";
+        progress.style.right =
+          100 -
+          ((maxV - rangeInput[0].min) /
+            (rangeInput[0].max - rangeInput[0].min)) *
+            100 +
+          "%";
       }
-    })
-  })
-
+    });
+  });
 
   function showNamesDropdown() {
-    let satelliteNamesDropdown = document.querySelector(".satellite-names .satellite-names-options");
+    let satelliteNamesDropdown = document.querySelector(
+      ".satellite-names .satellite-names-options"
+    );
     if (satelliteNamesDropdown.classList.contains("show")) {
       satelliteNamesDropdown.classList.remove("show");
     } else {
@@ -179,7 +220,9 @@ onMounted(() => {
   }
 
   function showIdsDropdown() {
-    let objectIdDropdown = document.querySelector(".object-ids .objects-id-options");
+    let objectIdDropdown = document.querySelector(
+      ".object-ids .objects-id-options"
+    );
     if (objectIdDropdown.classList.contains("show")) {
       objectIdDropdown.classList.remove("show");
     } else {
@@ -188,7 +231,9 @@ onMounted(() => {
   }
 
   function showTypesDropdown() {
-    let objectTypesDropdown = document.querySelector(".object-types .objects-type-options");
+    let objectTypesDropdown = document.querySelector(
+      ".object-types .objects-type-options"
+    );
     if (objectTypesDropdown.classList.contains("show")) {
       objectTypesDropdown.classList.remove("show");
     } else {
@@ -201,20 +246,13 @@ onMounted(() => {
 <script>
 import axios from "axios";
 
-const url = "http://localhost:8080"
+const url = "http://localhost:8080";
 
 export default {
-  name: "Filters",
-  props: ['data'],
-  data() {
-    return {
-      maxValue: "",
-      minValue: ""
-    }
-  },
+  name: "Filters-component",
   methods: {
     showFilters() {
-      let filters = document.getElementById("filters")
+      let filters = document.getElementById("filters");
       if (filters.classList.contains("show")) {
         filters.classList.remove("show");
       } else {
@@ -222,29 +260,31 @@ export default {
       }
     },
     async getMaxMin() {
-      await axios.get(`${url}/satellites/maxmin/premium`).then(res => {
-        this.maxValue = res.data.maxValue.toString().substring(0, 10)
-        this.minValue = res.data.minValue.toString().substring(0, 10)
-      }).catch(e => {
-        console.error(e.message)
-      })
-    }
+      await axios
+        .get(`${url}/satellites/maxmin/premium`)
+        .then((res) => {
+          this.maxValue = res.data.maxValue.toString().substring(0, 10);
+          this.minValue = res.data.minValue.toString().substring(0, 10);
+        })
+        .catch((e) => {
+          console.error(e.message);
+        });
+    },
   },
   mounted() {
-    this.getMaxMin()
-  }
-}
+    this.getMaxMin();
+  },
+};
 </script>
 
 <style>
-
 /*==================== LEFT FILTERS BAR BLOCK ==============================*/
 
 #left-filters {
   display: flex;
   flex-direction: column;
   color: white;
-  font-family: 'Exo 2', sans-serif;
+  font-family: "Exo 2", sans-serif;
   z-index: 100;
   position: relative;
   height: 100vh;
@@ -282,7 +322,7 @@ export default {
   gap: 30px;
   border-radius: 0.5rem;
   width: 10px;
-  border: 2px solid #00142D;
+  border: 2px solid #00142d;
   transition: width 0.3s ease-in-out;
 }
 
@@ -301,7 +341,6 @@ export default {
 #filters.show #arrow img {
   transform: scaleX(1);
 }
-
 
 #filters * {
   visibility: hidden;
@@ -325,7 +364,7 @@ export default {
   visibility: visible;
   top: calc(50% - 18px);
   background-color: #000000;
-  border: 2px solid #00142D;
+  border: 2px solid #00142d;
   border-top-right-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
   border-left: 0;
@@ -353,13 +392,13 @@ export default {
   padding: 20px;
   border-radius: 0.5rem;
   border: 0;
-  background-color: #000E1F;
+  background-color: #000e1f;
   color: white;
   outline: none;
   box-sizing: border-box;
   cursor: pointer;
   width: 100%;
-  color: #A1A1A1;
+  color: #a1a1a1;
   font-weight: 700;
   font-size: 1rem;
   position: relative;
@@ -374,7 +413,8 @@ export default {
 #left-filters .satellite-names img,
 #left-filters .object-ids img,
 #left-filters .object-types img {
-  filter: invert(74%) sepia(5%) saturate(5%) hue-rotate(314deg) brightness(87%) contrast(86%);
+  filter: invert(74%) sepia(5%) saturate(5%) hue-rotate(314deg) brightness(87%)
+    contrast(86%);
   height: 12px;
   width: 12px;
 }
@@ -388,10 +428,10 @@ export default {
   box-sizing: border-box;
   cursor: pointer;
   width: 100%;
-  color: #A1A1A1;
+  color: #a1a1a1;
   font-weight: 700;
   font-size: 1rem;
-  background-color: #000E1F;
+  background-color: #000e1f;
   overflow-y: scroll;
   position: absolute;
   display: none;
@@ -421,7 +461,7 @@ export default {
   box-sizing: border-box;
   cursor: pointer;
   list-style: none;
-  background-color: #000E1F;
+  background-color: #000e1f;
   border-radius: 0.5rem;
   display: flex;
   align-items: center;
@@ -463,17 +503,17 @@ export default {
   width: 20px !important;
   border-radius: 0.4rem;
   background: none;
-  border: 2px solid #A1A1A1;
+  border: 2px solid #a1a1a1;
   transition: 0.3s !important;
 }
 
 #left-filters .objects-type-checkbox-container input:checked ~ .checkmark {
-  background-color: #4C5CBC;
-  border: 2px solid #4C5CBC;
+  background-color: #4c5cbc;
+  border: 2px solid #4c5cbc;
 }
 
 #left-filters .objects-type-checkbox-container:hover input ~ .checkmark {
-  border: 2px solid #4C5CBC;
+  border: 2px solid #4c5cbc;
 }
 
 #left-filters .checkmark:after {
@@ -498,20 +538,24 @@ export default {
   gap: 20px;
 }
 
-.range-slider-container .value-input input[type="number"]::-webkit-outer-spin-button,
-.range-slider-container .value-input input[type="number"]::-webkit-inner-spin-button {
+.range-slider-container
+  .value-input
+  input[type="number"]::-webkit-outer-spin-button,
+.range-slider-container
+  .value-input
+  input[type="number"]::-webkit-inner-spin-button {
   appearance: none;
 }
 
 .range-slider-container .value-input input[type="number"] {
   margin-top: 20px;
-  background-color: #000E1F;
+  background-color: #000e1f;
   outline: none;
   border: none;
   box-sizing: border-box;
   padding: 20px;
   border-radius: 0.5rem;
-  color: #A1A1A1;
+  color: #a1a1a1;
   font-weight: 700;
   font-size: 1rem;
 }
@@ -525,7 +569,7 @@ export default {
 
 .range-slider-container #slider #progress {
   height: 5px;
-  background-color: #4C5CBC;
+  background-color: #4c5cbc;
   position: absolute;
   border-radius: 5px;
   left: 0%;
@@ -542,13 +586,15 @@ export default {
   border-radius: 5px;
 }
 
-.range-slider-container #slider .range-input input[type="range"]::-webkit-slider-thumb {
+.range-slider-container
+  #slider
+  .range-input
+  input[type="range"]::-webkit-slider-thumb {
   appearance: none;
   width: 15px;
   height: 15px;
-  background-color: #4C5CBC;
+  background-color: #4c5cbc;
   border-radius: 50%;
   pointer-events: auto;
 }
-
 </style>

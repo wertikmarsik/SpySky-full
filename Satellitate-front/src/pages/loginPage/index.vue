@@ -1,41 +1,65 @@
 <template>
   <div id="overlay-login">
-    <Navbar/>
+    <Navbar />
     <div id="form-container-login">
       <div id="log-header">Log in</div>
       <form>
-
         <div>
           <div>
-            <input type="text" id="email" v-model="email" placeholder="Email" required>
+            <input
+              type="text"
+              id="email"
+              v-model="email"
+              placeholder="Email"
+              required
+            />
           </div>
           <div>
             <div class="password-input">
-              <input type="password" id="password" v-model="password" ref="input" placeholder="Password" required>
-              <img src="../../assets/icons/eye.svg" @click="changeVisibility('input')">
+              <input
+                type="password"
+                id="password"
+                v-model="password"
+                ref="input"
+                placeholder="Password"
+                required
+              />
+              <img
+                src="../../assets/icons/eye.svg"
+                @click="changeVisibility('input')"
+              />
             </div>
-            <div id="link-container"><a href="#" id="forgot-password">Forgot password?</a></div>
+            <div id="link-container">
+              <a href="#" id="forgot-password">Forgot password?</a>
+            </div>
           </div>
         </div>
 
         <div class="buttons">
           <router-link to="/welcome" id="no-underline">
-            <input type="submit" @click="loginUser" value="Log in" id="login-button" class="fill">
+            <input
+              type="submit"
+              @click="loginUser"
+              value="Log in"
+              id="login-button"
+              class="fill"
+            />
           </router-link>
           <div id="socials">
             <button id="google" class="stroke">
-              <img src="../../assets/icons/google.svg" alt="google">
+              <img src="../../assets/icons/google.svg" alt="google" />
             </button>
             <button id="facebook" class="stroke">
-              <img src="../../assets/icons/facebook.svg" alt="facebook">
+              <img src="../../assets/icons/facebook.svg" alt="facebook" />
             </button>
             <button id="apple" class="stroke">
-              <img src="../../assets/icons/apple.svg" alt="apple">
+              <img src="../../assets/icons/apple.svg" alt="apple" />
             </button>
           </div>
         </div>
         <div id="signup-link-container">
-          <p id="signup-link">Don't have an account?
+          <p id="signup-link">
+            Don't have an account?
             <router-link to="/" id="no-underline">
               <span>Sign up</span>
             </router-link>
@@ -44,31 +68,30 @@
       </form>
     </div>
   </div>
-  <planetModel/>
+  <planetModel />
 </template>
 
 <script>
-
-import {ref, onMounted} from "vue";
+import { ref, onMounted } from "vue";
 
 import planetModel from "../components/planetScriptLog.vue";
 import Navbar from "../components/navbar.vue";
 import axios from "axios";
 
-const url = "http://localhost:8080"
+const url = "http://localhost:8080";
 
 export default {
-  name: "loginPage",
+  name: "login-page",
   components: {
     planetModel,
-    Navbar
+    Navbar,
   },
 
   data() {
     return {
       email: "",
-      password: ""
-    }
+      password: "",
+    };
   },
 
   setup() {
@@ -78,20 +101,22 @@ export default {
       input.value = document.getElementById("password");
     });
 
-    return {input};
+    return { input };
   },
 
   methods: {
-
     async loginUser() {
-      await axios.post(`${url}/users/login`, {
-        email: this.email,
-        password: this.password
-      }).then(res => {
-        document.cookie = `token=${res.data}; path=/`
-      }).catch(e => {
-        alert(e.message)
-      })
+      await axios
+        .post(`${url}/users/login`, {
+          email: this.email,
+          password: this.password,
+        })
+        .then((res) => {
+          document.cookie = `token=${res.data}; path=/`;
+        })
+        .catch((e) => {
+          alert(e.message);
+        });
     },
 
     changeVisibility(reference) {
@@ -105,7 +130,6 @@ export default {
     },
   },
 };
-
 </script>
 
 <style>
@@ -138,9 +162,9 @@ export default {
   align-items: center;
   gap: 30px;
   color: white;
-  font-family: 'Exo 2', sans-serif;
+  font-family: "Exo 2", sans-serif;
   margin-top: 2%;
-  border: 2px solid #00142D;
+  border: 2px solid #00142d;
 }
 
 #form-container-login form > div,
@@ -168,7 +192,7 @@ export default {
   border-radius: 8px;
   color: white;
   transition: 0.5s;
-  font-family: 'Exo 2', sans-serif;
+  font-family: "Exo 2", sans-serif;
   cursor: pointer;
 }
 
@@ -243,7 +267,7 @@ export default {
 }
 
 #signup-link-container span {
-  color: #FF8C71;
+  color: #ff8c71;
   font-weight: 700;
 }
 

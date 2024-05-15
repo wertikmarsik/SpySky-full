@@ -90,7 +90,6 @@ handleWindowResize();
 })
 
 onMounted(() => {
-    console.log("I was called")
     containerWelcome.value = document.getElementById('model-container-welcome');
 
     containerWelcome.value.style.width = "100vw";
@@ -128,9 +127,6 @@ onMounted(() => {
 });
 
 
-// window.cancelAnimationFrame(this.animationFrameId);
-
-
 function removeObject(obj) {
     if (obj.geometry) obj.geometry.dispose();
     if (obj.material) obj.material.dispose();
@@ -142,104 +138,20 @@ onUnmounted(() => {
   window.cancelAnimationFrame(id);
 
   scene.dispose();
-  backgroundTexture.dispose(); // Dispose background texture
-  material.uniforms.globeTexture.value.dispose(); // Dispose texture from material
+  backgroundTexture.dispose(); 
+  material.uniforms.globeTexture.value.dispose(); 
 
-  // Clear canvas (optional)
   renderer.domElement.width = 0;
   renderer.domElement.height = 0;
 
-
-
-    removeObject(sphere)
-    removeObject(atmosphere)
-    scene.remove(group);
-    // sphere.material.dispose();
-    // sphere.geometry.dispose();
-
-    // atmosphere.material.dispose();
-    // atmosphere.geometry.dispose();
-
-    // scene.remove(group);
-
-    // material.dispose();
-
-    // material_atmosphere.dispose();
-
-    // geometry.dispose();
-
-    // scene.background.dispose();
-    // scene.remove(camera);
-
-    // renderer.dispose();
-    // scene.dispose();
-
-    
+  removeObject(sphere)
+  removeObject(atmosphere)
+  scene.remove(group);
 
     if (containerWelcome.value) {
         containerWelcome.value.removeChild(renderer.domElement);
     }
     window.removeEventListener('resize', handleWindowResize);
 });
-
-
-
-
-function cleanupThreeScene() {
-    console.log("Button was called");
-    window.cancelAnimationFrame(id);
-
-
-    sphere.material.dispose();
-    sphere.geometry.dispose();
-
-    atmosphere.material.dispose();
-    atmosphere.geometry.dispose();
-
-    geometry.dispose();
-
-    material.dispose();
-    material_atmosphere.dispose();
-
-    backgroundTexture.dispose();
-    scene.background.dispose();
-    renderer.dispose();
-    scene.remove(camera);
-    material.uniforms.globeTexture.value.dispose();
-
-    
-
-    renderer.domElement.width = 0;
-    renderer.domElement.height = 0;
-
-    scene.remove(group);
-
-
-    // atmosphere.material.dispose();
-    // atmosphere.geometry.dispose();
-
-    // scene.remove(group);
-
-    // material.dispose();
-
-    // material_atmosphere.dispose();
-
-    // geometry.dispose();
-
-    // scene.background.dispose();
-    // scene.remove(camera);
-
-    // renderer.dispose();
-    // scene.dispose();
-
-    
-
-    if (containerWelcome.value) {
-        containerWelcome.value.removeChild(renderer.domElement);
-    }
-    scene.dispose();
-    window.removeEventListener('resize', handleWindowResize);
-}
-
 
 </script>

@@ -1,11 +1,17 @@
 <template>
   <div id="settings-container">
-    <Navbar/>
+    <Navbar />
 
     <!-- ============================= CONTENT ============================= -->
 
     <div id="main-container">
-      <SettingsNavbar :data="{email: this.email, first_name: this.first_name, last_name: this.last_name}"/>
+      <SettingsNavbar
+        :data="{
+          email: this.email,
+          first_name: this.first_name,
+          last_name: this.last_name,
+        }"
+      />
 
       <div id="notifications-container">
         <div class="settings-header">Notifications</div>
@@ -17,23 +23,26 @@
             <div class="link">
               <button>
                 Payment information
-                <div><img src="../../../assets/icons/arrow-link.svg" alt=""></div>
+                <div>
+                  <img src="../../../assets/icons/arrow-link.svg" alt="" />
+                </div>
               </button>
             </div>
-            <p>
-              Send an email notification about:
-            </p>
+            <p>Send an email notification about:</p>
             <div class="checkboxes">
-              <label class="checkbox-container">Product updates and news
-                <input type="checkbox" name="Updates" checked="checked"/>
+              <label class="checkbox-container"
+                >Product updates and news
+                <input type="checkbox" name="Updates" checked="checked" />
                 <span class="checkmark"></span>
               </label>
-              <label class="checkbox-container">Subscription and special deals
-                <input type="checkbox" name="Deals"/>
+              <label class="checkbox-container"
+                >Subscription and special deals
+                <input type="checkbox" name="Deals" />
                 <span class="checkmark"></span>
               </label>
-              <label class="checkbox-container">Other iteresting information
-                <input type="checkbox" name="Other"/>
+              <label class="checkbox-container"
+                >Other iteresting information
+                <input type="checkbox" name="Other" />
                 <span class="checkmark"></span>
               </label>
             </div>
@@ -43,24 +52,29 @@
             <div class="settings-header-mid">Space objects activity</div>
             <p>Send an email notification when:</p>
             <div class="checkboxes">
-              <label class="checkbox-container">Lorem ipsum dolor sit amet
-                <input type="checkbox" checked="checked"/>
+              <label class="checkbox-container"
+                >Lorem ipsum dolor sit amet
+                <input type="checkbox" checked="checked" />
                 <span class="checkmark"></span>
               </label>
-              <label class="checkbox-container">Lorem ipsum dolor
-                <input type="checkbox"/>
+              <label class="checkbox-container"
+                >Lorem ipsum dolor
+                <input type="checkbox" />
                 <span class="checkmark"></span>
               </label>
-              <label class="checkbox-container">Lorem ipsum dolor sit amet
-                <input type="checkbox"/>
+              <label class="checkbox-container"
+                >Lorem ipsum dolor sit amet
+                <input type="checkbox" />
                 <span class="checkmark"></span>
               </label>
-              <label class="checkbox-container">Lorem ipsum
-                <input type="checkbox"/>
+              <label class="checkbox-container"
+                >Lorem ipsum
+                <input type="checkbox" />
                 <span class="checkmark"></span>
               </label>
-              <label class="checkbox-container">Lorem ipsum dolor
-                <input type="checkbox"/>
+              <label class="checkbox-container"
+                >Lorem ipsum dolor
+                <input type="checkbox" />
                 <span class="checkmark"></span>
               </label>
             </div>
@@ -68,66 +82,69 @@
           </div>
           <div class="form-container">
             <div class="settings-header-mid">Tracked objects list</div>
-            <p>Manage space objects you would like to track. See full list of tracked objects below.</p>
+            <p>
+              Manage space objects you would like to track. See full list of
+              tracked objects below.
+            </p>
             <div class="link">
               <button>
                 List of all tracked objects
-                <div><img src="../../../assets/icons/arrow-link.svg" alt=""></div>
+                <div>
+                  <img src="../../../assets/icons/arrow-link.svg" alt="" />
+                </div>
               </button>
             </div>
           </div>
         </div>
       </div>
-
     </div>
 
-
-    <Footer/>
+    <Footer />
   </div>
 </template>
 
 <script>
-
 import Navbar from "../../components/navbar.vue";
 import SettingsNavbar from "../../components/settingsNavbar.vue";
 import Footer from "../../components/footer.vue";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 export default {
-  name: "editNotifications",
+  name: "editNotifications-page",
   components: {
     Navbar,
     SettingsNavbar,
-    Footer
+    Footer,
   },
 
   data() {
     return {
       first_name: "",
       last_name: "",
-      email: ""
-    }
+      email: "",
+    };
   },
 
   methods: {
     fetchUserData() {
-      const token = document.cookie.split('; ').find(cookie => cookie.startsWith('token=')).split('=')[1];
-      const decoded = jwtDecode(token)
-      this.first_name = decoded.first_name
-      this.last_name = decoded.last_name
-      this.email = decoded.email
-      console.log(this.first_name)
-    }
+      const token = document.cookie
+        .split("; ")
+        .find((cookie) => cookie.startsWith("token="))
+        .split("=")[1];
+      const decoded = jwtDecode(token);
+      this.first_name = decoded.first_name;
+      this.last_name = decoded.last_name;
+      this.email = decoded.email;
+      console.log(this.first_name);
+    },
   },
   mounted() {
-    this.fetchUserData()
-  }
-}
-
+    this.fetchUserData();
+  },
+};
 </script>
 
 <style>
-
 /*===================== GENERAL STYLES ===========================*/
 
 #notifications-container {
@@ -140,7 +157,7 @@ export default {
   padding: 20px;
   border-radius: 0.5rem;
   border: 0;
-  background-color: #000E1F;
+  background-color: #000e1f;
   color: white;
   outline: none;
   box-sizing: border-box;
@@ -193,12 +210,12 @@ export default {
 }
 
 #notifications-container .checkbox-container input:checked ~ .checkmark {
-  background-color: #4C5CBC;
-  border: 2px solid #4C5CBC;
+  background-color: #4c5cbc;
+  border: 2px solid #4c5cbc;
 }
 
 #notifications-container .checkbox-container:hover input ~ .checkmark {
-  border: 2px solid #4C5CBC;
+  border: 2px solid #4c5cbc;
 }
 
 #notifications-container .checkmark:after {
@@ -206,5 +223,4 @@ export default {
   position: absolute;
   display: none;
 }
-
 </style>
