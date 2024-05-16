@@ -1,21 +1,24 @@
 <template>
   <div id="map-container">
     <div id="map-navigation">
-      <Navbar/>
+      <Navbar />
     </div>
 
     <div id="map-panels">
-
       <!-- =================== ALL FILTERS ======================================= -->
 
-      <Filters :data="this.satellites"/>
+      <Filters :data="this.satellites" />
 
       <!-- =================== LIGHT BOTTOM BLOCKS ======================================= -->
 
       <div id="right-bottom-elems">
         <div class="scale-buttons">
-          <div id="zoomOut"><img src="../../assets/icons/minus.svg" alt=""></div>
-          <div id="zoomIn"><img src="../../assets/icons/plus.svg" alt=""></div>
+          <div id="zoomOut">
+            <img src="../../assets/icons/minus.svg" alt="" />
+          </div>
+          <div id="zoomIn">
+            <img src="../../assets/icons/plus.svg" alt="" />
+          </div>
         </div>
       </div>
     </div>
@@ -28,17 +31,22 @@
 
 <script setup>
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {onBeforeMount, onMounted, onUnmounted, ref} from "vue";
-import {OBJLoader} from 'three/addons/loaders/OBJLoader.js';
-import {MTLLoader} from 'three/addons/loaders/MTLLoader.js';
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
+import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
 
 const scene = new THREE.Scene();
 const containerMap = ref(null);
-const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(
+  50,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
 camera.position.z = 5;
 
-const renderer = new THREE.WebGLRenderer({antialias: true});
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enablePan = false;
@@ -59,23 +67,31 @@ directionalLight.target.position.z = 0;
 scene.add(directionalLight);
 scene.add(directionalLight.target);
 
-new THREE.TextureLoader().load("src/assets/textures/bg_360.png", function (texture) {
+new THREE.TextureLoader().load(
+  "src/assets/textures/bg_360.png",
+  function (texture) {
+    let pmremGenerator = new THREE.PMREMGenerator(renderer);
+    pmremGenerator.compileEquirectangularShader();
 
-  let pmremGenerator = new THREE.PMREMGenerator(renderer);
-  pmremGenerator.compileEquirectangularShader();
+    let envMap = pmremGenerator.fromEquirectangular(texture).texture;
+    pmremGenerator.dispose();
 
-  let envMap = pmremGenerator.fromEquirectangular(texture).texture;
-  pmremGenerator.dispose();
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.background = envMap;
+    scene.environment = envMap;
+  }
+);
 
-  texture.mapping = THREE.EquirectangularReflectionMapping;
-  scene.background = envMap;
-  scene.environment = envMap;
+const mapEarth = new THREE.TextureLoader().load(
+  "src/assets/textures/earth.png"
+);
+const bump = new THREE.TextureLoader().load("src/assets/textures/bump.png");
+
+const earthMaterial = new THREE.MeshPhongMaterial({
+  map: mapEarth,
+  bumpMap: bump,
+  bumpScale: 0.05,
 });
-
-const mapEarth = new THREE.TextureLoader().load('src/assets/textures/earth.png');
-const bump = new THREE.TextureLoader().load('src/assets/textures/bump.png');
-
-const earthMaterial = new THREE.MeshPhongMaterial({map: mapEarth, bumpMap: bump, bumpScale: 0.05});
 
 const geometry = new THREE.SphereGeometry(1, 50, 50);
 const sphere = new THREE.Mesh(geometry, earthMaterial);
@@ -90,42 +106,38 @@ let id_2;
 let asteroidsGroup = [];
 
 function addAsteroid(x, y, z) {
-
   let mtlLoader = new MTLLoader();
-  mtlLoader.load('./src/assets/textures/Rock.mtl', function (materials) {
+  mtlLoader.load("./src/assets/textures/Rock.mtl", function (materials) {
     materials.preload();
 
     let loader = new OBJLoader();
-    loader.load('./src/assets/objects/Rock.obj', function (object) {
+    loader.load("./src/assets/objects/Rock.obj", function (object) {
       object.position.set(x, y, z);
       object.scale.set(0.0002, 0.0002, 0.0002);
       scene.add(object);
 
       asteroidsGroup.push(object);
     });
-  })
-
+  });
 }
 
 // Add satellite
 let satellitesGroup = [];
 
 function addSatellite(x, y, z) {
-
   let mtlLoader = new MTLLoader();
-  mtlLoader.load('./src/assets/textures/Satellite.mtl', function (materials) {
+  mtlLoader.load("./src/assets/textures/Satellite.mtl", function (materials) {
     materials.preload();
 
     let loader = new OBJLoader();
-    loader.load('./src/assets/objects/Satellite.obj', function (object) {
+    loader.load("./src/assets/objects/Satellite.obj", function (object) {
       object.position.set(x, y, z);
       object.scale.set(0.1, 0.1, 0.1);
       scene.add(object);
 
       satellitesGroup.push(object);
     });
-  })
-
+  });
 }
 
 function handleWindowResize() {
@@ -143,13 +155,13 @@ function handleWindowResize() {
 }
 
 onBeforeMount(() => {
-  window.addEventListener('resize', handleWindowResize);
+  window.addEventListener("resize", handleWindowResize);
 
   handleWindowResize();
-})
+});
 
 onMounted(() => {
-  containerMap.value = document.getElementById('model-container');
+  containerMap.value = document.getElementById("model-container");
 
   containerMap.value.style.width = "100vw";
   containerMap.value.style.height = "100vh";
@@ -161,28 +173,19 @@ onMounted(() => {
   const w = containerMap.value.offsetWidth;
   const h = containerMap.value.offsetHeight;
 
-  camera.aspect = w / h
+  camera.aspect = w / h;
 
-  addAsteroid(1, 0.5, -0.4)
-  addAsteroid(-0.4, 1, 0.5)
-  addAsteroid(-0.35, 1, 0.55)
-  addAsteroid(-0.8, 0.8, 0.6)
-  addAsteroid(-1, -0.5, -0.7)
-  addAsteroid(-1.1, -0.53, -0.75)
-  addAsteroid(0.5, 0.5, 0.75)
+  addAsteroid(1, 0.5, -0.4);
+  addAsteroid(-0.4, 1, 0.5);
+  addAsteroid(-0.35, 1, 0.55);
+  addAsteroid(-0.8, 0.8, 0.6);
+  addAsteroid(-1, -0.5, -0.7);
+  addAsteroid(-1.1, -0.53, -0.75);
+  addAsteroid(0.5, 0.5, 0.75);
 
-  addSatellite(0.7, 0.7, 0.7)
-  addSatellite(-0.7, -0.7, 0.7)
-  addSatellite(-0.7, 0.8, 1)
-
-  for (let i = 0; i < asteroidsGroup.length; i += 1) {
-    group.add(i);
-  }
-
-  for (let i = 0; i < satellitesGroup.length; i += 1) {
-    group.add(i);
-  }
-
+  addSatellite(0.7, 0.7, 0.7);
+  addSatellite(-0.7, -0.7, 0.7);
+  addSatellite(-0.7, 0.8, 1);
 
   renderer.setSize(w, h);
   renderer.setPixelRatio(window.devicePixelRatio);
@@ -197,7 +200,7 @@ onMounted(() => {
   }
 
   animate();
-  window.addEventListener('resize', handleWindowResize);
+  window.addEventListener("resize", handleWindowResize);
 });
 
 function removeObject(obj) {
@@ -214,11 +217,11 @@ onUnmounted(() => {
   renderer.domElement.width = 0;
   renderer.domElement.height = 0;
 
-  removeObject(sphere)
-  removeObject(light)
-  removeObject(directionalLight)
+  removeObject(sphere);
+  removeObject(light);
+  removeObject(directionalLight);
 
-  window.removeEventListener('resize', handleWindowResize);
+  window.removeEventListener("resize", handleWindowResize);
 
   for (let i = 0; i < asteroidsGroup.length; i++) {
     removeObject(asteroidsGroup[i]);
@@ -247,47 +250,48 @@ onUnmounted(() => {
   if (containerMap.value) {
     containerMap.value.removeChild(renderer.domElement);
   }
-
 });
 </script>
 
 <script>
-import Navbar from "../../pages/components/mapNav.vue"
-import Filters from "../../pages/mapPage/filters.vue"
+import Navbar from "../../pages/components/mapNav.vue";
+import Filters from "../../pages/mapPage/filters.vue";
 import axios from "axios";
 
-const url = "http://localhost:8080"
+const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 
 export default {
   name: "map",
   components: {
     Navbar,
-    Filters
+    Filters,
   },
   data() {
     return {
       satellites: [],
       currentSatellite: "",
-    }
+    };
   },
 
   methods: {
     async getSatellite() {
-      await axios.get(`${url}/satellites/`).then(res => {
-        this.satellites = res.data
-      }).catch(e => {
-        console.error(e.message)
-      })
+      await axios
+        .get(`${url}/satellites/`)
+        .then((res) => {
+          this.satellites = res.data;
+        })
+        .catch((e) => {
+          console.error(e.message);
+        });
     },
   },
   mounted() {
-    this.getSatellite()
-  }
-}
+    this.getSatellite();
+  },
+};
 </script>
 
 <style>
-
 /*==================== MAP CONTAINER BLOCK ==============================*/
 
 #map-container {
@@ -311,7 +315,7 @@ export default {
 /*==================== RIGHT BOTTOM ELEMENTS BLOCK ==============================*/
 
 #right-bottom-elems {
-  font-family: 'Exo 2', sans-serif;
+  font-family: "Exo 2", sans-serif;
   font-size: 14px;
   position: absolute;
   color: white;
@@ -343,7 +347,7 @@ export default {
   align-items: center;
   width: 40px;
   height: 40px;
-  background-color: #4C5CBC;
+  background-color: #4c5cbc;
   border-radius: 0.5rem;
 }
 
@@ -351,5 +355,4 @@ export default {
   height: auto;
   width: 1rem;
 }
-
 </style>

@@ -1,76 +1,75 @@
+import { createApp } from "vue";
+import App from "./App.vue";
 
-import { createApp } from 'vue'
-import App from './src/App.vue'
+import { createRouter, createWebHistory } from "vue-router";
 
-import { createRouter, createWebHistory } from 'vue-router';
-
-import login from './src/pages/loginPage/index.vue';
-import signup from './src/pages/signupPage/index.vue';
-import welcome from './src/pages/welcomePage/index.vue';
-import aboutUs from './src/pages/aboutUsPage/index.vue';
-import ourMission from './src/pages/ourMissionPage/index.vue';
-import ourTeam from './src/pages/ourTeamPage/index.vue';
-import pricing from './src/pages/pricingPage/index.vue';
-import contacts from './src/pages/contactsPage/index.vue';
-import editProfile from './src/pages/settingsPage/editProfile/index.vue';
-import editNotifications from './src/pages/settingsPage/editNotifications/index.vue';
-import editSubscription from './src/pages/settingsPage/editSubscription/index.vue';
-import ourTools from './src/pages/toolsPage/index.vue';
-import map from './src/pages/mapPage/index.vue'
+import login from "./pages/loginPage/index.vue";
+import signup from "./pages/signupPage/index.vue";
+import welcome from "./pages/welcomePage/index.vue";
+import aboutUs from "./pages/aboutUsPage/index.vue";
+import ourMission from "./pages/ourMissionPage/index.vue";
+import ourTeam from "./pages/ourTeamPage/index.vue";
+import pricing from "./pages/pricingPage/index.vue";
+import contacts from "./pages/contactsPage/index.vue";
+import editProfile from "./pages/settingsPage/editProfile/index.vue";
+import editNotifications from "./pages/settingsPage/editNotifications/index.vue";
+import editSubscription from "./pages/settingsPage/editSubscription/index.vue";
+import ourTools from "./pages/toolsPage/index.vue";
+import map from "./pages/mapPage/index.vue";
 
 const routes = [
   {
-    path: '/login',
-    component: login, 
+    path: "/login",
+    component: login,
   },
   {
-    path: '/',
-    component: signup, 
+    path: "/",
+    component: signup,
   },
   {
-    path: '/welcome',
-    component: welcome, 
+    path: "/welcome",
+    component: welcome,
   },
   {
-    path: '/about-us',
-    component: aboutUs
+    path: "/about-us",
+    component: aboutUs,
   },
   {
-    path: '/our-mission',
-    component: ourMission
+    path: "/our-mission",
+    component: ourMission,
   },
   {
-    path: '/our-team',
-    component: ourTeam
+    path: "/our-team",
+    component: ourTeam,
   },
   {
-    path: '/pricing',
-    component: pricing
+    path: "/pricing",
+    component: pricing,
   },
   {
-    path: '/contacts',
-    component: contacts
+    path: "/contacts",
+    component: contacts,
   },
   {
-    path: '/settings',
+    path: "/settings",
     component: editProfile,
   },
   {
-    path: '/settings/edit-notifications',
-    component: editNotifications
+    path: "/settings/edit-notifications",
+    component: editNotifications,
   },
   {
-    path: '/settings/edit-subscription',
-    component: editSubscription
+    path: "/settings/edit-subscription",
+    component: editSubscription,
   },
   {
-    path: '/our-tools',
-    component: ourTools
+    path: "/our-tools",
+    component: ourTools,
   },
   {
-    path: '/3d-map',
-    component: map
-  }
+    path: "/3d-map",
+    component: map,
+  },
 ];
 
 const router = createRouter({
@@ -86,4 +85,4 @@ router.beforeEach((to, from, next) => {
 const app = createApp(App);
 
 app.use(router);
-app.mount('#app');
+app.mount("#app");

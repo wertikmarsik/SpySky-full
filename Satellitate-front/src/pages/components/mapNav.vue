@@ -40,7 +40,7 @@
 
 
 export default {
-  name: 'mapNavbar',
+  name: 'mapNavbar-component',
   data () {
     document.addEventListener("click", (event) => {
       let dropdown = document.getElementById("user-dropdown")
