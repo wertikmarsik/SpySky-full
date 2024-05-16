@@ -78,6 +78,7 @@ import planetModel from "../components/planetScriptLog.vue";
 import Navbar from "../components/navbar.vue";
 import axios from "axios";
 
+
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 
 export default {
