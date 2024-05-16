@@ -258,7 +258,7 @@ import Navbar from "../../pages/components/mapNav.vue";
 import Filters from "../../pages/mapPage/filters.vue";
 import axios from "axios";
 
-const url = "http://localhost:8080"
+const url = "https://famous-plexus-417323.lm.r.appspot.com/"
 
 export default {
   name: "map",
