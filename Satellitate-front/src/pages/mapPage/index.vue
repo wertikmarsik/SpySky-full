@@ -1,23 +1,23 @@
 <template>
   <div id="map-container">
     <div id="map-navigation">
-      <Navbar />
+      <Navbar/>
     </div>
 
     <div id="map-panels">
       <!-- =================== ALL FILTERS ======================================= -->
 
-      <Filters :data="this.satellites" />
+      <Filters :data="this.satellites"/>
 
       <!-- =================== LIGHT BOTTOM BLOCKS ======================================= -->
 
       <div id="right-bottom-elems">
         <div class="scale-buttons">
           <div id="zoomOut">
-            <img src="../../assets/icons/minus.svg" alt="" />
+            <img src="../../assets/icons/minus.svg" alt=""/>
           </div>
           <div id="zoomIn">
-            <img src="../../assets/icons/plus.svg" alt="" />
+            <img src="../../assets/icons/plus.svg" alt=""/>
           </div>
         </div>
       </div>
@@ -31,22 +31,28 @@
 
 <script setup>
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { onBeforeMount, onMounted, onUnmounted, ref } from "vue";
-import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
-import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
+import {OrbitControls} from "three/addons/controls/OrbitControls.js";
+import {onMounted, onUnmounted, ref} from "vue";
+import {OBJLoader} from "three/addons/loaders/OBJLoader.js";
+import {MTLLoader} from "three/addons/loaders/MTLLoader.js";
+import axios from "axios";
+
+const url = "https://famous-plexus-417323.lm.r.appspot.com/"
+// const url = "http://localhost:8080";
+
+const satellites = ref([]);
+const containerMap = ref(null);
 
 const scene = new THREE.Scene();
-const containerMap = ref(null);
 const camera = new THREE.PerspectiveCamera(
-  50,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
+    50,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    1000
 );
 camera.position.z = 5;
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+const renderer = new THREE.WebGLRenderer({antialias: true});
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enablePan = false;
@@ -56,35 +62,27 @@ const light = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(light);
 
 const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
-directionalLight.position.x = -30;
-directionalLight.position.y = 35;
-directionalLight.position.z = 55;
-
-directionalLight.target.position.x = 0;
-directionalLight.target.position.y = 0;
-directionalLight.target.position.z = 0;
+directionalLight.position.set(-30, 35, 55);
 
 scene.add(directionalLight);
 scene.add(directionalLight.target);
 
 new THREE.TextureLoader().load(
-  "src/assets/textures/bg_360.png",
-  function (texture) {
-    let pmremGenerator = new THREE.PMREMGenerator(renderer);
-    pmremGenerator.compileEquirectangularShader();
+    "src/assets/textures/bg_360.png",
+    function (texture) {
+      const pmremGenerator = new THREE.PMREMGenerator(renderer);
+      pmremGenerator.compileEquirectangularShader();
 
-    let envMap = pmremGenerator.fromEquirectangular(texture).texture;
-    pmremGenerator.dispose();
+      const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+      pmremGenerator.dispose();
 
-    texture.mapping = THREE.EquirectangularReflectionMapping;
-    scene.background = envMap;
-    scene.environment = envMap;
-  }
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+      scene.background = envMap;
+      scene.environment = envMap;
+    }
 );
 
-const mapEarth = new THREE.TextureLoader().load(
-  "src/assets/textures/earth.png"
-);
+const mapEarth = new THREE.TextureLoader().load("src/assets/textures/earth.png");
 const bump = new THREE.TextureLoader().load("src/assets/textures/bump.png");
 
 const earthMaterial = new THREE.MeshPhongMaterial({
@@ -95,46 +93,37 @@ const earthMaterial = new THREE.MeshPhongMaterial({
 
 const geometry = new THREE.SphereGeometry(1, 50, 50);
 const sphere = new THREE.Mesh(geometry, earthMaterial);
-
 sphere.position.set(0, 0, 0);
 
 scene.add(sphere);
 
 let id_2;
-
-// Add asteroid
 let asteroidsGroup = [];
+let satellitesGroup = [];
 
 function addAsteroid(x, y, z) {
-  let mtlLoader = new MTLLoader();
+  const mtlLoader = new MTLLoader();
   mtlLoader.load("./src/assets/textures/Rock.mtl", function (materials) {
     materials.preload();
-
-    let loader = new OBJLoader();
+    const loader = new OBJLoader();
     loader.load("./src/assets/objects/Rock.obj", function (object) {
       object.position.set(x, y, z);
       object.scale.set(0.0002, 0.0002, 0.0002);
       scene.add(object);
-
       asteroidsGroup.push(object);
     });
   });
 }
 
-// Add satellite
-let satellitesGroup = [];
-
 function addSatellite(x, y, z) {
-  let mtlLoader = new MTLLoader();
+  const mtlLoader = new MTLLoader();
   mtlLoader.load("./src/assets/textures/Satellite.mtl", function (materials) {
     materials.preload();
-
-    let loader = new OBJLoader();
+    const loader = new OBJLoader();
     loader.load("./src/assets/objects/Satellite.obj", function (object) {
-      object.position.set(x, y, z);
+      object.position.set(x / 2000, y / 2000, z / 2000);
       object.scale.set(0.1, 0.1, 0.1);
       scene.add(object);
-
       satellitesGroup.push(object);
     });
   });
@@ -150,17 +139,23 @@ function handleWindowResize() {
     renderer.setSize(newWidth, newHeight);
     camera.aspect = newWidth / newHeight;
   }
-
   camera.updateProjectionMatrix();
 }
 
-onBeforeMount(() => {
-  window.addEventListener("resize", handleWindowResize);
-
-  handleWindowResize();
-});
+async function getSatellite() {
+  try {
+    const res = await axios.get(`${url}/satellites/`);
+    satellites.value = res.data;
+    console.log(satellites.value)
+  } catch (e) {
+    console.error(e.message);
+  }
+}
 
 onMounted(() => {
+  window.addEventListener("resize", handleWindowResize);
+  handleWindowResize();
+
   containerMap.value = document.getElementById("model-container");
 
   containerMap.value.style.width = "100vw";
@@ -175,47 +170,41 @@ onMounted(() => {
 
   camera.aspect = w / h;
 
-  addAsteroid(1, 0.5, -0.4);
-  addAsteroid(-0.4, 1, 0.5);
-  addAsteroid(-0.35, 1, 0.55);
-  addAsteroid(-0.8, 0.8, 0.6);
-  addAsteroid(-1, -0.5, -0.7);
-  addAsteroid(-1.1, -0.53, -0.75);
-  addAsteroid(0.5, 0.5, 0.75);
-
-  addSatellite(0.7, 0.7, 0.7);
-  addSatellite(-0.7, -0.7, 0.7);
-  addSatellite(-0.7, 0.8, 1);
-
   renderer.setSize(w, h);
   renderer.setPixelRatio(window.devicePixelRatio);
 
   containerMap.value.appendChild(renderer.domElement);
 
+  getSatellite().then(() => {
+    if (satellites.value.length > 0) {
+      satellites.value.forEach(satellite => {
+        addSatellite(satellite.x, satellite.y, satellite.z)
+        console.log("Є")
+      })
+    }
+  });
+
   function animate() {
     id_2 = requestAnimationFrame(animate);
-
     renderer.render(scene, camera);
     controls.update();
   }
 
   animate();
-  window.addEventListener("resize", handleWindowResize);
 });
-
-function removeObject(obj) {
-  if (obj.geometry) obj.geometry.dispose();
-  if (obj.material) obj.material.dispose();
-  if (obj.children.length) obj.children.forEach(removeObject);
-}
 
 onUnmounted(() => {
   window.cancelAnimationFrame(id_2);
-
   scene.dispose();
 
   renderer.domElement.width = 0;
   renderer.domElement.height = 0;
+
+  function removeObject(obj) {
+    if (obj.geometry) obj.geometry.dispose();
+    if (obj.material) obj.material.dispose();
+    if (obj.children.length) obj.children.forEach(removeObject);
+  }
 
   removeObject(sphere);
   removeObject(light);
@@ -223,13 +212,8 @@ onUnmounted(() => {
 
   window.removeEventListener("resize", handleWindowResize);
 
-  for (let i = 0; i < asteroidsGroup.length; i++) {
-    removeObject(asteroidsGroup[i]);
-  }
-
-  for (let i = 0; i < satellitesGroup.length; i++) {
-    scene.remove(satellitesGroup[i]);
-  }
+  asteroidsGroup.forEach(removeObject);
+  satellitesGroup.forEach(obj => scene.remove(obj));
 
   asteroidsGroup = [];
   satellitesGroup = [];
@@ -243,7 +227,6 @@ onUnmounted(() => {
   }
 
   scene.remove(camera);
-
   renderer.dispose();
   scene.dispose();
 
@@ -256,11 +239,9 @@ onUnmounted(() => {
 <script>
 import Navbar from "../../pages/components/mapNav.vue";
 import Filters from "../../pages/mapPage/filters.vue";
-import axios from "axios";
-
-const url = "https://famous-plexus-417323.lm.r.appspot.com/"
 
 export default {
+  // eslint-disable-next-line vue/multi-word-component-names
   name: "map",
   components: {
     Navbar,
@@ -271,22 +252,6 @@ export default {
       satellites: [],
       currentSatellite: "",
     };
-  },
-
-  methods: {
-    async getSatellite() {
-      await axios
-        .get(`${url}/satellites/`)
-        .then((res) => {
-          this.satellites = res.data;
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
-    },
-  },
-  mounted() {
-    this.getSatellite();
   },
 };
 </script>

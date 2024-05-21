@@ -1,31 +1,31 @@
 <template>
   <div id="overlay-signup">
-    <Navbar />
+    <Navbar/>
     <div id="form-container-signup">
       <div id="signup-header">Sign up</div>
       <form id="form-first" v-if="currentPage === 'page1'">
         <div>
           <div class="name-inputs">
             <input
-              type="text"
-              id="first-name"
-              v-model="firstName"
-              placeholder="First name"
+                type="text"
+                id="first-name"
+                v-model="firstName"
+                placeholder="First name"
             />
             <input
-              type="text"
-              id="last-name"
-              v-model="lastName"
-              placeholder="Last name"
+                type="text"
+                id="last-name"
+                v-model="lastName"
+                placeholder="Last name"
             />
           </div>
           <div>
             <select id="country" v-model="selectedCountry">
               <option value="">Select a country</option>
               <option
-                v-for="country in countries"
-                :key="country.id"
-                :value="country.id"
+                  v-for="country in countries"
+                  :key="country.id"
+                  :value="country.id"
               >
                 {{ country.country_name }}
               </option>
@@ -33,33 +33,33 @@
           </div>
           <div>
             <input
-              type="tel"
-              id="phone-number"
-              v-model="phone_number"
-              placeholder="Phone number"
-              pattern="+38-[0-9]{3}-[0-9]{3}-[0-9]{4}"
-              required
+                type="tel"
+                id="phone-number"
+                v-model="phone_number"
+                placeholder="Phone number"
+                pattern="+38-[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                required
             />
           </div>
         </div>
 
         <div class="buttons">
           <button
-            id="next-button"
-            class="fill"
-            @click.prevent="changePage('page2')"
+              id="next-button"
+              class="fill"
+              @click.prevent="changePage('page2')"
           >
             Next
           </button>
           <div id="socials">
             <button id="google" class="stroke">
-              <img src="../../assets/icons/google.svg" alt="google" />
+              <img src="../../assets/icons/google.svg" alt="google"/>
             </button>
             <button id="facebook" class="stroke">
-              <img src="../../assets/icons/facebook.svg" alt="facebook" />
+              <img src="../../assets/icons/facebook.svg" alt="facebook"/>
             </button>
             <button id="apple" class="stroke">
-              <img src="../../assets/icons/apple.svg" alt="apple" />
+              <img src="../../assets/icons/apple.svg" alt="apple"/>
             </button>
           </div>
         </div>
@@ -75,33 +75,33 @@
       <form id="form-second" v-if="currentPage === 'page2'">
         <div>
           <div>
-            <input type="text" id="email" v-model="email" placeholder="Email" />
+            <input type="text" id="email" v-model="email" placeholder="Email"/>
           </div>
           <div class="password-input">
             <input
-              type="password"
-              class="password"
-              v-model="password"
-              ref="input"
-              placeholder="Password"
-              required
+                type="password"
+                class="password"
+                v-model="password"
+                ref="input"
+                placeholder="Password"
+                required
             />
             <img
-              src="../../assets/icons/eye.svg"
-              @click="changeVisibility('input')"
+                src="../../assets/icons/eye.svg"
+                @click="changeVisibility('input')"
             />
           </div>
           <div class="password-input">
             <input
-              type="password"
-              class="password"
-              ref="inputConfirm"
-              placeholder="Confirm password"
-              required
+                type="password"
+                class="password"
+                ref="inputConfirm"
+                placeholder="Confirm password"
+                required
             />
             <img
-              src="../../assets/icons/eye.svg"
-              @click="changeVisibility('inputConfirm')"
+                src="../../assets/icons/eye.svg"
+                @click="changeVisibility('inputConfirm')"
             />
           </div>
         </div>
@@ -110,11 +110,11 @@
             Back
           </button>
           <input
-            type="submit"
-            value="Sign up"
-            id="signup-button"
-            class="fill"
-            @click.prevent="registerUser"
+              type="submit"
+              value="Sign up"
+              id="signup-button"
+              class="fill"
+              @click.prevent="registerUser"
           />
         </div>
         <div id="login-link-container">
@@ -132,26 +132,26 @@
             <label>Enter the confirmation code</label>
             <div id="code-input">
               <input
-                type="text"
-                placeholder="Enter code"
-                v-model="confirmCode"
-                id="code"
+                  type="text"
+                  placeholder="Enter code"
+                  v-model="confirmCode"
+                  id="code"
               />
             </div>
             <div>
               <button
-                id="back"
-                class="stroke"
-                @click.prevent="changePage('page2')"
+                  id="back"
+                  class="stroke"
+                  @click.prevent="changePage('page2')"
               >
                 Back
               </button>
               <router-link to="/welcome" id="no-underline" @click="confirmUser">
                 <input
-                  type="submit"
-                  id="signup-button"
-                  class="fill"
-                  value="Confirm email address"
+                    type="submit"
+                    id="signup-button"
+                    class="fill"
+                    value="Confirm email address"
                 />
               </router-link>
             </div>
@@ -160,17 +160,18 @@
       </form>
     </div>
   </div>
-  <planetModel />
+  <planetModel/>
 </template>
 
 <script>
-import { onMounted, ref } from "vue";
+import {onMounted, ref} from "vue";
 
 import Navbar from "../components/navbar.vue";
 import planetModel from "../components/planetScriptLog.vue";
 import axios from "axios";
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
+// const url = "http://localhost:8080";
 
 export default {
   name: "signup-page",
@@ -187,7 +188,7 @@ export default {
       inputConfirm.value = document.getElementById("confirmPassword");
     });
 
-    return { input, inputConfirm };
+    return {input, inputConfirm};
   },
 
   data() {
@@ -208,52 +209,52 @@ export default {
   methods: {
     async getCountriesData() {
       await axios
-        .get(`${url}/countries/`)
-        .then((res) => {
-          this.countries = res.data;
-        })
-        .catch((e) => {
-          console.error(`Error fetching countries data: ${e.message}`);
-        });
+          .get(`${url}/countries/`)
+          .then((res) => {
+            this.countries = res.data;
+          })
+          .catch((e) => {
+            console.error(`Error fetching countries data: ${e.message}`);
+          });
     },
 
     findCountry() {
       const c = this.countries.find(
-        (country) => country.id === this.selectedCountry
+          (country) => country.id === this.selectedCountry
       );
       return c.country_name;
     },
 
     async registerUser() {
       await axios
-        .post(`${url}/users/register`, {
-          first_name: this.firstName,
-          last_name: this.lastName,
-          country: this.findCountry(),
-          phone_number: this.phone_number,
-          email: this.email,
-          password: this.password,
-        })
-        .then((res) => {
-          document.cookie = `token=${res.data}; path=/`;
-          this.changePage("page3");
-        })
-        .catch((e) => {
-          console.error(`${e.message}`);
-        });
+          .post(`${url}/users/register`, {
+            first_name: this.firstName,
+            last_name: this.lastName,
+            country: this.findCountry(),
+            phone_number: this.phone_number,
+            email: this.email,
+            password: this.password,
+          })
+          .then((res) => {
+            document.cookie = `token=${res.data}; path=/`;
+            this.changePage("page3");
+          })
+          .catch((e) => {
+            console.error(`${e.message}`);
+          });
     },
 
     async confirmUser() {
       await axios
-        .post(`${url}/users/confirm`, {
-          confirmationCode: this.confirmCode,
-        })
-        .then((res) => {
-          console.log(res.data);
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+          .post(`${url}/users/confirm`, {
+            confirmationCode: this.confirmCode,
+          })
+          .then((res) => {
+            console.log(res.data);
+          })
+          .catch((e) => {
+            console.error(e.message);
+          });
     },
 
     changePage(page) {
