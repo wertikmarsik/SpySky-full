@@ -161,9 +161,6 @@ export default {
   align-items: center;
   position: relative;
   box-sizing: border-box;
-  padding: 150px 0;
-  margin-bottom: 90px;
-  font-size: 6rem;
   font-weight: 400;
   line-height: 130%;
   height: fit-content;
@@ -189,7 +186,6 @@ export default {
 
 #our-mission-page #mission-quote-block #quote-bg {
   position: absolute;
-  left: -150px;
   top: 0px;
   bottom: 0px;
   z-index: 0;
@@ -204,12 +200,8 @@ export default {
 
 #our-missions-block #mission-grid {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: auto;
-  row-gap: 3.5rem;
+  grid-template-rows: auto;
   column-gap: 2rem;
-  margin-top: 4rem;
-  margin-bottom: 120px;
 }
 
 #our-missions-block #mission-grid .header {
@@ -248,10 +240,6 @@ export default {
 }
 
 #our-missions-block #mission-grid > div:nth-child(1) {
-  grid-column-start: 1;
-  grid-column-end: 6;
-  grid-row-start: 1;
-  grid-row-end: 2;
   background-image: url("../../assets/background-textures/mission1-bg.png");
   background-size: cover;
   border: 2px solid #4c5cbc;
@@ -259,28 +247,14 @@ export default {
 }
 
 #our-missions-block #mission-grid > div:nth-child(2) {
-  grid-column-start: 6;
-  grid-column-end: 13;
-  grid-row-start: 1;
-  grid-row-end: 2;
   box-sizing: border-box;
-  padding: 50px;
 }
 
 #our-missions-block #mission-grid > div:nth-child(3) {
-  grid-column-start: 1;
-  grid-column-end: 8;
-  grid-row-start: 2;
-  grid-row-end: 3;
   box-sizing: border-box;
-  padding: 50px;
 }
 
 #our-missions-block #mission-grid > div:nth-child(4) {
-  grid-column-start: 8;
-  grid-column-end: 13;
-  grid-row-start: 2;
-  grid-row-end: 3;
   background-image: url("../../assets/background-textures/mission2-bg.png");
   background-size: cover;
   border: 2px solid #4c5cbc;
@@ -288,10 +262,6 @@ export default {
 }
 
 #our-missions-block #mission-grid > div:nth-child(5) {
-  grid-column-start: 1;
-  grid-column-end: 6;
-  grid-row-start: 3;
-  grid-row-end: 4;
   background-image: url("../../assets/background-textures/mission3-bg.png");
   background-size: cover;
   border: 2px solid #4c5cbc;
@@ -299,11 +269,340 @@ export default {
 }
 
 #our-missions-block #mission-grid > div:nth-child(6) {
-  grid-column-start: 6;
-  grid-column-end: 13;
-  grid-row-start: 3;
-  grid-row-end: 4;
   box-sizing: border-box;
-  padding: 50px;
 }
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  #our-mission-page #mission-quote-block {
+    padding: 100px 0;
+    margin-bottom: 60px;
+    font-size: 4rem;
+  }
+  
+  #our-mission-page #mission-quote-block #quote-bg {
+    left: -5.5%;
+  }
+  
+  #our-missions-block #mission-grid {
+    grid-template-columns: 1fr;
+    row-gap: 2rem;
+    margin-bottom: 60px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    height: 300px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(2) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 25px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    padding: 25px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(4) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    height: 300px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(5) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 5;
+    grid-row-end: 6;
+    height: 300px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(6) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 6;
+    grid-row-end: 7;
+    padding: 25px;
+  }
+}
+
+/*=============================== 601 - 904 px ========================================*/
+
+@media only screen and (min-width: 601px) and (max-width: 904px) {
+  #our-mission-page #mission-quote-block {
+    padding: 100px 0;
+    margin-bottom: 80px;
+    font-size: 4rem;
+  }
+  
+  #our-mission-page #mission-quote-block #quote-bg {
+    left: -8%;
+  }
+  
+  #our-missions-block #mission-grid {
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+    margin-bottom: 80px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    height: 300px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(2) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 35px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    padding: 35px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(4) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    height: 300px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(5) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 5;
+    grid-row-end: 6;
+    height: 300px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(6) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 6;
+    grid-row-end: 7;
+    padding: 35px;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px) {
+  #our-mission-page #mission-quote-block {
+    padding: 100px 0;
+    margin-bottom: 100px;
+    font-size: 5rem;
+  }
+  
+  #our-mission-page #mission-quote-block #quote-bg {
+    left: -12.5%;
+  }
+  
+  #our-missions-block #mission-grid {
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: 3rem;
+    margin-bottom: 100px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(2) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding: 30px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 7;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 30px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(4) {
+    grid-column-start: 7;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(5) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(6) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    padding: 30px;
+  }
+}
+
+/*=============================== 1239 - 1439 px ========================================*/
+
+@media only screen and (min-width: 1239px) and (max-width: 1439px) {
+  #our-mission-page #mission-quote-block {
+    padding: 120px 0;
+    margin-bottom: 100px;
+    font-size: 6rem;
+  }
+  
+  #our-mission-page #mission-quote-block #quote-bg {
+    left: -12.5%;
+  }
+  
+  #our-missions-block #mission-grid {
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: 3rem;
+    margin-bottom: 100px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(2) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding: 40px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 40px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(4) {
+    grid-column-start: 8;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(5) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(6) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    padding: 40px;
+  }
+}
+
+/*=============================== 1440+ px ========================================*/
+
+@media only screen and (min-width: 1440px) {
+  #our-mission-page #mission-quote-block {
+    padding: 150px 0;
+    margin-bottom: 100px;
+    font-size: 6rem;
+  }
+  
+  #our-mission-page #mission-quote-block #quote-bg {
+    left: -16%;
+  }
+  
+  #our-missions-block #mission-grid {
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: 3.5rem;
+    margin-bottom: 120px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(2) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding: 50px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 50px;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(4) {
+    grid-column-start: 8;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(5) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+  
+  #our-missions-block #mission-grid > div:nth-child(6) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    padding: 50px;
+  }
+}
+
 </style>

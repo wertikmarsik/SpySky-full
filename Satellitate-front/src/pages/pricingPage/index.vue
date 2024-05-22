@@ -197,16 +197,10 @@ export default {
   margin-top: 10px;
   display: flex;
   flex-direction: column;
-  gap: 4rem;
 }
 
 #plans-block .plans-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  row-gap: 3.5rem;
-  column-gap: 2rem;
-  margin-bottom: 120px;
 }
 
 #plans-block .plans-container > .plan-card {
@@ -291,4 +285,67 @@ export default {
   font-size: 1rem;
   font-weight: 700;
 }
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px){
+  #plans-block .plans-container {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    row-gap: 2rem;
+    column-gap: 2rem;
+    margin-bottom: 60px;
+  }
+}
+
+/*=============================== 601 - 904 px ========================================*/
+
+@media only screen and (min-width: 601px) and (max-width: 904px){
+  #plans-block .plans-container {
+    grid-template-columns: repeat(1, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    row-gap: 2.5rem;
+    column-gap: 2rem;
+    margin-bottom: 80px;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px) {
+  #plans-block .plans-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    row-gap: 2.5rem;
+    column-gap: 2rem;
+    margin-bottom: 100px;
+  }
+}
+
+/*=============================== 1239 - 1439 px ========================================*/
+
+@media only screen and (min-width: 1239px) and (max-width: 1439px) {
+  #plans-block .plans-container {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    row-gap: 3rem;
+    column-gap: 2rem;
+    margin-bottom: 100px;
+  }
+}
+
+  /*=============================== 1440+ px ========================================*/  
+  
+  @media only screen and (min-width: 1440px) {
+    #plans-block .plans-container {
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      row-gap: 3.5rem;
+      column-gap: 2rem;
+      margin-bottom: 120px;
+    }
+  }
+
 </style>

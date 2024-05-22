@@ -39,6 +39,19 @@
             <div>Log out</div>
           </div>
         </div>
+        <div id="burger-container">
+          <div id="nav-burger-menu" @click="showBurgerMenu()">
+            <img src="../../assets/icons/burger.svg" alt="">
+          </div>
+          <div id="nav-bm-dropdown">
+            <router-link to="/about-us" id="no-underline"><div>About Us</div></router-link>
+            <router-link to="/our-mission" id="no-underline"><div>Our Mission</div></router-link>
+            <router-link to="/our-team" id="no-underline"><div>SpySKy Team</div></router-link>
+            <router-link to="/pricing" id="no-underline"><div>Pricing</div></router-link>
+            <router-link to="/our-tools" id="no-underline"><div>Our Tools</div></router-link>
+            <router-link to="/contacts" id="no-underline"><div>Contacts</div></router-link>
+          </div>
+        </div>
       </ul>
     </div>
 </template>
@@ -50,9 +63,19 @@ export default {
     document.addEventListener("click", (event) => {
       let dropdown = document.getElementById("user-dropdown")
       let icon = document.querySelector(".nav-buttons #user");
-      let isClickInside = icon.contains(event.target);
-      if (!isClickInside) {
-        dropdown.classList.remove("show");
+      if (icon) {
+        let isClickInsideUser = icon.contains(event.target);
+        if (!isClickInsideUser) {
+          dropdown.classList.remove("show");
+        }
+      }
+
+      let burgerMenu = document.getElementById("nav-bm-dropdown")
+      let burgerIcon = document.getElementById("nav-burger-menu");
+      let isClickInsideBurger = burgerIcon.contains(event.target);
+      if (!isClickInsideBurger) {
+        burgerMenu.classList.remove("show");
+        burgerIcon.classList.remove("opened");
       }
     });
   },
@@ -63,6 +86,17 @@ export default {
         dropdown.classList.remove("show");
       } else {
         dropdown.classList.toggle("show");
+      }
+  },
+  showBurgerMenu() {
+    let burgerDropdown = document.getElementById("nav-bm-dropdown");
+    let burgerIcon = document.getElementById("nav-burger-menu");
+      if (burgerDropdown.classList.contains("show")) {
+        burgerDropdown.classList.remove("show");
+        burgerIcon.classList.remove("opened");
+      } else {
+        burgerDropdown.classList.toggle("show");
+        burgerIcon.classList.toggle("opened");
       }
   }
 },
@@ -87,7 +121,6 @@ export default {
       justify-content: space-between;
       box-sizing: border-box;
       align-items: center;
-      padding: 0 150px;
       border-bottom: 2px solid #00142D;
     }
   
@@ -180,9 +213,161 @@ export default {
     gap: 1rem;
   }
 
+  #navbar #user-dropdown p {
+    transition: 0.5s;
+  }
+
+  #navbar #user-dropdown p:hover {
+    color: #FFC8C2;
+  }
+
   #navbar #no-underline-dropdown {
     text-decoration: none;
     color: white;
+  }
+
+  #navbar #burger-container {
+    position: relative;
+    display: none;
+  }
+
+  #navbar #burger-container #nav-burger-menu {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease-in-out;
+    border-radius: 0.25rem;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+
+  #navbar #burger-container #nav-burger-menu img {
+    width: 18px;
+    height: 18px;
+  }
+
+  #navbar #burger-container #nav-burger-menu.opened,
+  #navbar #burger-container #nav-burger-menu:hover {
+    background-color: #4C5CBC;
+  }
+
+  #navbar #nav-bm-dropdown {
+    display: flex;
+    position: absolute;
+    width: 200px;
+    height: fit-content;
+    right: 0;
+    top: 60px;
+    padding: 30px 70px 45px 30px;
+    background-color: #000E1F;
+    box-sizing: border-box;
+    gap: 30px;
+    border-radius: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    flex-direction: column;
+  }
+
+  #navbar #nav-bm-dropdown a {
+    transition: 0.5s;
+  }
+
+  #navbar #nav-bm-dropdown a:hover {
+    color: #FFC8C2;
+  }
+
+  #navbar #nav-bm-dropdown.show {
+    opacity: 1;
+  }
+
+  @media only screen and (min-width: 0px) and (max-width: 600px) {
+    #navbar {
+      padding: 0 5%;
+    }
+
+    #navbar ul .nav-links {
+      display: none;
+    }
+
+    #navbar #burger-container {
+      display: block;
+    }
+
+    #navbar #nav-bm-dropdown {
+      width: 280px;
+      font-size: 24px;
+    }
+
+    #navbar #user-dropdown {
+      width: 280px;
+      font-size: 24px;
+    }
+  }
+  
+  @media only screen and (min-width: 601px) and (max-width: 904px) {
+    #navbar {
+      padding: 0 7%;
+    }
+
+    #navbar ul .nav-links {
+      display: none;
+    }
+
+    #navbar #burger-container {
+      display: block;
+    }
+
+    #navbar #nav-bm-dropdown {
+      width: 280px;
+      font-size: 22px;
+    }
+
+    #navbar #user-dropdown {
+      width: 280px;
+      font-size: 22px;
+    }
+  }
+  
+  @media only screen and (min-width: 905px) and (max-width: 1238px) {
+    #navbar {
+      padding: 0 10%;
+    }
+
+    #navbar ul .nav-links {
+      display: flex;
+    }
+
+    #navbar #burger-container {
+      display: none;
+    }
+
+    #navbar #user-dropdown {
+      font-size: 1rem;
+      width: 220px;
+    }
+  }
+  
+  @media only screen and (min-width: 1239px) and (max-width: 1439px) {
+    #navbar {
+      padding: 0 10%;
+    }
+
+    #navbar #user-dropdown {
+      font-size: 1rem;
+      width: 220px;
+    }
+  }
+  
+  @media only screen and (min-width: 1440px) {
+    #navbar {
+      padding: 0 12%;
+    }
+
+    #navbar #user-dropdown {
+      font-size: 1rem;
+      width: 220px;
+    }
   }
 
 </style>

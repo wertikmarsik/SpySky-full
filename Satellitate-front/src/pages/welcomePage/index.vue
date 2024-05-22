@@ -36,11 +36,11 @@
             <img src="../../assets/icons/nasa_logo.png" alt="nasa-logo" />
             <p>Based on NASA open data</p>
           </div>
-          <router-link to="/our-tools" id="no-underline"
-            ><button class="fill">
+          <router-link to="/our-tools" id="no-underline">
+            <button class="fill">
               <img src="../../assets/icons/arrow.svg" /> Explore our tools
-            </button></router-link
-          >
+            </button>
+          </router-link>
         </div>
       </div>
       <planetModel />
@@ -160,7 +160,7 @@
         </div>
         <p>
           SpySky team is a dynamic and collaborative group. With diverse skills
-          and knoledge, we work together seamlessly to achieve excellence and
+          and knowledge, we work together seamlessly to achieve excellence and
           drive innovation in our respective fields.
         </p>
         <router-link to="/our-team" id="no-underline"
@@ -391,23 +391,18 @@ export default {
 
 #welcome-page #about-us-block {
   width: 100%;
-  height: fit-content;
-  margin: 100px 0 100px 0;
   box-sizing: border-box;
   font-size: 18px;
   line-height: 150%;
   display: flex;
-  flex-direction: row;
-  gap: 10%;
   position: relative;
-  padding: 110px 0;
+  height: fit-content;
 }
 
 #welcome-page #about-us-block #about-us-background {
   position: absolute;
-  left: -150px;
-  top: 0px;
-  bottom: 0px;
+  top: 0;
+  bottom: 0;
   z-index: 0;
   border-top: 2px solid #00142d;
   border-bottom: 2px solid #00142d;
@@ -430,44 +425,35 @@ export default {
 }
 
 #welcome-page #about-us-block #left-side {
-  width: 50%;
   position: relative;
-  display: flex;
 }
 
 #welcome-page #about-us-block #junk1 {
   position: absolute;
-  width: 220px;
+  right: 0;
   bottom: 0;
-  right: 50%;
 }
 
 #welcome-page #about-us-block #junk2 {
   position: absolute;
-  left: 0;
-  width: 130px;
   top: 0;
+  left: 0;
   transform: rotate(70deg);
 }
 
 #welcome-page #about-us-block #astronaut {
   position: absolute;
-  width: 330px;
-  right: 10%;
   transition: 1s;
   z-index: 1000;
   cursor: pointer;
 }
 
 #welcome-page #about-us-block #astronaut:hover {
-  right: 5%;
   transform: rotate(5deg);
 }
 
 #welcome-page #about-us-block #right-side {
-  width: 50%;
   position: relative;
-  display: flex;
   flex-direction: column;
   justify-content: center;
 }
@@ -478,10 +464,6 @@ export default {
   display: flex;
   flex-direction: row;
   gap: 60px;
-}
-
-#our-mission-block .block-header {
-  margin-bottom: 4rem;
 }
 
 #our-mission-block .our-goals {
@@ -547,16 +529,12 @@ export default {
 
 .our-mission-decor-container .moon {
   position: absolute;
-  right: -600px;
-  top: 20px;
   z-index: 10;
-  width: 190%;
 }
 
 /*============================= QUOTE BLOCK ====================================*/
 
 #quote-block {
-  font-size: 6rem;
   font-weight: 400;
   line-height: 130%;
   box-sizing: border-box;
@@ -565,7 +543,6 @@ export default {
   display: flex;
   flex-direction: row;
   gap: 3rem;
-  margin: 150px 0 100px 0;
   z-index: 1000;
   position: relative;
 }
@@ -584,20 +561,8 @@ export default {
 
 /*=========================== SPYSKY TEAM =======================================*/
 
-#our-team-block {
-  margin-bottom: 120px;
-}
-
-#our-team-block .block-header {
-  margin-bottom: 4rem;
-}
-
 .team-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  column-gap: 3rem;
-  row-gap: 4.75rem;
   box-sizing: border-box;
   width: 100%;
   padding-top: 30px;
@@ -625,9 +590,9 @@ export default {
 .team-cards > div .member-photo {
   width: 100%;
   border-radius: 6px;
-  height: 250px;
   background-size: cover;
   background-repeat: no-repeat;
+  background-position: 45%;
 }
 
 .team-cards .square {
@@ -648,7 +613,7 @@ export default {
 }
 
 .team-cards .all-info {
-  margin: 0 1.5rem 3rem 2rem;
+  margin: 0 1.5rem 2rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -678,12 +643,10 @@ export default {
 
 #dasha {
   background-image: url("../../assets/members/dasha.jpg");
-  background-position: 0 30%;
 }
 
 #liza {
   background-image: url("../../assets/members/liza.jpg");
-  background-position: 0 45%;
 }
 
 #sviat {
@@ -692,54 +655,37 @@ export default {
 
 #taras {
   background-image: url("../../assets/members/taras.jpg");
-  background-position: 0 45%;
 }
 
 #maks {
   background-image: url("../../assets/members/maks.jpg");
-  background-position: 0 75%;
 }
 
 #oleksandr {
   background-image: url("../../assets/members/oleksandr.jpg");
-  background-position: 0 45%;
 }
 
 #anastasia {
   background-image: url("../../assets/members/anastasia.jpg");
-  background-position: 0 45%;
 }
 
 #denis {
   background-image: url("../../assets/members/denis.jpg");
-  background-position: 0 45%;
 }
 
 /*============================= PRICING BLOCK ===================================*/
 
 .pricing-block {
-  display: grid;
-  grid-template-columns: 1fr 1.75fr;
-  grid-template-rows: repeat(1, 1fr);
-  column-gap: 5rem;
   box-sizing: border-box;
   width: 100%;
-  margin-bottom: 150px;
 }
 
 .pricing-block .block-header {
-  align-items: flex-start;
-  text-align: left;
-  margin: 0;
   justify-content: center;
-  width: 80%;
 }
 
 #welcome-page .plans-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(1, 1fr);
-  column-gap: 3rem;
 }
 
 #welcome-page .plans-container > .plan-card {
@@ -823,4 +769,5 @@ export default {
   font-size: 1rem;
   font-weight: 700;
 }
+
 </style>

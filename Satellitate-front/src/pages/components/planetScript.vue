@@ -26,7 +26,6 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 const backgroundTexture = new THREE.TextureLoader().load('src/assets/background-textures/bg.png');
 scene.background = backgroundTexture;
 
-
 // --- Creating the Earth and Atmosphere ---
 
 const material = new THREE.ShaderMaterial({
@@ -78,6 +77,22 @@ function handleWindowResize () {
     }
 
     camera.updateProjectionMatrix();
+
+    const targetAspect = newWidth / newHeight;
+    const imageAspect = 2048 / 1024;
+    const factor = imageAspect / targetAspect;
+    scene.background.offset.x = factor > 1 ? (1 - 1 / factor) / 2 : 0;
+    scene.background.repeat.x = factor > 1 ? 1 / factor : 1;
+    scene.background.offset.y = factor > 1 ? 0 : (1 - factor) / 2;
+    scene.background.repeat.y = factor > 1 ? 1 : factor;
+
+    if (newWidth < 601) {
+        group.position.x = 0;
+        group.position.y = 1.2;
+    } else {
+        group.position.x = 1.2;
+        group.position.y = 0.3;
+    }
 }
 
 onBeforeMount(() => {

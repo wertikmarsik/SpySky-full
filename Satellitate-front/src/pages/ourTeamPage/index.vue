@@ -46,7 +46,7 @@
         </div>
         <p>
           SpySky team is a dynamic and collaborative group. With diverse skills
-          and knoledge, we work together seamlessly to achieve excellence and
+          and knowledge, we work together seamlessly to achieve excellence and
           drive innovation in our respective fields.
         </p>
       </div>
@@ -173,22 +173,15 @@ export default {
 
 <style>
 #our-team-page #team-detailed-block {
-  margin-bottom: 120px;
   margin-top: 10px;
 }
 
 #our-team-page #team-detailed-block #team-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(4, 1fr);
-  column-gap: 3rem;
-  row-gap: 4.75rem;
-  margin-top: 4rem;
+  display: grid;  
 }
 
 #our-team-page #team-detailed-block #team-grid > div {
   display: flex;
-  flex-direction: row;
   border-radius: 0.5rem;
   border: 2px solid #00142d;
   overflow: hidden;
@@ -206,8 +199,6 @@ export default {
 
 #our-team-page #team-detailed-block #team-grid > div .team-img {
   background-size: cover;
-  width: 45%;
-  height: 260px;
   background-position: center;
 }
 
@@ -215,31 +206,18 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  width: auto;
-  height: 100%;
   justify-content: center;
-  padding: 0px 2rem;
   gap: 1rem;
 }
 
-#our-team-page
-  #team-detailed-block
-  #team-grid
-  > div
-  .team-info
-  div:nth-child(1) {
+#our-team-page #team-detailed-block #team-grid > div .team-info div:nth-child(1) {
   font-size: 1.5rem;
   font-weight: 700;
   line-height: 130%;
   text-transform: uppercase;
 }
 
-#our-team-page
-  #team-detailed-block
-  #team-grid
-  > div
-  .team-info
-  div:nth-child(2) {
+#our-team-page #team-detailed-block #team-grid > div .team-info div:nth-child(2) {
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -275,5 +253,157 @@ export default {
 
 #our-team-page #team-detailed-block #team-grid > div:nth-child(8) .team-img {
   background-image: url("../../assets/members/denis.jpg");
+}
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px){
+  #our-team-page #team-detailed-block {
+    margin-bottom: 60px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(8, 1fr);
+    row-gap: 2.5rem;
+    pointer-events: none;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div {
+    flex-direction: column;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-img {
+    width: 100%;
+    height: 350px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-info {
+    height: auto;
+    padding: 2rem;
+  }
+}
+
+/*=============================== 601 - 904 px ========================================*/
+
+@media only screen and (min-width: 601px) and (max-width: 904px){
+  #our-team-page #team-detailed-block {
+    margin-bottom: 80px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(8, 1fr);
+    row-gap: 2.5rem;
+    pointer-events: none;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div {
+    flex-direction: column;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-img {
+    width: 100%;
+    height: 450px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-info {
+    height: auto;
+    padding: 2rem;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px) {
+  #our-team-page #team-detailed-block {
+    margin-bottom: 100px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    row-gap: 3rem;
+    column-gap: 2rem;
+    pointer-events: none;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div {
+    flex-direction: column;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-img {
+    width: 100%;
+    height: 300px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-info {
+    height: auto;
+    padding: 2rem;
+  }
+}
+
+/*=============================== 1239 - 1439 px ========================================*/
+
+@media only screen and (min-width: 1239px) and (max-width: 1439px) {
+  #our-team-page #team-detailed-block {
+    margin-bottom: 100px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    column-gap: 3rem;
+    row-gap: 4.75rem;
+    pointer-events: all;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div {
+    flex-direction: row;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-img {
+    width: 45%;
+    height: 260px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-info {
+    width: auto;
+    height: 100%;
+    padding: 0px 2rem;
+  }
+}
+
+/*=============================== 1440+ px ========================================*/  
+
+@media only screen and (min-width: 1440px) {
+  #our-team-page #team-detailed-block {
+    margin-bottom: 120px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    column-gap: 3rem;
+    row-gap: 4.75rem;
+    pointer-events: all;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div {
+    flex-direction: row;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-img {
+    width: 45%;
+    height: 260px;
+  }
+  
+  #our-team-page #team-detailed-block #team-grid > div .team-info {
+    width: auto;
+    height: 100%;
+    padding: 0px 2rem;
+  }
 }
 </style>

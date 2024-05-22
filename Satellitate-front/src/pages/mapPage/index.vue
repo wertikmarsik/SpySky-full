@@ -58,6 +58,8 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.enablePan = false;
 controls.update();
 
+controls.zoomSpeed = 3.0;
+
 const light = new THREE.AmbientLight(0xffffff, 0.2);
 scene.add(light);
 
@@ -155,6 +157,44 @@ async function getSatellite() {
 onMounted(() => {
   window.addEventListener("resize", handleWindowResize);
   handleWindowResize();
+
+  const zoomInbtn = document.getElementById("zoomIn");
+  const zoomOutbtn = document.getElementById("zoomOut");
+
+  const zoomInFunction = (e) => {
+  const fov = getFov();
+  camera.fov = clickZoom(fov, "zoomIn");
+  camera.updateProjectionMatrix();
+};
+
+const zoomOutFunction = (e) => {
+  const fov = getFov();
+  camera.fov = clickZoom(fov, "zoomOut");
+  camera.updateProjectionMatrix();
+};
+
+zoomInbtn.addEventListener("click", zoomInFunction);
+zoomOutbtn.addEventListener("click",zoomOutFunction);
+
+const clickZoom = (value, zoomType) => {
+  if (value >= 20 && zoomType === "zoomIn") {
+    return value - 5;
+  } else if (value <= 75 && zoomType === "zoomOut") {
+    return value + 5;
+  } else {
+    return value;
+  }
+};
+
+const getFov = () => {
+  return Math.floor(
+    (2 *
+      Math.atan(camera.getFilmHeight() / 2 / camera.getFocalLength()) *
+      180) /
+      Math.PI
+  );
+};
+
 
   containerMap.value = document.getElementById("model-container");
 

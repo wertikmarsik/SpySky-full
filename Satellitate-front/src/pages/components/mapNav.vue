@@ -1,6 +1,6 @@
 <template>
     <div id="mapNavbar">
-        <router-link to="/" id="no-underline"><div id="logo"><img src="../../assets/icons/logo_s.svg" alt=""></div></router-link>
+        <router-link to="/welcome" id="no-underline"><div id="logo"><img src="../../assets/icons/logo_s.svg" alt=""></div></router-link>
         <div class="nav-buttons">
           <div id="user" @click="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">
@@ -213,6 +213,7 @@ export default {
     border-radius: 0.25rem;
     padding: 8px;
     box-sizing: border-box;
+    background-color: none;
   }
 
   #mapNavbar #burger-menu img {
@@ -220,10 +221,7 @@ export default {
     height: 18px;
   }
 
-  #mapNavbar #burger-menu:hover {
-    background-color: #4C5CBC;
-  }
-
+  #mapNavbar #burger-menu:hover,
   #mapNavbar #burger-menu.opened {
     background-color: #4C5CBC;
   }

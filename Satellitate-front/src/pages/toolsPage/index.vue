@@ -310,7 +310,6 @@ export default {
 #links-block #left-part {
   display: flex;
   flex-direction: column;
-  gap: 4rem;
   width: 45%;
 }
 
@@ -384,5 +383,238 @@ export default {
   width: 50px;
   bottom: 0;
   left: 15%;
+}
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+#map-info {
+    margin: 80px 0 60px 0;
+    flex-direction: column;
+    gap: 100px;
+    padding: 80px 0;
+  }
+  
+  #map-info #left-side {
+    width: 100%;
+    gap: 1.5rem;
+  }
+  
+  #map-info #map-background {
+    left: -5%;
+  }
+  
+  #links-block {
+    flex-direction: column;
+    gap: 100px;
+    margin-bottom: 60px;
+  }
+  
+  #links-block .block-header > p {
+    width: 100%;
+  }
+  
+  #links-block #left-part {
+    width: 100%;
+  }
+  
+  #links-block #links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  #links-block #right-part {
+    width: 100%;
+  }
+  
+  #links-block #right-part #space-shuttle {
+    animation: none;
+  }
+}
+
+/*=============================== 601 - 904 px ========================================*/
+  
+@media only screen and (min-width: 601px) and (max-width: 904px) {
+  #map-info {
+    margin: 100px 0 80px 0;
+    flex-direction: column;
+    gap: 100px;
+    padding: 100px 0;
+  }
+  
+  #map-info #left-side {
+    width: 100%;
+    gap: 1.5rem;
+  }
+  
+  #map-info #map-background {
+    left: -8%;
+  }
+  
+  #links-block {
+    flex-direction: column;
+    gap: 100px;
+    margin-bottom: 80px;
+  }
+  
+  #links-block .block-header > p {
+    width: 100%;
+  }
+  
+  #links-block #left-part {
+    width: 100%;
+  }
+  
+  #links-block #links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  #links-block #right-part {
+    width: 100%;
+  }
+  
+  #links-block #right-part #space-shuttle {
+    animation: none;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px) { 
+  #map-info {
+    margin: 100px 0 100px 0;
+    flex-direction: row;
+    gap: 60px;
+    padding: 80px 0;
+  }
+  
+  #map-info #left-side {
+    width: 100%;
+    gap: 1.5rem;
+  }
+
+  #map-info #left-side #map-buttons {
+    flex-direction: column;
+  }
+  
+  #map-info #map-background {
+    left: -12.5%;
+  }
+  
+  #links-block {
+    flex-direction: row;
+    gap: 7%;
+    margin-bottom: 80px;
+  }
+    
+  #links-block #left-part {
+    width: auto;
+  }
+  
+  #links-block #links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  #links-block #right-part {
+    width: auto;
+  }
+  
+  #links-block #right-part #space-shuttle {
+    animation: move 1s infinite alternate;
+  }
+
+  #links-block #right-part #space-shuttle img {
+    width: 100%;
+  }
+
+  #links-block #right-part #link-asteroid2 {
+    width: 100px;
+    top: 25%;
+  }
+}
+
+/*=============================== 1239 - 1439 px ========================================*/
+
+@media only screen and (min-width: 1239px) and (max-width: 1439px) { 
+  #map-info {
+    margin: 100px 0 120px 0;
+    flex-direction: row;
+    gap: 10%;
+    padding: 95px 0;
+  }
+  
+  #map-info #left-side {
+    width: 100%;
+    gap: 1.5rem;
+  }
+  
+  #map-info #map-background {
+    left: -12.5%;
+  }
+  
+  #links-block {
+    flex-direction: row;
+    gap: 100px;
+    margin-bottom: 100px;
+  }
+    
+  #links-block #left-part {
+    width: 100%;
+  }
+  
+  #links-block #links-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  #links-block #right-part {
+    width: 100%;
+  }
+  
+  #links-block #right-part #space-shuttle {
+    animation: move 1s infinite alternate;
+  }
+}
+
+/*=============================== 1440+ px ========================================*/  
+  
+@media only screen and (min-width: 1440px) {
+  #map-info {
+    margin: 100px 0 120px 0;
+    gap: 10%;
+    padding: 110px 0;
+  }
+  
+  #map-info #left-side {
+    width: 60%;
+    gap: 1.5rem;
+  }
+
+  #map-info #map-background {
+    left: -16%;
+  }
+  
+  #links-block {
+    flex-direction: row;
+    gap: 10%;
+    margin-bottom: 120px;
+  }
+
+  #links-block #left-part {
+    flex-direction: column;
+    width: 45%;
+  }
+  
+  #links-block #right-part {
+    width: 45%;
+  }
 }
 </style>

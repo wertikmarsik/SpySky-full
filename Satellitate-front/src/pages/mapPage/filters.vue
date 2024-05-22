@@ -83,7 +83,7 @@
               class="range-max"
               min="1900"
               max="2020"
-              value="1960"
+              value="2020"
             />
           </div>
         </div>
@@ -102,34 +102,28 @@ import { onMounted } from "vue";
 /*=============================== DROPDOWNS =================================*/
 onMounted(() => {
   const selectedName = document.querySelector(".satellite-names > p");
-  const nameOptions = document.querySelectorAll(
-    ".satellite-names .satellite-names-options li"
-  );
+  const nameOptions = document.querySelectorAll(".satellite-names .satellite-names-options li");
+
   const satelliteNames = document.querySelector(".satellite-names");
-  const satelliteNamesDropdown = document.querySelector(
-    ".satellite-names .satellite-names-options"
-  );
+  const satelliteNamesDropdown = document.querySelector(".satellite-names .satellite-names-options");
 
   satelliteNames.addEventListener("click", showNamesDropdown);
 
+
   const selectedId = document.querySelector(".object-ids > p");
-  const idOptions = document.querySelectorAll(
-    ".object-ids .objects-id-options li"
-  );
+  const idOptions = document.querySelectorAll(".object-ids .objects-id-options li");
+
   const objectIds = document.querySelector(".object-ids");
-  const objectIdDropdown = document.querySelector(
-    ".object-ids .objects-id-options"
-  );
+  const objectIdDropdown = document.querySelector(".object-ids .objects-id-options");
 
   objectIds.addEventListener("click", showIdsDropdown);
 
   const objectTypes = document.querySelector(".object-types");
-  const objectTypesDropdown = document.querySelector(
-    ".object-types .objects-type-options"
-  );
+  const objectTypesDropdown = document.querySelector(".object-types .objects-type-options");
 
   objectTypes.addEventListener("click", showTypesDropdown);
 
+  
   document.addEventListener("click", (event) => {
     const isInsideNamesDropdown = satelliteNames.contains(event.target);
     const isInsideIdsDropdown = objectIds.contains(event.target);
@@ -247,9 +241,16 @@ onMounted(() => {
 import axios from "axios";
 
 const url = "http://localhost:8080";
+// const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 
 export default {
   name: "Filters-component",
+  data() {
+    return {
+      minValue: "Year " + 1900,
+      maxValue: "Year " + 2020
+    };
+  },
   methods: {
     showFilters() {
       let filters = document.getElementById("filters");
@@ -573,7 +574,7 @@ export default {
   position: absolute;
   border-radius: 5px;
   left: 0%;
-  right: 50%;
+  right: 0%;
   width: auto;
 }
 
