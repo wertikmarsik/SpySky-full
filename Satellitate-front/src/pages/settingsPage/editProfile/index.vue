@@ -173,6 +173,7 @@ export default {
   },
 
   data() {
+    console.log(this.email);
     return {
       selectedCountry: "",
       countries: [],

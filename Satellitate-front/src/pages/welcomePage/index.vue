@@ -383,6 +383,9 @@ export default {
     Footer,
     planetModel,
   },
+  data() {
+    // console.log(this.password);
+  }
 };
 </script>
 

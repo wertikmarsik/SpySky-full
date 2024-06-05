@@ -10,15 +10,15 @@
           <router-link to="/our-tools" id="no-underline"><li>Our Tools</li></router-link>
           <router-link to="/contacts" id="no-underline"><li>Contacts</li></router-link>
         </div>
-        <!-- <div class="nav-buttons">
+        <div class="nav-buttons" v-if="logged">
           <router-link to="/login" id="no-underline">
             <button class="fill">Log in</button>
           </router-link>
           <router-link to="/signup" id="no-underline">
             <button class="stroke">Sign up</button>
           </router-link>
-        </div> -->
-        <div class="nav-buttons">
+        </div>
+        <div class="nav-buttons" v-else>
           <div id="user" @click="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">
           </div>
@@ -34,7 +34,7 @@
             <p>Dashboard</p>
           </div>
           <hr>
-          <div id="logout">
+          <div id="logout" @click="deleteCookieAndRedirect()">
             <img src="../../assets/icons/log-out.svg" alt="">
             <div>Log out</div>
           </div>
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: 'Navbar-component',
   data () {
@@ -65,9 +67,9 @@ export default {
       let icon = document.querySelector(".nav-buttons #user");
       if (icon) {
         let isClickInsideUser = icon.contains(event.target);
-        if (!isClickInsideUser) {
-          dropdown.classList.remove("show");
-        }
+        // if (!isClickInsideUser) {
+        //   dropdown.classList.remove("show");
+        // }
       }
 
       let burgerMenu = document.getElementById("nav-bm-dropdown")
@@ -78,8 +80,47 @@ export default {
         burgerIcon.classList.remove("opened");
       }
     });
+    return {
+      logged: true,
+      user: ""
+    }
   },
   methods: {
+    checkUser() {
+      if (this.user != document.cookie) {
+        this.logged = false;
+        console.log("Cookie logged: \n", document.cookie)
+        this.user = document.cookie;
+      } else {
+        this.logged = true;
+        console.log("Cookie not logged: \n", document.cookie)
+      }
+    },
+
+    deleteCookieAndRedirect() {
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+      this.$router.push('/login')
+    },
+
+    // axios
+
+    // async ifLogged() {
+    //   await axios
+    //     .post(`${url}/users/deactivate`, {
+    //       email: this.email,
+    //     })
+    //     .then((res) => {
+    //       alert(res.data);
+    //       document.cookie =
+    //         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    //       this.$router.push("/login");
+    //     })
+    //     .catch((e) => {
+    //       console.error(e.message);
+    //     });
+    // },
+
+
     showDropdown() {
       let dropdown = document.getElementById("user-dropdown")
       if (dropdown.classList.contains("show")) {
@@ -98,8 +139,12 @@ export default {
         burgerDropdown.classList.toggle("show");
         burgerIcon.classList.toggle("opened");
       }
-  }
+  },
 },
+mounted() {
+    this.$forceUpdate();
+    this.checkUser();
+  }
 }
 </script>
 
@@ -198,6 +243,7 @@ export default {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    cursor: pointer;
   }
 
   #navbar #user-dropdown hr {

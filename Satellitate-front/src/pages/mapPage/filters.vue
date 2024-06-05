@@ -15,10 +15,11 @@
           <ul class="satellite-names-options">
             <li
               class="satellite-name"
-              v-for="satellite in this.$props.data"
-              :key="satellite.object_id"
+              v-for="object in objects"
+              :key="object.object_id"
+              :value="object.object_id"
             >
-              {{ satellite.object_name }}
+              {{ object.object_name }}
             </li>
           </ul>
         </div>
@@ -29,10 +30,11 @@
           <ul class="objects-id-options">
             <li
               class="object-id"
-              v-for="satellite in this.$props.data"
-              :key="satellite.object_id"
+              v-for="object in objects"
+              :key="object.object_id"
+              :value="object.object_id"
             >
-              {{ satellite.object_id }}
+              {{ object.object_id }}
             </li>
           </ul>
         </div>
@@ -97,9 +99,23 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { onMounted, ref } from "vue";
 
 /*=============================== DROPDOWNS =================================*/
+
+const objects = ref([]);
+
+
+async function getSatellitesNames() {
+  try {
+    const res = await axios.get(`${url}/satellites/`);
+    objects.value = res.data;
+    console.log("All objects: ", objects.value)
+  } catch (e) {
+    console.log(e.message);
+  }
+}
+
 onMounted(() => {
   const selectedName = document.querySelector(".satellite-names > p");
   const nameOptions = document.querySelectorAll(".satellite-names .satellite-names-options li");
@@ -234,24 +250,58 @@ onMounted(() => {
       objectTypesDropdown.classList.toggle("show");
     }
   }
+
+
+
+
+
+
+
+
+
+
+  getSatellitesNames().then(() => {
+    if (objects.value.length > 0) {
+      objects.value.forEach(object => {
+        console.log(object.object_name)
+      })
+    }
+  });
+
+
+
 });
 </script>
 
 <script>
 import axios from "axios";
 
-const url = "http://localhost:8080";
-// const url = "https://famous-plexus-417323.lm.r.appspot.com/";
+// const url = "http://localhost:8080";
+const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 
 export default {
   name: "Filters-component",
   data() {
     return {
+      objects: [],
       minValue: "Year " + 1900,
       maxValue: "Year " + 2020
     };
   },
   methods: {
+
+  // async getSatellitesNames() {
+  //   await axios
+  //   .get(`${url}/satellites/`)
+  //   .then((res) => {
+  //       this.objects = res.data;
+  //       console.log(res.data);
+  //   })
+  //   .catch((e) => {
+  //     console.error(e.message);
+  //   });
+  // },
+
     showFilters() {
       let filters = document.getElementById("filters");
       if (filters.classList.contains("show")) {
@@ -260,6 +310,7 @@ export default {
         filters.classList.toggle("show");
       }
     },
+
     async getMaxMin() {
       await axios
         .get(`${url}/satellites/maxmin/premium`)
@@ -274,6 +325,8 @@ export default {
   },
   mounted() {
     this.getMaxMin();
+    // this.getSatellitesNames();
+    // console.log("All objects:\n" + this.objects);
   },
 };
 </script>

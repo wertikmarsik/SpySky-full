@@ -154,6 +154,8 @@ async function getSatellite() {
   }
 }
 
+
+
 onMounted(() => {
   window.addEventListener("resize", handleWindowResize);
   handleWindowResize();
@@ -219,10 +221,13 @@ const getFov = () => {
     if (satellites.value.length > 0) {
       satellites.value.forEach(satellite => {
         addSatellite(satellite.x, satellite.y, satellite.z)
-        console.log("Є")
       })
     }
   });
+
+  // getSatellitesNames().then(() => {
+
+  // })
 
   function animate() {
     id_2 = requestAnimationFrame(animate);
