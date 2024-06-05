@@ -4,7 +4,7 @@
         <div class="nav-buttons">
           <div id="user" @click="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">
-            <div id="user-dropdown">
+            <div id="user-dropdown" v-show="isDropdownVisible" :class="{ 'dropdown-show': isDropdownVisible }">
               <div>
                 <router-link to="/settings" id="no-underline-dropdown">
                   <p>Profile settings</p>
@@ -26,7 +26,7 @@
           </div>
         </div>
     </div>
-    <ul id="burger-menu-navlinks">
+    <ul id="burger-menu-navlinks"  v-show="areNavlinksVisible" :class="{ 'burgermenu-show': areNavlinksVisible }">
       <router-link to="/about-us" id="no-underline"><li>About Us</li></router-link>
       <router-link to="/our-mission" id="no-underline"><li>Our Mission</li></router-link>
       <router-link to="/our-team" id="no-underline"><li>SpySKy Team</li></router-link>
@@ -42,35 +42,28 @@
 export default {
   name: 'mapNavbar-component',
   data () {
-    document.addEventListener("click", (event) => {
-      let dropdown = document.getElementById("user-dropdown")
-      let icon = document.querySelector(".nav-buttons #user");
-      let isClickInside = icon.contains(event.target);
-      if (!isClickInside) {
-        dropdown.classList.remove("show");
+    return {
+      isDropdownVisible: false,
+      areNavlinksVisible: false,
+    }
+  },
+
+  mounted() {
+    document.addEventListener('click', (event) => {
+      if (document.querySelector(".nav-buttons #user") && !document.querySelector(".nav-buttons #user").contains(event.target)) {
+        this.isDropdownVisible = false;
       }
     });
   },
+
   methods: {
     showDropdown() {
-      let dropdown = document.getElementById("user-dropdown")
-      if (dropdown.classList.contains("show")) {
-        dropdown.classList.remove("show");
-      } else {
-        dropdown.classList.toggle("show");
-      }
-  },
-  showNavLinks() {
-    let burgerMenu = document.getElementById("burger-menu-navlinks");
-    let burgerIcon = document.getElementById("burger-menu");
-    if (burgerMenu.classList.contains("show")) {
-      burgerMenu.classList.remove("show");
-      burgerIcon.classList.remove("opened");
-    } else {
-      burgerMenu.classList.toggle("show");
-      burgerIcon.classList.toggle("opened");
+      this.isDropdownVisible = !this.isDropdownVisible;
+    },
+
+    showNavLinks() {
+      this.areNavlinksVisible = !this.areNavlinksVisible;
     }
-  }
 },
 }
 </script>
@@ -146,24 +139,29 @@ export default {
     box-sizing: border-box;
     gap: 30px;
     border-radius: 0.5rem;
-    visibility: hidden; 
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; 
   }
 
-  #mapNavbar #user-dropdown.show {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 0.3s ease-in-out, visibility 0s linear;
+  #mapNavbar .dropdown-show {
+    animation: dropdown-show 0.5s ease-in-out forwards;
+  }
+
+  @keyframes dropdown-show {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   #burger-menu-navlinks {
-    position: relative;
+    position: fixed;
     top: 0px;
     font-size: 14px;
     color: white;
     font-family: 'Exo 2', sans-serif;
-    position: fixed;
     left: 0;
     width: 100%;
     z-index: 9000;
@@ -176,11 +174,22 @@ export default {
     align-items: center;
     padding: 12px 30px;
     border-bottom: 2px solid #00142D;
-    opacity: 0;
-    transition: all 0.3s ease;
-    height: 0;
     list-style: none;
     gap: 2rem;
+    transform: translateY(75px);
+  }
+
+  #mapNavbar .burgermenu-show {
+    animation: burgermenu-show 0.5s ease-in-out forwards;
+  }
+
+  @keyframes burgermenu-show {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   #burger-menu-navlinks li {
@@ -190,12 +199,6 @@ export default {
 
   #burger-menu-navlinks li:hover {
     color: #FFC8C2;
-  }
-
-  #burger-menu-navlinks.show {
-    opacity: 1;
-    transform: translateY(75px);
-    height: fit-content;
   }
 
   #mapNavbar #user-dropdown #logout {

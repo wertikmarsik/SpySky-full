@@ -3,7 +3,8 @@
     <!-- <Navbar /> -->
     <div id="form-container-login">
       <div id="log-header">Log in</div>
-      <form>
+      <div id="error">{{ error }}</div>
+      <form @submit.prevent="loginUser">
         <div>
           <div>
             <input
@@ -36,15 +37,10 @@
         </div>
 
         <div class="buttons">
-          <router-link to="/welcome" id="no-underline">
-            <input
-              type="submit"
-              @click="loginUser"
-              value="Log in"
+            <button
               id="login-button"
               class="fill"
-            />
-          </router-link>
+            >Log in</button>
           <div id="socials">
             <button id="google" class="stroke">
               <img src="../../assets/icons/google.svg" alt="google" />
@@ -73,6 +69,7 @@
 
 <script>
 import { ref, onMounted } from "vue";
+import { useRouter } from 'vue-router';
 
 import planetModel from "../components/planetScriptLog.vue";
 import Navbar from "../components/navbar.vue";
@@ -92,6 +89,8 @@ export default {
     return {
       email: "",
       password: "",
+      error: "",
+      router: useRouter()
     };
   },
 
@@ -107,17 +106,19 @@ export default {
 
   methods: {
     async loginUser() {
-      await axios
-        .post(`${url}/users/login`, {
+      await axios.post(`${url}/users/login`, {
           email: this.email,
           password: this.password,
         })
         .then((res) => {
           document.cookie = `token=${res.data}; path=/`;
+          this.router.push('/welcome');
         })
         .catch((e) => {
-          alert(e.message);
-        });
+          this.error = "You have passed wrong email or password!";
+        })
+        
+
     },
 
     changeVisibility(reference) {
@@ -281,6 +282,12 @@ export default {
   line-height: 150%;
   font-weight: 400;
   text-decoration: none;
+}
+
+#error {
+  color: #ff8c71;
+  font-size: 20px;
+  font-weight: 700;
 }
 
 

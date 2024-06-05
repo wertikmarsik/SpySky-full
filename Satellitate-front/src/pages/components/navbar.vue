@@ -10,7 +10,7 @@
           <router-link to="/our-tools" id="no-underline"><li>Our Tools</li></router-link>
           <router-link to="/contacts" id="no-underline"><li>Contacts</li></router-link>
         </div>
-        <div class="nav-buttons" v-if="logged">
+        <div class="nav-buttons" v-show="notLogged">
           <router-link to="/login" id="no-underline">
             <button class="fill">Log in</button>
           </router-link>
@@ -18,12 +18,12 @@
             <button class="stroke">Sign up</button>
           </router-link>
         </div>
-        <div class="nav-buttons" v-else>
+        <div class="nav-buttons" v-show="logged">
           <div id="user" @click="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">
           </div>
         </div>
-        <div id="user-dropdown">
+        <div id="user-dropdown" v-show="isDropdownVisible">
           <div>
             <router-link to="/settings" id="no-underline-dropdown">
               <p>Profile settings</p>
@@ -40,10 +40,10 @@
           </div>
         </div>
         <div id="burger-container">
-          <div id="nav-burger-menu" @click="showBurgerMenu()">
+          <div id="nav-burger-menu" @click="showBurgerMenu()" :class="{ 'opened': isBurgerDropdownVisible }">
             <img src="../../assets/icons/burger.svg" alt="">
           </div>
-          <div id="nav-bm-dropdown">
+          <div id="nav-bm-dropdown" v-show="isBurgerDropdownVisible">
             <router-link to="/about-us" id="no-underline"><div>About Us</div></router-link>
             <router-link to="/our-mission" id="no-underline"><div>Our Mission</div></router-link>
             <router-link to="/our-team" id="no-underline"><div>SpySKy Team</div></router-link>
@@ -57,93 +57,54 @@
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: 'Navbar-component',
   data () {
-    document.addEventListener("click", (event) => {
-      let dropdown = document.getElementById("user-dropdown")
-      let icon = document.querySelector(".nav-buttons #user");
-      if (icon) {
-        let isClickInsideUser = icon.contains(event.target);
-        // if (!isClickInsideUser) {
-        //   dropdown.classList.remove("show");
-        // }
-      }
-
-      let burgerMenu = document.getElementById("nav-bm-dropdown")
-      let burgerIcon = document.getElementById("nav-burger-menu");
-      let isClickInsideBurger = burgerIcon.contains(event.target);
-      if (!isClickInsideBurger) {
-        burgerMenu.classList.remove("show");
-        burgerIcon.classList.remove("opened");
-      }
-    });
     return {
-      logged: true,
-      user: ""
+      logged: false,
+      notLogged: true,
+      isDropdownVisible: false,
+      isBurgerDropdownVisible: false
     }
   },
   methods: {
     checkUser() {
-      if (this.user != document.cookie) {
-        this.logged = false;
-        console.log("Cookie logged: \n", document.cookie)
-        this.user = document.cookie;
-      } else {
+      if (document.cookie) {
         this.logged = true;
-        console.log("Cookie not logged: \n", document.cookie)
+        this.notLogged = false;
+      } else {
+        this.logged = false;
+        this.notLogged = true;
       }
     },
 
     deleteCookieAndRedirect() {
       document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      this.$router.push('/login')
+      console.log("Cookie: ", document.cookie)
+      window.location.reload();
     },
 
-    // axios
-
-    // async ifLogged() {
-    //   await axios
-    //     .post(`${url}/users/deactivate`, {
-    //       email: this.email,
-    //     })
-    //     .then((res) => {
-    //       alert(res.data);
-    //       document.cookie =
-    //         "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    //       this.$router.push("/login");
-    //     })
-    //     .catch((e) => {
-    //       console.error(e.message);
-    //     });
-    // },
-
-
     showDropdown() {
-      let dropdown = document.getElementById("user-dropdown")
-      if (dropdown.classList.contains("show")) {
-        dropdown.classList.remove("show");
-      } else {
-        dropdown.classList.toggle("show");
-      }
-  },
-  showBurgerMenu() {
-    let burgerDropdown = document.getElementById("nav-bm-dropdown");
-    let burgerIcon = document.getElementById("nav-burger-menu");
-      if (burgerDropdown.classList.contains("show")) {
-        burgerDropdown.classList.remove("show");
-        burgerIcon.classList.remove("opened");
-      } else {
-        burgerDropdown.classList.toggle("show");
-        burgerIcon.classList.toggle("opened");
-      }
-  },
+      this.isDropdownVisible = !this.isDropdownVisible;
+    },
+
+    showBurgerMenu() {
+      this.isBurgerDropdownVisible = !this.isBurgerDropdownVisible;
+    },
 },
 mounted() {
-    this.$forceUpdate();
     this.checkUser();
+
+    document.addEventListener('click', (event) => {
+      if (document.querySelector(".nav-buttons #user") && !document.querySelector(".nav-buttons #user").contains(event.target)) {
+        this.isDropdownVisible = false;
+      }
+
+      if (document.querySelector("#nav-burger-menu") && !document.querySelector("#nav-burger-menu").contains(event.target)) {
+        this.isBurgerDropdownVisible = false;
+      }
+    });
+    
   }
 }
 </script>
@@ -190,7 +151,7 @@ mounted() {
   #navbar ul .nav-links {
     display: flex;
     flex-direction: row;
-    gap: 1.5rem;
+    gap: 1rem;
     align-items: center;
   }
   
@@ -202,9 +163,10 @@ mounted() {
   
   #navbar ul li, 
   #navbar .nav-buttons button {
-    font-size: 14px;
+    font-size: 12px;
     transition: 0.5s;
     cursor: pointer;
+    text-align: center;
   }
 
   #navbar #active-nav {
@@ -223,20 +185,15 @@ mounted() {
     position: absolute;
     padding: 30px 70px 45px 30px;
     background-color: #000E1F;
+    right: 0px;
     top: 60px;
-    right: 0;
     display: flex;
-    flex-direction: column;
     width: 220px;
+    flex-direction: column;
     box-sizing: border-box;
     gap: 30px;
     border-radius: 0.5rem;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
-  }
-
-  #navbar #user-dropdown.show {
-    opacity: 1;
+    animation: dropdown-show 0.5s ease-in-out forwards;
   }
 
   #navbar #user-dropdown #logout {
@@ -310,9 +267,19 @@ mounted() {
     box-sizing: border-box;
     gap: 30px;
     border-radius: 0.5rem;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
     flex-direction: column;
+    animation: dropdown-show 0.5s ease-in-out forwards;
+  }
+
+  @keyframes dropdown-show {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   #navbar #nav-bm-dropdown a {
@@ -321,10 +288,6 @@ mounted() {
 
   #navbar #nav-bm-dropdown a:hover {
     color: #FFC8C2;
-  }
-
-  #navbar #nav-bm-dropdown.show {
-    opacity: 1;
   }
 
   @media only screen and (min-width: 0px) and (max-width: 600px) {
