@@ -1,6 +1,6 @@
 <template>
     <div id="mapNavbar">
-        <router-link to="/welcome" id="no-underline"><div id="logo"><img src="../../assets/icons/logo_s.svg" alt=""></div></router-link>
+        <router-link to="/" id="no-underline"><div id="logo"><img src="../../assets/icons/logo_s.svg" alt=""></div></router-link>
         <div class="nav-buttons">
           <div id="user" @click="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">

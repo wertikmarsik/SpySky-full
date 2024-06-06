@@ -1,6 +1,6 @@
 <template>
     <div id="navbar">
-        <router-link to="/welcome" id="no-underline"><div id="logo"><img src="../../assets/icons/logo_s.svg" alt=""></div></router-link>
+        <router-link to="/" id="no-underline"><div id="logo"><img src="../../assets/icons/logo_s.svg" alt=""></div></router-link>
       <ul>
         <div class="nav-links">
           <router-link to="/about-us" id="no-underline"><li>About Us</li></router-link>

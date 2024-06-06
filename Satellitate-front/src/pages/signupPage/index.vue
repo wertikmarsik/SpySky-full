@@ -1,6 +1,5 @@
 <template>
   <div id="overlay-signup">
-    <Navbar />
     <div id="form-container-signup">
       <div id="signup-header">Sign up</div>
       <form id="form-first" v-if="currentPage === 'page1'">
@@ -19,29 +18,18 @@
               placeholder="Last name"
             />
           </div>
-          <!-- <div class="countries" @click="showCountries()">
+          <div class="countries" @click="showCountries()">
             <p id="selectedCountry">Select a country</p>
             <img src="../../assets/icons/caret-down-fill.svg" />
-            <ul id="country-options">
+            <ul id="country-options" v-show="showOptions">
               <li class="country-option"
               v-for="country in countries"
               :key="country.id"
-              :value="country.id">
+              :value="country.id"
+              @click="selectOption(country)">
                 {{ country.country_name }}
               </li>
             </ul>
-          </div> -->
-          <div>
-            <select id="country" v-model="selectedCountry">
-              <option value="">Select a country</option>
-              <option
-                  v-for="country in countries"
-                  :key="country.id"
-                  :value="country.id"
-              >
-              {{ country.country_name }}
-              </option>
-            </select>
           </div>
           <div>
             <input
@@ -49,7 +37,6 @@
               id="phone-number"
               v-model="phone_number"
               placeholder="Phone number"
-              pattern="+38-[0-9]{3}-[0-9]{3}-[0-9]{4}"
               required
             />
           </div>
@@ -98,8 +85,8 @@
               placeholder="Password"
               required
             />
-            <img
-              src="../../assets/icons/eye.svg"
+            <svg
+              id="visibilityButton1"
               @click="changeVisibility('input')"
             />
           </div>
@@ -111,8 +98,8 @@
               placeholder="Confirm password"
               required
             />
-            <img
-              src="../../assets/icons/eye.svg"
+            <svg
+              id="visibilityButton2"
               @click="changeVisibility('inputConfirm')"
             />
           </div>
@@ -158,14 +145,13 @@
               >
                 Back
               </button>
-              <router-link to="/welcome" id="no-underline" @click="confirmUser">
                 <input
+                  @click.prevent="confirmUser"
                   type="submit"
                   id="signup-button"
                   class="fill"
                   value="Confirm email address"
                 />
-              </router-link>
             </div>
           </form>
         </div>
@@ -176,9 +162,9 @@
 </template>
 
 <script>
-import { onMounted, onUpdated, ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useRouter } from 'vue-router';
 
-import Navbar from "../components/navbar.vue";
 import planetModel from "../components/planetScriptLog.vue";
 import axios from "axios";
 
@@ -187,8 +173,23 @@ const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 export default {
   name: "signup-page",
   components: {
-    Navbar,
-    planetModel,
+    planetModel
+  },
+  data() {
+    return {
+      currentPage: ref("page2"),
+      selectedCountry: "",
+      countries: [],
+      firstName: "",
+      lastName: "",
+      country: "",
+      phone_number: "",
+      email: "",
+      password: "",
+      confirmCode: "",
+      router: useRouter(),
+      showOptions: false
+    };
   },
   setup() {
     const input = ref(null);
@@ -199,52 +200,27 @@ export default {
       inputConfirm.value = document.getElementById("confirmPassword");
     });
 
-    // onUpdated(() => {
-    //   let allCountries = document.querySelectorAll(".countries ul li");
-    //   let selectedCountry = document.getElementById("selectedCountry");
-
-    //   allCountries.forEach((option) => {
-    //     option.addEventListener("click", () => {
-    //       allCountries.forEach((e) => {
-    //         e.classList.remove("show");
-    //       });
-    //       let text = option.innerHTML;
-    //       selectedCountry.innerHTML = text;
-    //       option.classList.toggle("show");
-    //     });
-    //   });
-    // });
-
     return { input, inputConfirm };
   },
 
-  data() {
-    return {
-      currentPage: ref("page1"),
-      selectedCountry: "",
-      countries: [],
-      firstName: "",
-      lastName: "",
-      country: "",
-      phone_number: "",
-      email: "",
-      password: "",
-      confirmCode: "",
-    };
-  },
+  computed: {
+  trackedValue() {
+    return this.selectedCountry; 
+  }
+},
 
   methods: {
-    // selectCountry(country) {
-    //   this.country = country;
-    // },
-    // showCountries() {
-    //   let countyDropdown = document.getElementById("country-options");
-    //   if (countyDropdown.classList.contains("show")) {
-    //     countyDropdown.classList.remove("show");
-    //   } else {
-    //     countyDropdown.classList.toggle("show");
-    //   }
-    // },
+    showCountries() {
+      this.showOptions = !this.showOptions;
+    },
+
+    selectOption(country) {
+      event.stopPropagation();
+      this.selectedCountry = country.country_name;
+      document.getElementById("selectedCountry").innerHTML = country.country_name;
+      this.showOptions = false;
+    },
+
     async getCountriesData() {
       await axios
         .get(`${url}/countries/`)
@@ -256,19 +232,19 @@ export default {
         });
     },
 
-    findCountry() {
-      const c = this.countries.find(
-        (country) => country.id === this.selectedCountry
-      );
-      return c.country_name;
-    },
+    // findCountry() {
+    //   const c = this.countries.find(
+    //       (country) => country.id === this.selectedCountry
+    //   );
+    //   return c.country_name;
+    // },
 
     async registerUser() {
       await axios
         .post(`${url}/users/register`, {
           first_name: this.firstName,
           last_name: this.lastName,
-          country: this.findCountry(),
+          country: this.selectedCountry,
           phone_number: this.phone_number,
           email: this.email,
           password: this.password,
@@ -283,12 +259,12 @@ export default {
     },
 
     async confirmUser() {
-      await axios
-        .post(`${url}/users/confirm`, {
+      await axios.post(`${url}/users/confirm`, {
           confirmationCode: this.confirmCode,
         })
         .then((res) => {
           console.log(res.data);
+          this.router.push('/');
         })
         .catch((e) => {
           console.error(e.message);
@@ -301,11 +277,26 @@ export default {
 
     changeVisibility(reference) {
       const inputRef = this.$refs[reference];
+      const clickedSvg = event.target;
+      let btn1 = document.getElementById("visibilityButton1");
+      let btn2 = document.getElementById("visibilityButton2");
 
-      if (inputRef.type === "password") {
-        inputRef.type = "text";
-      } else {
-        inputRef.type = "password";
+      if (clickedSvg.id == "visibilityButton1") {
+        if (inputRef.type === "password") {
+          inputRef.type = "text";
+          btn1.style.backgroundImage = 'url("src/assets/icons/eye.svg")';
+        } else {
+          inputRef.type = "password";
+          btn1.style.backgroundImage = 'url("src/assets/icons/eye-slash.svg")';
+        }
+      } else if (clickedSvg.id == "visibilityButton2") {
+        if (inputRef.type === "password") {
+          inputRef.type = "text";
+          btn2.style.backgroundImage = 'url("src/assets/icons/eye.svg")';
+        } else {
+          inputRef.type = "password";
+          btn2.style.backgroundImage = 'url("src/assets/icons/eye-slash.svg")';
+        }
       }
     },
   },
@@ -380,7 +371,7 @@ export default {
 #form-container-signup #code {
   font-size: 16px;
   font-weight: 700;
-  background-color: transparent;
+  background-color: transparent !important;
   border: 0;
   border-bottom: 1px solid white;
   line-height: 100%;
@@ -391,17 +382,29 @@ export default {
   box-sizing: border-box;
 }
 
+#form-container-signup input:-webkit-autofill,
+#form-container-signup input:-webkit-autofill:hover, 
+#form-container-signup input:-webkit-autofill:focus, 
+#form-container-signup input:-webkit-autofill:active{
+  color : rgb(255, 255, 255) !important;
+  -webkit-text-fill-color: rgb(255, 255, 255) !important;
+  transition: background-color 500000s;
+}
+
 #form-container-signup .password-input {
   position: relative;
 }
 
-#form-container-signup .password-input img {
+#form-container-signup .password-input svg {
   position: absolute;
   bottom: 20px;
   right: 20px;
   filter: invert(100%);
   width: 25px;
+  height: 25px;
   cursor: pointer;
+  background-image: url("../../assets/icons/eye-slash.svg");
+  background-size: contain;
 }
 
 #form-container-signup .name-inputs {
@@ -548,14 +551,10 @@ export default {
   background-color: #000e1f;
   overflow-y: scroll;
   position: absolute;
-  display: none;
+  display: flex;
   left: 0;
   bottom: -220px;
   z-index: 1000;
-}
-
-#country-options.show {
-  display: flex;
 }
 
 .country-option {
@@ -623,7 +622,7 @@ export default {
   }
   
   #signup-button {
-    width: fit-content;
+    width: 100%;
   }
 }
 

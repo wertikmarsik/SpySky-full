@@ -1,5 +1,9 @@
 /*========================== APP =================================*/
 
+body {
+  background-color: black;
+}
+
 #app {
   width: 100vw;
   overflow-x: hidden;

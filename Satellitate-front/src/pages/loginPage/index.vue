@@ -1,6 +1,5 @@
 <template>
   <div id="overlay-login">
-    <!-- <Navbar /> -->
     <div id="form-container-login">
       <div id="log-header">Log in</div>
       <div id="error">{{ error }}</div>
@@ -25,8 +24,8 @@
                 placeholder="Password"
                 required
               />
-              <img
-                src="../../assets/icons/eye.svg"
+              <svg
+                id="visibilityButton"
                 @click="changeVisibility('input')"
               />
             </div>
@@ -56,7 +55,7 @@
         <div id="signup-link-container">
           <p id="signup-link">
             Don't have an account?
-            <router-link to="/" id="no-underline">
+            <router-link to="/signup" id="no-underline">
               <span>Sign up</span>
             </router-link>
           </p>
@@ -72,7 +71,6 @@ import { ref, onMounted } from "vue";
 import { useRouter } from 'vue-router';
 
 import planetModel from "../components/planetScriptLog.vue";
-import Navbar from "../components/navbar.vue";
 import axios from "axios";
 
 
@@ -81,8 +79,7 @@ const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 export default {
   name: "login-page",
   components: {
-    planetModel,
-    Navbar,
+    planetModel
   },
 
   data() {
@@ -112,7 +109,7 @@ export default {
         })
         .then((res) => {
           document.cookie = `token=${res.data}; path=/`;
-          this.router.push('/welcome');
+          this.router.push('/');
         })
         .catch((e) => {
           this.error = "You have passed wrong email or password!";
@@ -123,11 +120,15 @@ export default {
 
     changeVisibility(reference) {
       const inputRef = this.$refs[reference];
+      let btn = document.getElementById("visibilityButton");
 
       if (inputRef.type === "password") {
         inputRef.type = "text";
+        console.log("Url: ", btn.style.backgroundImage);
+        btn.style.backgroundImage = 'url("src/assets/icons/eye.svg")';
       } else {
         inputRef.type = "password";
+        btn.style.backgroundImage = 'url("src/assets/icons/eye-slash.svg")';
       }
     },
   },
@@ -244,6 +245,15 @@ export default {
   box-sizing: border-box;
 }
 
+#form-container-login input:-webkit-autofill,
+#form-container-login input:-webkit-autofill:hover, 
+#form-container-login input:-webkit-autofill:focus, 
+#form-container-login input:-webkit-autofill:active{
+  color : rgb(255, 255, 255) !important;
+  -webkit-text-fill-color: rgb(255, 255, 255) !important;
+  transition: background-color 500000s;
+}
+
 #form-container-login #link-container {
   width: 100%;
   text-align: end;
@@ -268,13 +278,16 @@ export default {
   position: relative;
 }
 
-#form-container-login .password-input img {
+#form-container-login .password-input svg {
   position: absolute;
+  width: 25px;
+  height: 25px;
   right: 20px;
   bottom: 20px;
   filter: invert(100%);
-  width: 25px;
   cursor: pointer;
+  background-image: url("../../assets/icons/eye-slash.svg");
+  background-size: contain;
 }
 
 #form-container-login #forgot-password {
