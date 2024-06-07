@@ -4,7 +4,7 @@
 
     <!-- ============================= CONTENT ============================= -->
 
-    <div id="main-container">
+    <div id="main-container" v-if="isData">
       <SettingsNavbar
         :data="{
           email: this.email,
@@ -149,7 +149,7 @@
       </div>
     </div>
 
-    <Footer />
+    <Footer v-if="isData"/>
   </div>
 </template>
 
@@ -162,7 +162,6 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
-// const url = "http://localhost:8080";
 
 export default {
   name: "editProfile-page",
@@ -173,7 +172,6 @@ export default {
   },
 
   data() {
-    console.log(this.email);
     return {
       selectedCountry: "",
       countries: [],
@@ -183,6 +181,12 @@ export default {
       oldPassword: "",
       newPassword: "",
     };
+  },
+
+  computed: {
+    isData() {
+      return this.email !== ""; 
+    }
   },
 
   setup() {
@@ -227,15 +231,17 @@ export default {
     },
 
     fetchUserData() {
-      const token = document.cookie
+      if (document.cookie) {
+        const token = document.cookie
         .split("; ")
         .find((cookie) => cookie.startsWith("token="))
         .split("=")[1];
-      const decoded = jwtDecode(token);
-      this.first_name = decoded.first_name;
-      this.last_name = decoded.last_name;
-      this.email = decoded.email;
-      console.log(this.first_name);
+        const decoded = jwtDecode(token);
+        this.first_name = decoded.first_name;
+        this.last_name = decoded.last_name;
+        this.email = decoded.email;
+        console.log(this.first_name);
+      }
     },
 
     async updatePersonalInfo() {
@@ -303,8 +309,8 @@ export default {
   },
 
   mounted() {
-    this.fetchUserData();
-    this.getCountriesData();
+      this.fetchUserData();
+      this.getCountriesData();
   },
 };
 </script>

@@ -25,8 +25,9 @@
                 required
               />
               <svg
-                id="visibilityButton"
+                class="visibilityButton"
                 @click="changeVisibility('input')"
+                :class="{ 'visible': isPasswordShown }"
               />
             </div>
             <div id="link-container">
@@ -62,7 +63,7 @@
         </div>
       </form>
     </div>
-    <planetModel />
+    <!-- <planetModel /> -->
   </div>
 </template>
 
@@ -70,7 +71,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from 'vue-router';
 
-import planetModel from "../components/planetScriptLog.vue";
+// import planetModel from "../components/planetScriptLog.vue";
 import axios from "axios";
 
 
@@ -79,7 +80,7 @@ const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 export default {
   name: "login-page",
   components: {
-    planetModel
+    // planetModel
   },
 
   data() {
@@ -87,7 +88,8 @@ export default {
       email: "",
       password: "",
       error: "",
-      router: useRouter()
+      router: useRouter(),
+      isPasswordShown: false
     };
   },
 
@@ -114,21 +116,17 @@ export default {
         .catch((e) => {
           this.error = "You have passed wrong email or password!";
         })
-        
-
     },
 
     changeVisibility(reference) {
       const inputRef = this.$refs[reference];
-      let btn = document.getElementById("visibilityButton");
-
-      if (inputRef.type === "password") {
-        inputRef.type = "text";
-        console.log("Url: ", btn.style.backgroundImage);
-        btn.style.backgroundImage = 'url("src/assets/icons/eye.svg")';
-      } else {
-        inputRef.type = "password";
-        btn.style.backgroundImage = 'url("src/assets/icons/eye-slash.svg")';
+      
+        if (inputRef.type === "password") {
+          inputRef.type = "text";
+          this.isPasswordShown = true;
+        } else {
+          inputRef.type = "password";
+          this.isPasswordShown = false;
       }
     },
   },
@@ -278,7 +276,7 @@ export default {
   position: relative;
 }
 
-#form-container-login .password-input svg {
+#form-container-login .visibilityButton {
   position: absolute;
   width: 25px;
   height: 25px;
@@ -288,6 +286,10 @@ export default {
   cursor: pointer;
   background-image: url("../../assets/icons/eye-slash.svg");
   background-size: contain;
+}
+
+#form-container-login .visible {
+  background-image: url("../../assets/icons/eye.svg");
 }
 
 #form-container-login #forgot-password {

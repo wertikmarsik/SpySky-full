@@ -64,12 +64,13 @@ export default {
       logged: false,
       notLogged: true,
       isDropdownVisible: false,
-      isBurgerDropdownVisible: false
+      isBurgerDropdownVisible: false,
+      cookies: document.cookie
     }
   },
   methods: {
     checkUser() {
-      if (document.cookie) {
+      if (this.cookies) {
         this.logged = true;
         this.notLogged = false;
       } else {
@@ -80,7 +81,7 @@ export default {
 
     deleteCookieAndRedirect() {
       document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      console.log("Cookie: ", document.cookie)
+      this.cookies = document.cookie;
       window.location.reload();
     },
 

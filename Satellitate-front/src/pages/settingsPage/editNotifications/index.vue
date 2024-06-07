@@ -4,7 +4,7 @@
 
     <!-- ============================= CONTENT ============================= -->
 
-    <div id="main-container">
+    <div id="main-container" v-if="isData">
       <SettingsNavbar
         :data="{
           email: this.email,
@@ -99,7 +99,7 @@
       </div>
     </div>
 
-    <Footer />
+    <Footer v-if="isData"/>
   </div>
 </template>
 
@@ -125,17 +125,25 @@ export default {
     };
   },
 
+  computed: {
+    isData() {
+      return this.email !== ""; 
+    }
+  },
+
   methods: {
     fetchUserData() {
-      const token = document.cookie
+      if (document.cookie) {
+        const token = document.cookie
         .split("; ")
         .find((cookie) => cookie.startsWith("token="))
         .split("=")[1];
-      const decoded = jwtDecode(token);
-      this.first_name = decoded.first_name;
-      this.last_name = decoded.last_name;
-      this.email = decoded.email;
-      console.log(this.first_name);
+        const decoded = jwtDecode(token);
+        this.first_name = decoded.first_name;
+        this.last_name = decoded.last_name;
+        this.email = decoded.email;
+        console.log(this.first_name);
+      }
     },
   },
   mounted() {

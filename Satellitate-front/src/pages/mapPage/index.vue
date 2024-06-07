@@ -7,7 +7,7 @@
     <div id="map-panels">
       <!-- =================== ALL FILTERS ======================================= -->
 
-      <Filters :data="this.satellites"/>
+      <Filters :data="satellites"/>
 
       <!-- =================== LIGHT BOTTOM BLOCKS ======================================= -->
 
@@ -117,14 +117,23 @@ function addAsteroid(x, y, z) {
   });
 }
 
+function rotateSatellite() {
+  const x = Math.floor(Math.random() * 10)/2;
+  const y = Math.floor(Math.random() * 10)/20;
+  const z = Math.floor(Math.random() * 10)/25;
+  return {x, y, z};
+}
+
 function addSatellite(x, y, z) {
   const mtlLoader = new MTLLoader();
   mtlLoader.load("./src/assets/textures/Satellite.mtl", function (materials) {
     materials.preload();
     const loader = new OBJLoader();
     loader.load("./src/assets/objects/Satellite.obj", function (object) {
+      let rotations = rotateSatellite();
       object.position.set(x / 2000, y / 2000, z / 2000);
       object.scale.set(0.1, 0.1, 0.1);
+      object.rotation.set(rotations.x, rotations.y, rotations.z);
       scene.add(object);
       satellitesGroup.push(object);
     });
@@ -224,10 +233,6 @@ const getFov = () => {
       })
     }
   });
-
-  // getSatellitesNames().then(() => {
-
-  // })
 
   function animate() {
     id_2 = requestAnimationFrame(animate);

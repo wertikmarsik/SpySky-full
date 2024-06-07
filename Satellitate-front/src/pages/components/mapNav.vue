@@ -4,7 +4,7 @@
         <div class="nav-buttons">
           <div id="user" @click="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">
-            <div id="user-dropdown" v-show="isDropdownVisible" :class="{ 'dropdown-show': isDropdownVisible }">
+            <div id="user-dropdown" v-show="isDropdownVisible">
               <div>
                 <router-link to="/settings" id="no-underline-dropdown">
                   <p>Profile settings</p>
@@ -26,7 +26,7 @@
           </div>
         </div>
     </div>
-    <ul id="burger-menu-navlinks"  v-show="areNavlinksVisible" :class="{ 'burgermenu-show': areNavlinksVisible }">
+    <ul v-bind:class="{ 'burger-menu-navlinks': true, 'burger-menu-navlinks-hidden': areNavlinksVisible }">
       <router-link to="/about-us" id="no-underline"><li>About Us</li></router-link>
       <router-link to="/our-mission" id="no-underline"><li>Our Mission</li></router-link>
       <router-link to="/our-team" id="no-underline"><li>SpySKy Team</li></router-link>
@@ -139,9 +139,6 @@ export default {
     box-sizing: border-box;
     gap: 30px;
     border-radius: 0.5rem;
-  }
-
-  #mapNavbar .dropdown-show {
     animation: dropdown-show 0.5s ease-in-out forwards;
   }
 
@@ -156,7 +153,7 @@ export default {
     }
   }
 
-  #burger-menu-navlinks {
+  .burger-menu-navlinks {
     position: fixed;
     top: 0px;
     font-size: 14px;
@@ -176,28 +173,21 @@ export default {
     border-bottom: 2px solid #00142D;
     list-style: none;
     gap: 2rem;
+    transform: translateY(0px);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .burger-menu-navlinks-hidden {
     transform: translateY(75px);
+    transition: transform 0.5s ease-in-out;
   }
 
-  #mapNavbar .burgermenu-show {
-    animation: burgermenu-show 0.5s ease-in-out forwards;
-  }
-
-  @keyframes burgermenu-show {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-
-  #burger-menu-navlinks li {
+  .burger-menu-navlinks li {
     transition: 0.5s;
     cursor: pointer;
   }
 
-  #burger-menu-navlinks li:hover {
+  .burger-menu-navlinks li:hover {
     color: #FFC8C2;
   }
 

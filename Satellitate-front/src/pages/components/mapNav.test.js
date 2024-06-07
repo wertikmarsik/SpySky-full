@@ -24,7 +24,7 @@ describe('Dropdown', () => {
 
 describe('Burger menu dropdown', () => {
     const wrapper = mount(mapNavbar);
-    const burgerMenu = wrapper.find('#burger-menu-navlinks');
+    const burgerMenu = wrapper.find('.burger-menu-navlinks');
     const burgerIcon = wrapper.find('#burger-menu');
 
     it('should check if burger menu dropdown exists and hidden', () => {

@@ -157,7 +157,7 @@
         </div>
       </form>
     </div>
-    <planetModel />
+    <!-- <planetModel /> -->
   </div>
 </template>
 
@@ -165,7 +165,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from 'vue-router';
 
-import planetModel from "../components/planetScriptLog.vue";
+// import planetModel from "../components/planetScriptLog.vue";
 import axios from "axios";
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
@@ -173,11 +173,11 @@ const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 export default {
   name: "signup-page",
   components: {
-    planetModel
+    // planetModel
   },
   data() {
     return {
-      currentPage: ref("page2"),
+      currentPage: ref("page1"),
       selectedCountry: "",
       countries: [],
       firstName: "",
@@ -414,10 +414,6 @@ export default {
 
 #form-container-signup #country:not(:first-of-type) {
   color: white;
-}
-
-#form-container-signup #country option {
-  background: rgba(0, 0, 0, 0.3);
 }
 
 #form-container-signup .buttons,

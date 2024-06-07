@@ -1,6 +1,6 @@
 <template>
   <div id="left-filters">
-    <div id="filters">
+    <div class="filters" v-bind:class="{ 'filters': true, 'filters--collapsed': areFiltersVisible }">
       <div id="arrow" @click="showFilters()">
         <img src="../../assets/icons/arrows-filter.svg" alt="" />
       </div>
@@ -10,14 +10,15 @@
       <div>
         <p>Search</p>
         <div class="satellite-names">
-          <p>Satellite name</p>
+          <p id="selected-name" @click="showNamesDropdown()">Satellite name</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
-          <ul class="satellite-names-options">
+          <ul class="satellite-names-options" v-show="isNamesDropdownVisible">
             <li
               class="satellite-name"
               v-for="object in objects"
               :key="object.object_id"
               :value="object.object_id"
+              @click="selectNameOption(object)"
             >
               {{ object.object_name }}
             </li>
@@ -25,42 +26,17 @@
         </div>
 
         <div class="object-ids">
-          <p>Object's ID</p>
+          <p id="selected-id" @click="showIdsDropdown()">Object's ID</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
-          <ul class="objects-id-options">
+          <ul class="objects-id-options" v-show="isIdsDropdownVisible">
             <li
               class="object-id"
               v-for="object in objects"
               :key="object.object_id"
               :value="object.object_id"
+              @click="selectIdOption(object)"
             >
               {{ object.object_id }}
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- =================== OBJECT TYPE FILTER ======================================= -->
-
-      <div>
-        <p>Object type</p>
-        <div class="object-types">
-          <p>Object types</p>
-          <img src="../../assets/icons/caret-down-fill.svg" />
-          <ul class="objects-type-options">
-            <li class="object-type">
-              <label class="objects-type-checkbox-container"
-                >Satellites
-                <input type="checkbox" name="Satellite" />
-                <div class="checkmark"></div>
-              </label>
-            </li>
-            <li class="object-type">
-              <label class="objects-type-checkbox-container"
-                >Debris
-                <input type="checkbox" name="Satellite" />
-                <div class="checkmark"></div>
-              </label>
             </li>
           </ul>
         </div>
@@ -90,225 +66,58 @@
           </div>
         </div>
         <div class="value-input">
-          <p>From: {{ this.minValue }}</p>
-          <p>To: {{ this.maxValue }}</p>
+          <p>From: {{ minValue }}</p>
+          <p>To: {{ maxValue }}</p>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { onMounted, ref } from "vue";
-
-/*=============================== DROPDOWNS =================================*/
-
-const objects = ref([]);
-
-
-async function getSatellitesNames() {
-  try {
-    const res = await axios.get(`${url}/satellites/`);
-    objects.value = res.data;
-    console.log("All objects: ", objects.value)
-  } catch (e) {
-    console.log(e.message);
-  }
-}
-
-onMounted(() => {
-  const selectedName = document.querySelector(".satellite-names > p");
-  const nameOptions = document.querySelectorAll(".satellite-names .satellite-names-options li");
-
-  const satelliteNames = document.querySelector(".satellite-names");
-  const satelliteNamesDropdown = document.querySelector(".satellite-names .satellite-names-options");
-
-  satelliteNames.addEventListener("click", showNamesDropdown);
-
-
-  const selectedId = document.querySelector(".object-ids > p");
-  const idOptions = document.querySelectorAll(".object-ids .objects-id-options li");
-
-  const objectIds = document.querySelector(".object-ids");
-  const objectIdDropdown = document.querySelector(".object-ids .objects-id-options");
-
-  objectIds.addEventListener("click", showIdsDropdown);
-
-  const objectTypes = document.querySelector(".object-types");
-  const objectTypesDropdown = document.querySelector(".object-types .objects-type-options");
-
-  objectTypes.addEventListener("click", showTypesDropdown);
-
-  
-  document.addEventListener("click", (event) => {
-    const isInsideNamesDropdown = satelliteNames.contains(event.target);
-    const isInsideIdsDropdown = objectIds.contains(event.target);
-    const isInsideTypesDropdown = objectTypes.contains(event.target);
-
-    if (!isInsideNamesDropdown) {
-      satelliteNamesDropdown.classList.remove("show");
-    }
-    if (!isInsideIdsDropdown) {
-      objectIdDropdown.classList.remove("show");
-    }
-    if (!isInsideTypesDropdown) {
-      objectTypesDropdown.classList.remove("show");
-    }
-  });
-
-  nameOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      nameOptions.forEach((e) => {
-        e.classList.remove("show");
-      });
-      let text = option.innerHTML;
-      selectedName.innerHTML = text;
-      option.classList.toggle("show");
-    });
-  });
-
-  idOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      idOptions.forEach((e) => {
-        e.classList.remove("show");
-      });
-      let text = option.innerHTML;
-      selectedId.innerHTML = text;
-      option.classList.toggle("show");
-    });
-  });
-
-  /*=============================== SLIDER =================================*/
-
-  const rangeInput = document.querySelectorAll(".range-input input");
-  const progress = document.querySelector(".range-slider-container #progress");
-  const values = document.querySelectorAll(
-    ".range-slider-container .value-input p"
-  );
-  const gap = 10;
-
-  rangeInput.forEach((input) => {
-    input.addEventListener("input", (e) => {
-      const minV = parseInt(rangeInput[0].value);
-      const maxV = parseInt(rangeInput[1].value);
-
-      if (maxV - minV < gap) {
-        if (e.target.className === "range-min") {
-          rangeInput[0].value = maxV - gap;
-          values[0].innerHTML = "From: year " + (maxV - gap);
-        } else {
-          rangeInput[1].value = minV + gap;
-          values[1].innerHTML = "To: year " + (minV + gap);
-        }
-      } else {
-        values[0].innerHTML = "From: year " + minV;
-        values[1].innerHTML = "To: year " + maxV;
-        progress.style.left =
-          ((minV - rangeInput[0].min) /
-            (rangeInput[0].max - rangeInput[0].min)) *
-            100 +
-          "%";
-        progress.style.right =
-          100 -
-          ((maxV - rangeInput[0].min) /
-            (rangeInput[0].max - rangeInput[0].min)) *
-            100 +
-          "%";
-      }
-    });
-  });
-
-  function showNamesDropdown() {
-    let satelliteNamesDropdown = document.querySelector(
-      ".satellite-names .satellite-names-options"
-    );
-    if (satelliteNamesDropdown.classList.contains("show")) {
-      satelliteNamesDropdown.classList.remove("show");
-    } else {
-      satelliteNamesDropdown.classList.toggle("show");
-    }
-  }
-
-  function showIdsDropdown() {
-    let objectIdDropdown = document.querySelector(
-      ".object-ids .objects-id-options"
-    );
-    if (objectIdDropdown.classList.contains("show")) {
-      objectIdDropdown.classList.remove("show");
-    } else {
-      objectIdDropdown.classList.toggle("show");
-    }
-  }
-
-  function showTypesDropdown() {
-    let objectTypesDropdown = document.querySelector(
-      ".object-types .objects-type-options"
-    );
-    if (objectTypesDropdown.classList.contains("show")) {
-      objectTypesDropdown.classList.remove("show");
-    } else {
-      objectTypesDropdown.classList.toggle("show");
-    }
-  }
-
-
-
-
-
-
-
-
-
-
-  getSatellitesNames().then(() => {
-    if (objects.value.length > 0) {
-      objects.value.forEach(object => {
-        console.log(object.object_name)
-      })
-    }
-  });
-
-
-
-});
-</script>
-
 <script>
 import axios from "axios";
 
-// const url = "http://localhost:8080";
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 
 export default {
   name: "Filters-component",
   data() {
     return {
+      minValue: "",
+      maxValue: "",
+      isNamesDropdownVisible: false,
+      isIdsDropdownVisible: false,
+      areFiltersVisible: false,
       objects: [],
-      minValue: "Year " + 1900,
-      maxValue: "Year " + 2020
+      selectedId: "",
+      selectedName: ""
     };
   },
   methods: {
-
-  // async getSatellitesNames() {
-  //   await axios
-  //   .get(`${url}/satellites/`)
-  //   .then((res) => {
-  //       this.objects = res.data;
-  //       console.log(res.data);
-  //   })
-  //   .catch((e) => {
-  //     console.error(e.message);
-  //   });
-  // },
-
     showFilters() {
-      let filters = document.getElementById("filters");
-      if (filters.classList.contains("show")) {
-        filters.classList.remove("show");
-      } else {
-        filters.classList.toggle("show");
-      }
+      this.areFiltersVisible = !this.areFiltersVisible;
+    },
+
+    showNamesDropdown() {
+      this.isNamesDropdownVisible = !this.isNamesDropdownVisible;
+    },
+
+    showIdsDropdown() {
+      this.isIdsDropdownVisible = !this.isIdsDropdownVisible;
+    },
+
+    selectNameOption(object) {
+      event.stopPropagation();
+      this.selectedName = object.object_name;
+      document.getElementById("selected-name").innerHTML = object.object_name;
+      this.isNamesDropdownVisible = false;
+    },
+
+    selectIdOption(object) {
+      event.stopPropagation();
+      this.selectedId = object.object_id;
+      document.getElementById("selected-id").innerHTML = object.object_id;
+      this.isIdsDropdownVisible = false;
     },
 
     async getMaxMin() {
@@ -322,12 +131,51 @@ export default {
           console.error(e.message);
         });
     },
+
+    async getSatellitesNames() {
+      await axios
+      .get(`${url}/satellites/`)
+      .then((res) => {
+        this.objects = res.data;
+      })
+      .catch((e) => {
+        console.error(`Error fetching names data: ${e.message}`)
+      })
+    }
   },
+
   mounted() {
     this.getMaxMin();
-    // this.getSatellitesNames();
-    // console.log("All objects:\n" + this.objects);
+    this.getSatellitesNames();
+
+    const rangeInput = document.querySelectorAll(".range-input input");
+    const progress = document.querySelector(".range-slider-container #progress");
+    const values = document.querySelectorAll(".range-slider-container .value-input p");
+    const gap = 1;
+
+    rangeInput.forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const minV = parseInt(rangeInput[0].value);
+        const maxV = parseInt(rangeInput[1].value);
+
+        if (maxV - minV < gap) {
+          if (e.target.className === "range-min") {
+            rangeInput[0].value = maxV - gap;
+            values[0].innerHTML = "From: year " + (maxV - gap);
+          } else {
+            rangeInput[1].value = minV + gap;
+            values[1].innerHTML = "To: year " + (minV + gap);
+          }
+        } else {
+          values[0].innerHTML = "From: year " + minV;
+          values[1].innerHTML = "To: year " + maxV;
+          progress.style.left = ((minV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
+          progress.style.right = 100 - ((maxV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
+        }
+      });
+    });
   },
+  
 };
 </script>
 
@@ -366,7 +214,7 @@ export default {
   right: -24px;
 }
 
-#filters {
+.filters {
   position: relative;
   background-color: #000000;
   padding: 20px 10px 30px 0px;
@@ -380,33 +228,33 @@ export default {
   transition: width 0.3s ease-in-out;
 }
 
-#filters.show {
+.filters * {
+  visibility: hidden;
+  width: 0;
+}
+
+.filters #arrow img {
+  transform: scaleX(-1);
+}
+
+.filters * p {
+  height: 19.2px;
+}
+
+.filters--collapsed {
   width: 350px;
   padding: 20px 20px 30px 20px;
   transition: width 0.3s ease-in-out;
 }
 
-#filters.show * {
+.filters--collapsed * {
   visibility: visible;
   width: 100%;
   transition: visibility 0s linear;
 }
 
-#filters.show #arrow img {
+.filters--collapsed #arrow img {
   transform: scaleX(1);
-}
-
-#filters * {
-  visibility: hidden;
-  width: 0;
-}
-
-#filters #arrow img {
-  transform: scaleX(-1);
-}
-
-#filters * p {
-  height: 19.2px;
 }
 
 #left-filters #arrow {
@@ -437,8 +285,7 @@ export default {
 /*==================== DROPDOWNS BLOCK ==============================*/
 
 #left-filters .satellite-names,
-#left-filters .object-ids,
-#left-filters .object-types {
+#left-filters .object-ids {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -459,14 +306,12 @@ export default {
 }
 
 #left-filters .satellite-names p,
-#left-filters .object-ids p,
-#left-filters .object-types p {
+#left-filters .object-ids p {
   text-transform: none;
 }
 
 #left-filters .satellite-names img,
-#left-filters .object-ids img,
-#left-filters .object-types img {
+#left-filters .object-ids img {
   filter: invert(74%) sepia(5%) saturate(5%) hue-rotate(314deg) brightness(87%)
     contrast(86%);
   height: 12px;
@@ -474,8 +319,7 @@ export default {
 }
 
 #left-filters .satellite-names .satellite-names-options,
-#left-filters .object-ids .objects-id-options,
-#left-filters .object-types .objects-type-options {
+#left-filters .object-ids .objects-id-options {
   flex-direction: column;
   height: 130px;
   border-radius: 0.5rem;
@@ -488,28 +332,14 @@ export default {
   background-color: #000e1f;
   overflow-y: scroll;
   position: absolute;
-  display: none;
+  display: flex;
   left: 0;
   bottom: -130px;
   z-index: 1000;
 }
 
-#left-filters .object-types .objects-type-options {
-  height: 100px;
-  bottom: -100px;
-  z-index: 1000;
-  overflow-y: visible;
-}
-
-#left-filters .satellite-names .satellite-names-options.show,
-#left-filters .object-ids .objects-id-options.show,
-#left-filters .object-types .objects-type-options.show {
-  display: flex;
-}
-
 #left-filters .satellite-names .satellite-names-options .satellite-name,
-#left-filters .object-ids .objects-id-options .object-id,
-#left-filters .object-types .objects-type-options .object-type {
+#left-filters .object-ids .objects-id-options .object-id {
   padding: 20px;
   outline: none;
   box-sizing: border-box;
@@ -520,10 +350,6 @@ export default {
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-#left-filters .object-types .objects-type-options .object-type input {
-  width: auto;
 }
 
 #left-filters .satellite-names .satellite-names-options .satellite-name:hover,
@@ -579,7 +405,7 @@ export default {
 /*==================== TIME SLIDER BLOCK ==============================*/
 
 .range-slider-container {
-  width: 100px;
+  width: 100%;
 }
 
 .range-slider-container #time-slider {
