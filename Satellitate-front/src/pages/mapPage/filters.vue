@@ -53,16 +53,16 @@
             <input
               type="range"
               class="range-min"
-              min="1900"
-              max="2020"
-              value="1900"
+              min="0"
+              max="4"
+              value="0"
             />
             <input
               type="range"
               class="range-max"
-              min="1900"
-              max="2020"
-              value="2020"
+              min="0"
+              max="4"
+              value="4"
             />
           </div>
         </div>
@@ -90,8 +90,13 @@ export default {
       isIdsDropdownVisible: false,
       areFiltersVisible: false,
       objects: [],
+      epochs: {},
       selectedId: "",
       selectedName: "",
+      selectedTime: {
+        fromValue: "",
+        toValue: ""
+      },
     };
   },
 
@@ -134,6 +139,10 @@ export default {
       this.$emit('idWasSelected', this.selectedId);
     },
 
+    selectTimePeriod() {
+      console.log(this.selectedTime);
+    },
+
     clearFilters() {
       this.selectedId = "";
       this.selectedName = "";
@@ -141,18 +150,6 @@ export default {
       this.$emit('idWasSelected', this.selectedId);
       document.getElementById("selected-id").innerHTML = "Select an id";
       document.getElementById("selected-name").innerHTML = "Select a name";
-    },
-
-    async getMaxMin() {
-      await axios
-        .get(`${url}/satellites/maxmin/premium`)
-        .then((res) => {
-          this.maxValue = res.data.maxValue.toString().substring(0, 10);
-          this.minValue = res.data.minValue.toString().substring(0, 10);
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
     },
 
     async getSatellitesNames() {
@@ -164,7 +161,34 @@ export default {
       .catch((e) => {
         console.error(`Error fetching names data: ${e.message}`)
       })
-    }
+    },
+
+    getEpochs() {
+      let id = 0;
+      let timeDiff = new Date(this.maxValue).getTime() - new Date(this.minValue).getTime();
+      let daysDiff = Math.round(timeDiff / (1000 * 3600 * 24));
+      let curr_date = new Date(this.minValue);
+
+      while (daysDiff >= 0) {
+        this.epochs[id] = curr_date.toISOString().substring(0, 10);
+        curr_date = new Date(curr_date.setDate(curr_date.getDate()+1));
+        daysDiff--;
+        id++;
+      }
+    },
+
+    async getMaxMin() {
+      await axios
+        .get(`${url}/satellites/maxmin/premium`)
+        .then((res) => {
+          this.maxValue = res.data.maxValue.toString().substring(0, 10);
+          this.minValue = res.data.minValue.toString().substring(0, 10);
+          this.getEpochs();
+        })
+        .catch((e) => {
+          console.error(e.message);
+        });
+    },
   },
 
   mounted() {
@@ -174,24 +198,23 @@ export default {
     const rangeInput = document.querySelectorAll(".range-input input");
     const progress = document.querySelector(".range-slider-container #progress");
     const values = document.querySelectorAll(".range-slider-container .value-input p");
-    const gap = 1;
 
     rangeInput.forEach((input) => {
       input.addEventListener("input", (e) => {
         const minV = parseInt(rangeInput[0].value);
         const maxV = parseInt(rangeInput[1].value);
 
-        if (maxV - minV < gap) {
+        if (maxV - minV < 1) {
           if (e.target.className === "range-min") {
-            rangeInput[0].value = maxV - gap;
-            values[0].innerHTML = "From: year " + (maxV - gap);
+            rangeInput[0].value = maxV - 1;
+            values[0].innerHTML = "From: " + this.epochs[maxV - 1];
           } else {
-            rangeInput[1].value = minV + gap;
-            values[1].innerHTML = "To: year " + (minV + gap);
+            rangeInput[1].value = minV + 1;
+            values[1].innerHTML = "To: " + this.epochs[minV + 1];
           }
         } else {
-          values[0].innerHTML = "From: year " + minV;
-          values[1].innerHTML = "To: year " + maxV;
+          values[0].innerHTML = "From: " + this.epochs[minV];
+          values[1].innerHTML = "To: " + this.epochs[maxV];
           progress.style.left = ((minV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
           progress.style.right = 100 - ((maxV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
         }
@@ -259,6 +282,7 @@ export default {
 .filters #clear-filters {
   display: none;
   width: 0;
+  font-size: 1rem !important;
 }
 
 .filters #arrow img {
@@ -283,7 +307,7 @@ export default {
 
 .filters--collapsed #clear-filters {
   display: block;
-  width: 100%;
+  width: fit-content;
   transition: visibility 0.4s linear;
 }
 

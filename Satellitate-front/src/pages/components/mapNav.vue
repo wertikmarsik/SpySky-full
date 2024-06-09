@@ -79,7 +79,7 @@ export default {
     width: 100%;
     height: 75px;
     z-index: 10000;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 1);
     backdrop-filter: blur(6px);
     display: flex;
     flex-direction: row;
