@@ -19,7 +19,7 @@
             />
           </div>
           <div class="countries" @click="showCountries()">
-            <p id="selectedCountry">Select a country</p>
+            <p id="selectedCountry">{{ selectedCountry }}</p>
             <img src="../../assets/icons/caret-down-fill.svg" />
             <ul id="country-options" v-show="showOptions">
               <li class="country-option"
@@ -88,6 +88,7 @@
             <svg
               id="visibilityButton1"
               @click="changeVisibility('input')"
+              :class="{ 'visible': isPasswordShown }"
             />
           </div>
           <div class="password-input">
@@ -101,6 +102,7 @@
             <svg
               id="visibilityButton2"
               @click="changeVisibility('inputConfirm')"
+              :class="{ 'visible': isConfirmPasswordShown }"
             />
           </div>
         </div>
@@ -178,7 +180,7 @@ export default {
   data() {
     return {
       currentPage: ref("page1"),
-      selectedCountry: "",
+      selectedCountry: "Select a country",
       countries: [],
       firstName: "",
       lastName: "",
@@ -188,7 +190,9 @@ export default {
       password: "",
       confirmCode: "",
       router: useRouter(),
-      showOptions: false
+      showOptions: false,
+      isPasswordShown: false,
+      isConfirmPasswordShown: false
     };
   },
   setup() {
@@ -203,12 +207,6 @@ export default {
     return { input, inputConfirm };
   },
 
-  computed: {
-  trackedValue() {
-    return this.selectedCountry; 
-  }
-},
-
   methods: {
     showCountries() {
       this.showOptions = !this.showOptions;
@@ -217,19 +215,20 @@ export default {
     selectOption(country) {
       event.stopPropagation();
       this.selectedCountry = country.country_name;
-      document.getElementById("selectedCountry").innerHTML = country.country_name;
       this.showOptions = false;
     },
 
     async getCountriesData() {
-      await axios
+      try {
+        await axios
         .get(`${url}/countries/`)
         .then((res) => {
           this.countries = res.data;
-        })
-        .catch((e) => {
-          console.error(`Error fetching countries data: ${e.message}`);
+          console.log(this.countries)
         });
+      } catch (error) {
+        console.log(`Error fetching countries data: ${error.message}`)
+      }
     },
 
     // findCountry() {
@@ -263,7 +262,6 @@ export default {
           confirmationCode: this.confirmCode,
         })
         .then((res) => {
-          console.log(res.data);
           this.router.push('/');
         })
         .catch((e) => {
@@ -278,24 +276,22 @@ export default {
     changeVisibility(reference) {
       const inputRef = this.$refs[reference];
       const clickedSvg = event.target;
-      let btn1 = document.getElementById("visibilityButton1");
-      let btn2 = document.getElementById("visibilityButton2");
 
       if (clickedSvg.id == "visibilityButton1") {
         if (inputRef.type === "password") {
           inputRef.type = "text";
-          btn1.style.backgroundImage = 'url("src/assets/icons/eye.svg")';
+          this.isPasswordShown = true;
         } else {
           inputRef.type = "password";
-          btn1.style.backgroundImage = 'url("src/assets/icons/eye-slash.svg")';
+          this.isPasswordShown = false;
         }
       } else if (clickedSvg.id == "visibilityButton2") {
         if (inputRef.type === "password") {
           inputRef.type = "text";
-          btn2.style.backgroundImage = 'url("src/assets/icons/eye.svg")';
+          this.isConfirmPasswordShown = true;
         } else {
           inputRef.type = "password";
-          btn2.style.backgroundImage = 'url("src/assets/icons/eye-slash.svg")';
+          this.isConfirmPasswordShown = false;
         }
       }
     },
@@ -354,6 +350,10 @@ export default {
 
 #form-container-signup form > div {
   gap: 24px;
+}
+
+#form-container-signup .visible {
+  background-image: url("../../assets/icons/eye.svg") !important;
 }
 
 #form-container-signup #signup-header {

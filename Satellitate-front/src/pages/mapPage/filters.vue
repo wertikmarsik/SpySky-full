@@ -10,7 +10,7 @@
       <div>
         <p>Search</p>
         <div class="satellite-names">
-          <p id="selected-name" @click="showNamesDropdown()">Satellite name</p>
+          <p id="selected-name" @click="showNamesDropdown()">Select a name</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
           <ul class="satellite-names-options" v-show="isNamesDropdownVisible">
             <li
@@ -26,7 +26,7 @@
         </div>
 
         <div class="object-ids">
-          <p id="selected-id" @click="showIdsDropdown()">Object's ID</p>
+          <p id="selected-id" @click="showIdsDropdown()">Select an id</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
           <ul class="objects-id-options" v-show="isIdsDropdownVisible">
             <li
@@ -40,6 +40,7 @@
             </li>
           </ul>
         </div>
+        <button id="clear-filters" class="fill" @click="clearFilters()">Clear filters</button>
       </div>
 
       <!-- =================== TIME PERIOD SLIDER ======================================= -->
@@ -90,9 +91,10 @@ export default {
       areFiltersVisible: false,
       objects: [],
       selectedId: "",
-      selectedName: ""
+      selectedName: "",
     };
   },
+
   methods: {
     showFilters() {
       this.areFiltersVisible = !this.areFiltersVisible;
@@ -107,17 +109,38 @@ export default {
     },
 
     selectNameOption(object) {
+      if (this.selectedId != "") {
+        this.selectedId = "";
+        document.getElementById("selected-id").innerHTML = "Select an id";
+        this.$emit('idWasSelected', this.selectedId);
+      }
       event.stopPropagation();
       this.selectedName = object.object_name;
       document.getElementById("selected-name").innerHTML = object.object_name;
       this.isNamesDropdownVisible = false;
+      this.$emit('nameWasSelected', this.selectedName);
     },
 
     selectIdOption(object) {
+      if (this.selectedName != "") {
+        this.selectedName = "";
+        document.getElementById("selected-name").innerHTML = "Select a name";
+        this.$emit('nameWasSelected', this.selectedName);
+      }
       event.stopPropagation();
       this.selectedId = object.object_id;
       document.getElementById("selected-id").innerHTML = object.object_id;
       this.isIdsDropdownVisible = false;
+      this.$emit('idWasSelected', this.selectedId);
+    },
+
+    clearFilters() {
+      this.selectedId = "";
+      this.selectedName = "";
+      this.$emit('nameWasSelected', this.selectedName);
+      this.$emit('idWasSelected', this.selectedId);
+      document.getElementById("selected-id").innerHTML = "Select an id";
+      document.getElementById("selected-name").innerHTML = "Select a name";
     },
 
     async getMaxMin() {
@@ -233,6 +256,11 @@ export default {
   width: 0;
 }
 
+.filters #clear-filters {
+  display: none;
+  width: 0;
+}
+
 .filters #arrow img {
   transform: scaleX(-1);
 }
@@ -250,7 +278,13 @@ export default {
 .filters--collapsed * {
   visibility: visible;
   width: 100%;
-  transition: visibility 0s linear;
+  transition: visibility 0.4s linear;
+}
+
+.filters--collapsed #clear-filters {
+  display: block;
+  width: 100%;
+  transition: visibility 0.4s linear;
 }
 
 .filters--collapsed #arrow img {

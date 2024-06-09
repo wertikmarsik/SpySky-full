@@ -7,7 +7,7 @@
     <div id="map-panels">
       <!-- =================== ALL FILTERS ======================================= -->
 
-      <Filters :data="satellites"/>
+      <Filters @id-was-selected="getSelectedId" @name-was-selected="getSelectedName"/>
 
       <!-- =================== LIGHT BOTTOM BLOCKS ======================================= -->
 
@@ -38,7 +38,6 @@ import {MTLLoader} from "three/addons/loaders/MTLLoader.js";
 import axios from "axios";
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/"
-// const url = "http://localhost:8080";
 
 const satellites = ref([]);
 const containerMap = ref(null);
@@ -100,22 +99,7 @@ sphere.position.set(0, 0, 0);
 scene.add(sphere);
 
 let id_2;
-let asteroidsGroup = [];
 let satellitesGroup = [];
-
-function addAsteroid(x, y, z) {
-  const mtlLoader = new MTLLoader();
-  mtlLoader.load("./src/assets/textures/Rock.mtl", function (materials) {
-    materials.preload();
-    const loader = new OBJLoader();
-    loader.load("./src/assets/objects/Rock.obj", function (object) {
-      object.position.set(x, y, z);
-      object.scale.set(0.0002, 0.0002, 0.0002);
-      scene.add(object);
-      asteroidsGroup.push(object);
-    });
-  });
-}
 
 function rotateSatellite() {
   const x = Math.floor(Math.random() * 10)/2;
@@ -124,7 +108,7 @@ function rotateSatellite() {
   return {x, y, z};
 }
 
-function addSatellite(x, y, z) {
+function addSatellite(x, y, z, name, id) {
   const mtlLoader = new MTLLoader();
   mtlLoader.load("./src/assets/textures/Satellite.mtl", function (materials) {
     materials.preload();
@@ -134,10 +118,40 @@ function addSatellite(x, y, z) {
       object.position.set(x / 2000, y / 2000, z / 2000);
       object.scale.set(0.1, 0.1, 0.1);
       object.rotation.set(rotations.x, rotations.y, rotations.z);
-      scene.add(object);
+      object.name = name;
+      object.uuid = id;
       satellitesGroup.push(object);
+      scene.add(object);
     });
   });
+}
+
+function getSelectedName(name) {
+  if (!name) {
+    scene.children.forEach((o) => { o.visible = true; })
+  } else {
+    satellitesGroup.forEach(s => {
+      if (s.name != name) {
+        s.visible = false;
+      } else {
+        s.visible = true;
+      }
+    })
+  }
+}
+
+function getSelectedId(id) {
+  if (!id) {
+    scene.children.forEach((o) => { o.visible = true; })
+  } else {
+    satellitesGroup.forEach(s => {
+      if (s.uuid != id) {
+        s.visible = false;
+      } else {
+        scene.getObjectByProperty( 'uuid' , s.uuid ).visible = true;
+      }
+    })
+  }
 }
 
 function handleWindowResize() {
@@ -157,13 +171,10 @@ async function getSatellite() {
   try {
     const res = await axios.get(`${url}/satellites/`);
     satellites.value = res.data;
-    console.log(satellites.value)
   } catch (e) {
     console.error(e.message);
   }
 }
-
-
 
 onMounted(() => {
   window.addEventListener("resize", handleWindowResize);
@@ -173,39 +184,38 @@ onMounted(() => {
   const zoomOutbtn = document.getElementById("zoomOut");
 
   const zoomInFunction = (e) => {
-  const fov = getFov();
-  camera.fov = clickZoom(fov, "zoomIn");
-  camera.updateProjectionMatrix();
-};
+    const fov = getFov();
+    camera.fov = clickZoom(fov, "zoomIn");
+    camera.updateProjectionMatrix();
+  };
 
-const zoomOutFunction = (e) => {
-  const fov = getFov();
-  camera.fov = clickZoom(fov, "zoomOut");
-  camera.updateProjectionMatrix();
-};
+  const zoomOutFunction = (e) => {
+    const fov = getFov();
+    camera.fov = clickZoom(fov, "zoomOut");
+    camera.updateProjectionMatrix();
+  };
 
-zoomInbtn.addEventListener("click", zoomInFunction);
-zoomOutbtn.addEventListener("click",zoomOutFunction);
+  zoomInbtn.addEventListener("click", zoomInFunction);
+  zoomOutbtn.addEventListener("click",zoomOutFunction);
 
-const clickZoom = (value, zoomType) => {
-  if (value >= 20 && zoomType === "zoomIn") {
-    return value - 5;
-  } else if (value <= 75 && zoomType === "zoomOut") {
-    return value + 5;
-  } else {
-    return value;
-  }
-};
+  const clickZoom = (value, zoomType) => {
+    if (value >= 20 && zoomType === "zoomIn") {
+      return value - 5;
+    } else if (value <= 75 && zoomType === "zoomOut") {
+      return value + 5;
+    } else {
+      return value;
+    }
+  };
 
-const getFov = () => {
-  return Math.floor(
-    (2 *
-      Math.atan(camera.getFilmHeight() / 2 / camera.getFocalLength()) *
-      180) /
-      Math.PI
-  );
-};
-
+  const getFov = () => {
+    return Math.floor(
+      (2 *
+        Math.atan(camera.getFilmHeight() / 2 / camera.getFocalLength()) *
+        180) /
+        Math.PI
+    );
+  };
 
   containerMap.value = document.getElementById("model-container");
 
@@ -228,8 +238,8 @@ const getFov = () => {
 
   getSatellite().then(() => {
     if (satellites.value.length > 0) {
-      satellites.value.forEach(satellite => {
-        addSatellite(satellite.x, satellite.y, satellite.z)
+      satellites.value.forEach(s => {
+          addSatellite(s.x, s.y, s.z, s.object_name, s.object_id)
       })
     }
   });
@@ -262,11 +272,7 @@ onUnmounted(() => {
 
   window.removeEventListener("resize", handleWindowResize);
 
-  asteroidsGroup.forEach(removeObject);
   satellitesGroup.forEach(obj => scene.remove(obj));
-
-  asteroidsGroup = [];
-  satellitesGroup = [];
 
   if (scene.background) {
     scene.background.dispose();
@@ -291,20 +297,14 @@ import Navbar from "../../pages/components/mapNav.vue";
 import Filters from "../../pages/mapPage/filters.vue";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
   name: "map",
   components: {
     Navbar,
     Filters,
-  },
-  data() {
-    return {
-      satellites: [],
-      currentSatellite: "",
-    };
-  },
+  }
 };
 </script>
+
 
 <style>
 /*==================== MAP CONTAINER BLOCK ==============================*/
@@ -362,8 +362,9 @@ export default {
   align-items: center;
   width: 40px;
   height: 40px;
-  background-color: #4c5cbc;
   border-radius: 0.5rem;
+  background-color: #000000;
+  border: 2px solid #001734;
 }
 
 #right-bottom-elems .scale-buttons div img {
