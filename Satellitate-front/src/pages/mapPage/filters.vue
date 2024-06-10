@@ -35,6 +35,7 @@
               :key="object.object_id"
               :value="object.object_id"
               @click="selectIdOption(object)"
+              :class="{ selectedOption: selectedId }"
             >
               {{ object.object_id }}
             </li>
@@ -117,37 +118,52 @@ export default {
       if (this.selectedId != "") {
         this.selectedId = "";
         document.getElementById("selected-id").innerHTML = "Select an id";
-        this.$emit('idWasSelected', this.selectedId);
       }
       event.stopPropagation();
       this.selectedName = object.object_name;
       document.getElementById("selected-name").innerHTML = object.object_name;
       this.isNamesDropdownVisible = false;
       this.$emit('nameWasSelected', this.selectedName);
+      this.$emit('filtersChanged');
     },
 
     selectIdOption(object) {
       if (this.selectedName != "") {
         this.selectedName = "";
         document.getElementById("selected-name").innerHTML = "Select a name";
-        this.$emit('nameWasSelected', this.selectedName);
       }
       event.stopPropagation();
       this.selectedId = object.object_id;
       document.getElementById("selected-id").innerHTML = object.object_id;
       this.isIdsDropdownVisible = false;
       this.$emit('idWasSelected', this.selectedId);
-    },
-
-    selectTimePeriod() {
-      console.log(this.selectedTime);
+      this.$emit('filtersChanged');
     },
 
     clearFilters() {
+      const rangeInput = document.querySelectorAll(".range-input input");
+      const progress = document.querySelector(".range-slider-container #progress");
+      const values = document.querySelectorAll(".range-slider-container .value-input p");
+
       this.selectedId = "";
       this.selectedName = "";
+
+      this.selectedTime["fromValue"] = this.minValue;
+      this.selectedTime["toValue"] = this.maxValue;
+      progress.style.left = 0;
+      progress.style.right = 0;
+
+      values[0].innerHTML = "From: " + this.epochs[rangeInput[0].min];
+      values[1].innerHTML = "To: " + this.epochs[rangeInput[0].max];
+
+      rangeInput[0].value = rangeInput[0].min;
+      rangeInput[1].value = rangeInput[0].max;
+
       this.$emit('nameWasSelected', this.selectedName);
       this.$emit('idWasSelected', this.selectedId);
+      this.$emit('timeWasSelected', this.selectedTime);
+      this.$emit('filtersChanged');
+
       document.getElementById("selected-id").innerHTML = "Select an id";
       document.getElementById("selected-name").innerHTML = "Select a name";
     },
@@ -177,13 +193,19 @@ export default {
       }
     },
 
-    async getMaxMin() {
+    setTimeRange() {
+      this.selectedTime["fromValue"] = this.minValue;
+      this.selectedTime["toValue"] = this.maxValue;
+    },
+
+     async getMaxMin() {
       await axios
         .get(`${url}/satellites/maxmin/premium`)
         .then((res) => {
           this.maxValue = res.data.maxValue.toString().substring(0, 10);
           this.minValue = res.data.minValue.toString().substring(0, 10);
           this.getEpochs();
+          this.setTimeRange();
         })
         .catch((e) => {
           console.error(e.message);
@@ -192,6 +214,7 @@ export default {
   },
 
   mounted() {
+
     this.getMaxMin();
     this.getSatellitesNames();
 
@@ -217,6 +240,12 @@ export default {
           values[1].innerHTML = "To: " + this.epochs[maxV];
           progress.style.left = ((minV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
           progress.style.right = 100 - ((maxV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
+
+          this.selectedTime["fromValue"] = this.epochs[minV];
+          this.selectedTime["toValue"] = this.epochs[maxV];
+
+          this.$emit('timeWasSelected', this.selectedTime);
+          this.$emit('filtersChanged');
         }
       });
     });
@@ -283,6 +312,7 @@ export default {
   display: none;
   width: 0;
   font-size: 1rem !important;
+  transition: 0.5s !important;
 }
 
 .filters #arrow img {
@@ -418,48 +448,6 @@ export default {
   color: white;
 }
 
-#left-filters .objects-type-checkbox-container {
-  position: relative;
-  padding-left: 41px;
-  cursor: pointer;
-  user-select: none;
-}
-
-#left-filters .objects-type-checkbox-container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-#left-filters .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 20px;
-  width: 20px !important;
-  border-radius: 0.4rem;
-  background: none;
-  border: 2px solid #a1a1a1;
-  transition: 0.3s !important;
-}
-
-#left-filters .objects-type-checkbox-container input:checked ~ .checkmark {
-  background-color: #4c5cbc;
-  border: 2px solid #4c5cbc;
-}
-
-#left-filters .objects-type-checkbox-container:hover input ~ .checkmark {
-  border: 2px solid #4c5cbc;
-}
-
-#left-filters .checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
 /*==================== TIME SLIDER BLOCK ==============================*/
 
 .range-slider-container {
@@ -534,5 +522,6 @@ export default {
   background-color: #4c5cbc;
   border-radius: 50%;
   pointer-events: auto;
+  cursor: pointer;
 }
 </style>

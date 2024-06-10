@@ -7,7 +7,7 @@
     <div id="map-panels">
       <!-- =================== ALL FILTERS ======================================= -->
 
-      <Filters @id-was-selected="getSelectedId" @name-was-selected="getSelectedName"/>
+      <Filters @id-was-selected="getSelectedId" @name-was-selected="getSelectedName" @time-was-selected="getSelectedTime" @filters-changed="filterOjects"/>
 
       <!-- =================== LIGHT BOTTOM BLOCKS ======================================= -->
 
@@ -108,7 +108,7 @@ function rotateSatellite() {
   return {x, y, z};
 }
 
-function addSatellite(x, y, z, name, id) {
+function addSatellite(x, y, z, name, id, epoch) {
   const mtlLoader = new MTLLoader();
   mtlLoader.load("./src/assets/textures/Satellite.mtl", function (materials) {
     materials.preload();
@@ -119,39 +119,11 @@ function addSatellite(x, y, z, name, id) {
       object.scale.set(0.1, 0.1, 0.1);
       object.rotation.set(rotations.x, rotations.y, rotations.z);
       object.name = name;
-      object.uuid = id;
+      object.uuid = id + "_" + epoch;
       satellitesGroup.push(object);
       scene.add(object);
     });
   });
-}
-
-function getSelectedName(name) {
-  if (!name) {
-    scene.children.forEach((o) => { o.visible = true; })
-  } else {
-    satellitesGroup.forEach(s => {
-      if (s.name != name) {
-        s.visible = false;
-      } else {
-        s.visible = true;
-      }
-    })
-  }
-}
-
-function getSelectedId(id) {
-  if (!id) {
-    scene.children.forEach((o) => { o.visible = true; })
-  } else {
-    satellitesGroup.forEach(s => {
-      if (s.uuid != id) {
-        s.visible = false;
-      } else {
-        scene.getObjectByProperty( 'uuid' , s.uuid ).visible = true;
-      }
-    })
-  }
 }
 
 function handleWindowResize() {
@@ -175,6 +147,56 @@ async function getSatellite() {
     console.error(e.message);
   }
 }
+
+// ============================= FILTERS =======================================
+
+let filters = {
+  "name": "",
+  "id": "",
+  "time": ["2024-05-28", "2024-06-01"]
+}
+
+function getSelectedName(name) {
+  filters["name"] = name;
+  filters["id"] = "";
+}
+
+function getSelectedId(id) {
+  filters["id"] = id;
+  filters["name"] = "";
+}
+
+function getSelectedTime(time) {
+  filters["time"] = [new Date(time["fromValue"]), new Date(time["toValue"])];
+}
+
+function filterOjects() {
+  satellitesGroup.forEach(s => {
+    let s_date = new Date(s.uuid.slice(-10));
+    if (s_date >= new Date(filters["time"][0]) && s_date <= new Date(filters["time"][1])) {
+      s.visible = true;
+      if (filters["name"]) {
+        if (s.name != filters["name"]) {
+          s.visible = false;
+        } else {
+          s.visible = true;
+        }
+      } 
+      if (filters["id"]) {
+        if (s.uuid.substring(0, 9) != filters["id"]) {
+          s.visible = false;
+        } else {
+          s.visible = true;
+        }
+      }
+    }
+    else {
+      s.visible = false;
+    }
+  })
+}
+
+// ==============================================================================
 
 onMounted(() => {
   window.addEventListener("resize", handleWindowResize);
@@ -238,8 +260,10 @@ onMounted(() => {
 
   getSatellite().then(() => {
     if (satellites.value.length > 0) {
+      let new_epoch;
       satellites.value.forEach(s => {
-          addSatellite(s.x, s.y, s.z, s.object_name, s.object_id)
+          new_epoch = s.epoch.toString().substring(0, 10);
+          addSatellite(s.x, s.y, s.z, s.object_name, s.object_id, new_epoch)
       })
     }
   });

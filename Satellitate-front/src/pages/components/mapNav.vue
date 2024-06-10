@@ -15,7 +15,7 @@
                 <p>Dashboard</p>
               </div>
               <hr>
-              <div id="logout">
+              <div id="logout" @click="deleteCookieAndRedirect()">
                 <img src="../../assets/icons/log-out.svg" alt="">
                 <div>Log out</div>
               </div>
@@ -63,6 +63,12 @@ export default {
 
     showNavLinks() {
       this.areNavlinksVisible = !this.areNavlinksVisible;
+    },
+
+    deleteCookieAndRedirect() {
+      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+      this.cookies = document.cookie;
+      this.$router.push("/");
     }
 },
 }
@@ -142,6 +148,15 @@ export default {
     animation: dropdown-show 0.5s ease-in-out forwards;
   }
 
+  #mapNavbar #user-dropdown p {
+    transition: 0.5s;
+  }
+
+  #mapNavbar #user-dropdown p:hover {
+    color: #FFC8C2;
+    cursor: pointer;
+  }
+
   @keyframes dropdown-show {
     from {
       opacity: 0;
@@ -195,6 +210,7 @@ export default {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    cursor: pointer;
   }
 
   #mapNavbar #burger-menu {
