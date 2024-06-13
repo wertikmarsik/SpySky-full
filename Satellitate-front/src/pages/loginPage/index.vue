@@ -63,7 +63,7 @@
         </div>
       </form>
     </div>
-    <!-- <planetModel /> -->
+    <planetModel />
   </div>
 </template>
 
@@ -71,7 +71,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from 'vue-router';
 
-// import planetModel from "../components/planetScriptLog.vue";
+import planetModel from "../components/planetScriptLog.vue";
 import axios from "axios";
 
 
@@ -80,7 +80,7 @@ const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 export default {
   name: "login-page",
   components: {
-    // planetModel
+    planetModel
   },
 
   data() {

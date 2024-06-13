@@ -122,6 +122,7 @@ export default {
       first_name: "",
       last_name: "",
       email: "",
+      cookie: "",
     };
   },
 
@@ -133,7 +134,7 @@ export default {
 
   methods: {
     fetchUserData() {
-      if (document.cookie) {
+      if (this.cookie) {
         const token = document.cookie
         .split("; ")
         .find((cookie) => cookie.startsWith("token="))
@@ -147,6 +148,8 @@ export default {
     },
   },
   mounted() {
+    this.cookie = document.cookie;
+    console.log("r", this.cookie);
     this.fetchUserData();
   },
 };

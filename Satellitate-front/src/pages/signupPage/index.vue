@@ -140,13 +140,7 @@
               />
             </div>
             <div>
-              <button
-                id="back"
-                class="stroke"
-                @click.prevent="changePage('page2')"
-              >
-                Back
-              </button>
+              <button id="back" class="stroke" @click.prevent="changePage('page2')">Back</button>
                 <input
                   @click.prevent="confirmUser"
                   type="submit"
@@ -159,7 +153,7 @@
         </div>
       </form>
     </div>
-    <!-- <planetModel /> -->
+    <planetModel />
   </div>
 </template>
 
@@ -167,7 +161,7 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from 'vue-router';
 
-// import planetModel from "../components/planetScriptLog.vue";
+import planetModel from "../components/planetScriptLog.vue";
 import axios from "axios";
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
@@ -175,7 +169,7 @@ const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 export default {
   name: "signup-page",
   components: {
-    // planetModel
+    planetModel
   },
   data() {
     return {

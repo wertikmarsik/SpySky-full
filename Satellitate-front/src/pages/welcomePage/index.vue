@@ -382,9 +382,6 @@ export default {
     Navbar,
     Footer,
     planetModel,
-  },
-  data() {
-    // console.log(this.password);
   }
 };
 </script>

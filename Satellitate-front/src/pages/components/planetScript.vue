@@ -5,8 +5,8 @@
     
 <script setup>
 
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-
+// import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from "three";
 import { onBeforeMount, onMounted, ref, onUnmounted } from "vue";
 
 import gsap from 'gsap';
@@ -24,6 +24,7 @@ camera.position.z = 2;
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 const backgroundTexture = new THREE.TextureLoader().load('src/assets/background-textures/bg.png');
+backgroundTexture.encoding = THREE.sRGBEncoding
 scene.background = backgroundTexture;
 
 // --- Creating the Earth and Atmosphere ---
@@ -152,7 +153,6 @@ function removeObject(obj) {
 onUnmounted(() => { 
   window.cancelAnimationFrame(id);
 
-  scene.dispose();
   backgroundTexture.dispose(); 
   material.uniforms.globeTexture.value.dispose(); 
 

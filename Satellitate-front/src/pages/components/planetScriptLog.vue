@@ -4,7 +4,8 @@
 
 <script setup>
 
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+// import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from "three";
 import { onBeforeMount, onBeforeUnmount, onMounted, ref } from "vue";
 import vertexShader from "../../assets/shaders-folder/vertex.glsl";
 import fragmentShader from "../../assets/shaders-folder/fragment.glsl";
@@ -21,6 +22,7 @@ camera.position.z = 1.4;
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 const backgroundTexture = new THREE.TextureLoader().load('src/assets/background-textures/bg.png');
+backgroundTexture.encoding = THREE.sRGBEncoding
 scene.background = backgroundTexture;
 
 // --- Creating the Earth ---
@@ -142,7 +144,6 @@ onBeforeUnmount(() => {
     scene.remove(camera);
 
     renderer.dispose();
-    scene.dispose();
   
   containerLog.value.removeChild(renderer.domElement);
   window.removeEventListener('resize', handleWindowResize);

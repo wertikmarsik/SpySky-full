@@ -37,7 +37,7 @@
 </template>
 
 <script>
-
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'mapNavbar-component',
@@ -45,15 +45,8 @@ export default {
     return {
       isDropdownVisible: false,
       areNavlinksVisible: false,
+      router: useRouter(),
     }
-  },
-
-  mounted() {
-    document.addEventListener('click', (event) => {
-      if (document.querySelector(".nav-buttons #user") && !document.querySelector(".nav-buttons #user").contains(event.target)) {
-        this.isDropdownVisible = false;
-      }
-    });
   },
 
   methods: {
@@ -66,9 +59,14 @@ export default {
     },
 
     deleteCookieAndRedirect() {
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      this.cookies = document.cookie;
-      this.$router.push("/");
+      try {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+        this.cookies = document.cookie;
+        this.router.push("/");
+      } catch (e) {
+        console.log(e);
+      }
+
     }
 },
 }

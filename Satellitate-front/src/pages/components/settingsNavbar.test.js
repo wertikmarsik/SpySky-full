@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { mount, shallowMount } from '@vue/test-utils';
-import settingsNavbar from './settingsNavbar.vue';
+import { describe, it, expect } from "vitest";
+import { mount, shallowMount } from "@vue/test-utils";
+import settingsNavbar from "./settingsNavbar.vue";
 
-describe('User', () => {
+describe("User", () => {
   
-    it('should delete cookies and redirect to the home page', () => {
+    it("should delete cookies and redirect to the home page", () => {
       const wrapper = shallowMount(settingsNavbar, {
         props: {
             data: {

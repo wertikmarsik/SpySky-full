@@ -19,7 +19,7 @@
           </router-link>
         </div>
         <div class="nav-buttons" v-show="logged">
-          <div id="user" @click="showDropdown()">
+          <div id="user" @click.stop="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">
           </div>
         </div>
@@ -96,15 +96,15 @@ export default {
 mounted() {
     this.checkUser();
 
-    document.addEventListener('click', (event) => {
-      if (document.querySelector(".nav-buttons #user") && !document.querySelector(".nav-buttons #user").contains(event.target)) {
-        this.isDropdownVisible = false;
-      }
+    // document.addEventListener('click', (event) => {
+    //   if (document.querySelector(".nav-buttons #user") && !document.querySelector(".nav-buttons #user").contains(event.target)) {
+    //     this.isDropdownVisible = false;
+    //   }
 
-      if (document.querySelector("#nav-burger-menu") && !document.querySelector("#nav-burger-menu").contains(event.target)) {
-        this.isBurgerDropdownVisible = false;
-      }
-    });
+    //   if (document.querySelector("#nav-burger-menu") && !document.querySelector("#nav-burger-menu").contains(event.target)) {
+    //     this.isBurgerDropdownVisible = false;
+    //   }
+    // });
     
   }
 }

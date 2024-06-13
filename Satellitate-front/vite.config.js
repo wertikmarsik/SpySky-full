@@ -8,5 +8,8 @@ export default {
   ],
   optimizeDeps: {
     exclude: ['node:test/reporters']
-  }
+  },
+  test: {
+    environment: 'jsdom',
+  },
 }

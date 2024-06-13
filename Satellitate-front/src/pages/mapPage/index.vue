@@ -9,7 +9,7 @@
 
       <Filters @id-was-selected="getSelectedId" @name-was-selected="getSelectedName" @time-was-selected="getSelectedTime" @filters-changed="filterOjects"/>
 
-      <!-- =================== LIGHT BOTTOM BLOCKS ======================================= -->
+      <!-- =================== RIGHT BOTTOM BLOCKS ======================================= -->
 
       <div id="right-bottom-elems">
         <div class="scale-buttons">
@@ -30,7 +30,8 @@
 </template>
 
 <script setup>
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+// import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from "three";
 import {OrbitControls} from "three/addons/controls/OrbitControls.js";
 import {onMounted, onUnmounted, ref} from "vue";
 import {OBJLoader} from "three/addons/loaders/OBJLoader.js";
@@ -59,10 +60,10 @@ controls.update();
 
 controls.zoomSpeed = 3.0;
 
-const light = new THREE.AmbientLight(0xffffff, 0.2);
+const light = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(light);
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 3);
 directionalLight.position.set(-30, 35, 55);
 
 scene.add(directionalLight);
@@ -71,6 +72,7 @@ scene.add(directionalLight.target);
 new THREE.TextureLoader().load(
     "src/assets/textures/bg_360.png",
     function (texture) {
+      texture.encoding = THREE.sRGBEncoding
       const pmremGenerator = new THREE.PMREMGenerator(renderer);
       pmremGenerator.compileEquirectangularShader();
 
@@ -78,12 +80,14 @@ new THREE.TextureLoader().load(
       pmremGenerator.dispose();
 
       texture.mapping = THREE.EquirectangularReflectionMapping;
+      envMap.intensity = 0.1;
       scene.background = envMap;
       scene.environment = envMap;
     }
 );
 
 const mapEarth = new THREE.TextureLoader().load("src/assets/textures/earth.png");
+mapEarth.encoding = THREE.sRGBEncoding;
 const bump = new THREE.TextureLoader().load("src/assets/textures/bump.png");
 
 const earthMaterial = new THREE.MeshPhongMaterial({
@@ -151,19 +155,19 @@ async function getSatellite() {
 // ============================= FILTERS =======================================
 
 let filters = {
-  "name": "",
-  "id": "",
+  "name": "Select a name",
+  "id": "Select an id",
   "time": ["2024-05-28", "2024-06-01"]
 }
 
 function getSelectedName(name) {
   filters["name"] = name;
-  filters["id"] = "";
+  filters["id"] = "Select an id";
 }
 
 function getSelectedId(id) {
   filters["id"] = id;
-  filters["name"] = "";
+  filters["name"] = "Select a name";
 }
 
 function getSelectedTime(time) {
@@ -175,14 +179,14 @@ function filterOjects() {
     let s_date = new Date(s.uuid.slice(-10));
     if (s_date >= new Date(filters["time"][0]) && s_date <= new Date(filters["time"][1])) {
       s.visible = true;
-      if (filters["name"]) {
+      if (filters["name"] != "Select a name") {
         if (s.name != filters["name"]) {
           s.visible = false;
         } else {
           s.visible = true;
         }
       } 
-      if (filters["id"]) {
+      if (filters["id"] != "Select an id") {
         if (s.uuid.substring(0, 9) != filters["id"]) {
           s.visible = false;
         } else {
@@ -279,7 +283,6 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.cancelAnimationFrame(id_2);
-  scene.dispose();
 
   renderer.domElement.width = 0;
   renderer.domElement.height = 0;
@@ -308,7 +311,6 @@ onUnmounted(() => {
 
   scene.remove(camera);
   renderer.dispose();
-  scene.dispose();
 
   if (containerMap.value) {
     containerMap.value.removeChild(renderer.domElement);
@@ -317,8 +319,8 @@ onUnmounted(() => {
 </script>
 
 <script>
-import Navbar from "../../pages/components/mapNav.vue";
-import Filters from "../../pages/mapPage/filters.vue";
+import Navbar from "../components/mapNav.vue";
+import Filters from "./filters.vue";
 
 export default {
   name: "map",

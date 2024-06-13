@@ -10,7 +10,7 @@
       <div>
         <p>Search</p>
         <div class="satellite-names">
-          <p id="selected-name" @click="showNamesDropdown()">Select a name</p>
+          <p id="selected-name" @click.stop="showNamesDropdown()">{{ selectedName }}</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
           <ul class="satellite-names-options" v-show="isNamesDropdownVisible">
             <li
@@ -26,7 +26,7 @@
         </div>
 
         <div class="object-ids">
-          <p id="selected-id" @click="showIdsDropdown()">Select an id</p>
+          <p id="selected-id" @click.stop="showIdsDropdown()">{{ selectedId }}</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
           <ul class="objects-id-options" v-show="isIdsDropdownVisible">
             <li
@@ -92,8 +92,8 @@ export default {
       areFiltersVisible: false,
       objects: [],
       epochs: {},
-      selectedId: "",
-      selectedName: "",
+      selectedId: "Select an id",
+      selectedName: "Select a name",
       selectedTime: {
         fromValue: "",
         toValue: ""
@@ -115,26 +115,20 @@ export default {
     },
 
     selectNameOption(object) {
-      if (this.selectedId != "") {
-        this.selectedId = "";
-        document.getElementById("selected-id").innerHTML = "Select an id";
+      if (this.selectedId != "Select an id") {
+        this.selectedId = "Select an id";
       }
-      event.stopPropagation();
       this.selectedName = object.object_name;
-      document.getElementById("selected-name").innerHTML = object.object_name;
       this.isNamesDropdownVisible = false;
       this.$emit('nameWasSelected', this.selectedName);
       this.$emit('filtersChanged');
     },
 
     selectIdOption(object) {
-      if (this.selectedName != "") {
-        this.selectedName = "";
-        document.getElementById("selected-name").innerHTML = "Select a name";
+      if (this.selectedName != "Select a name") {
+        this.selectedName = "Select a name";
       }
-      event.stopPropagation();
       this.selectedId = object.object_id;
-      document.getElementById("selected-id").innerHTML = object.object_id;
       this.isIdsDropdownVisible = false;
       this.$emit('idWasSelected', this.selectedId);
       this.$emit('filtersChanged');
@@ -143,40 +137,36 @@ export default {
     clearFilters() {
       const rangeInput = document.querySelectorAll(".range-input input");
       const progress = document.querySelector(".range-slider-container #progress");
-      const values = document.querySelectorAll(".range-slider-container .value-input p");
 
-      this.selectedId = "";
-      this.selectedName = "";
+      this.selectedId = "Select an id";
+      this.selectedName = "Select a name";
 
       this.selectedTime["fromValue"] = this.minValue;
       this.selectedTime["toValue"] = this.maxValue;
-      progress.style.left = 0;
-      progress.style.right = 0;
 
-      values[0].innerHTML = "From: " + this.epochs[rangeInput[0].min];
-      values[1].innerHTML = "To: " + this.epochs[rangeInput[0].max];
+      if (progress) {      
+        progress.style.left = 0;
+        progress.style.right = 0;
+      }
 
-      rangeInput[0].value = rangeInput[0].min;
-      rangeInput[1].value = rangeInput[0].max;
+      if (rangeInput.min && rangeInput.max) {
+        rangeInput[0].value = rangeInput[0].min;
+        rangeInput[1].value = rangeInput[0].max;
+      }
 
       this.$emit('nameWasSelected', this.selectedName);
       this.$emit('idWasSelected', this.selectedId);
       this.$emit('timeWasSelected', this.selectedTime);
       this.$emit('filtersChanged');
-
-      document.getElementById("selected-id").innerHTML = "Select an id";
-      document.getElementById("selected-name").innerHTML = "Select a name";
     },
 
     async getSatellitesNames() {
-      await axios
-      .get(`${url}/satellites/`)
-      .then((res) => {
+      try {
+        const res = await axios.get(`${url}/satellites/`);
         this.objects = res.data;
-      })
-      .catch((e) => {
+      } catch(e) {
         console.error(`Error fetching names data: ${e.message}`)
-      })
+      }
     },
 
     getEpochs() {
@@ -193,28 +183,21 @@ export default {
       }
     },
 
-    setTimeRange() {
-      this.selectedTime["fromValue"] = this.minValue;
-      this.selectedTime["toValue"] = this.maxValue;
-    },
-
      async getMaxMin() {
-      await axios
-        .get(`${url}/satellites/maxmin/premium`)
-        .then((res) => {
-          this.maxValue = res.data.maxValue.toString().substring(0, 10);
-          this.minValue = res.data.minValue.toString().substring(0, 10);
-          this.getEpochs();
-          this.setTimeRange();
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+      try {
+        const res = await axios.get(`${url}/satellites/maxmin/premium`);
+        this.maxValue = res.data.maxValue.toString().substring(0, 10);
+        this.minValue = res.data.minValue.toString().substring(0, 10);
+        this.getEpochs();
+        this.selectedTime["fromValue"] = this.minValue;
+        this.selectedTime["toValue"] = this.maxValue;
+      } catch (e) {
+        console.error(e.message);
+      }
     },
   },
 
   mounted() {
-
     this.getMaxMin();
     this.getSatellitesNames();
 
@@ -230,14 +213,14 @@ export default {
         if (maxV - minV < 1) {
           if (e.target.className === "range-min") {
             rangeInput[0].value = maxV - 1;
-            values[0].innerHTML = "From: " + this.epochs[maxV - 1];
+            values[0].textContent = "From: " + this.epochs[maxV - 1];
           } else {
             rangeInput[1].value = minV + 1;
-            values[1].innerHTML = "To: " + this.epochs[minV + 1];
+            values[1].textContent = "To: " + this.epochs[minV + 1];
           }
         } else {
-          values[0].innerHTML = "From: " + this.epochs[minV];
-          values[1].innerHTML = "To: " + this.epochs[maxV];
+          values[0].textContent = "From: " + this.epochs[minV];
+          values[1].textContent = "To: " + this.epochs[maxV];
           progress.style.left = ((minV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
           progress.style.right = 100 - ((maxV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
 

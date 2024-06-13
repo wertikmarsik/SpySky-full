@@ -1,13 +1,14 @@
-import { describe, it, expect, vi } from 'vitest';
-import { mount, shallowMount } from '@vue/test-utils';
-import axios from 'axios'
+import { describe, it, expect, vi } from "vitest";
+import { mount, shallowMount } from "@vue/test-utils";
+import axios from "axios"
+vi.mock("axios")
 
-import login from './index.vue';
+import login from "./index.vue";
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 
-describe('UI', () => {
+describe("UI", () => {
 
-    it('should show/hide the password', async () => {
+    it("should show/hide the password", async () => {
         const wrapper = shallowMount(login);
         const input = wrapper.find("#password");
         const eyeBtn = wrapper.find(".visibilityButton");
@@ -16,21 +17,20 @@ describe('UI', () => {
         expect(input.exists()).toBe(true);
         expect(eyeBtn.exists()).toBe(true);
 
-        await input.setValue('11111');
-        expect(input.element.type).toBe('password');
+        await input.setValue("11111");
+        expect(input.element.type).toBe("password");
 
         await eyeBtn.trigger("click");
-        expect(input.element.type).toBe('text');
+        expect(input.element.type).toBe("text");
 
         await eyeBtn.trigger("click");
-        expect(input.element.type).toBe('password');
+        expect(input.element.type).toBe("password");
     })
 })
 
-describe('User', () => {
-    vi.mock('axios')
-  
-    it('should login user', async () => {
+describe("User", () => {
+    
+    it("should login user", async () => {
         const wrapper = shallowMount(login, {
             data() {
                 return {
@@ -51,7 +51,7 @@ describe('User', () => {
         })
     });
 
-    it('should return an error if not logged', async () => {
+    it("should return an error if not logged", async () => {
         const wrapper = shallowMount(login, {
             data() {
                 return {
@@ -61,11 +61,11 @@ describe('User', () => {
             }
         });
 
-        const mockResponse = new Error('You have passed wrong email or password!');
+        const mockResponse = new Error("You have passed wrong email or password!");
         axios.post.mockRejectedValue(mockResponse);
         
         await wrapper.vm.loginUser();
-        expect(wrapper.vm.error).toBe('You have passed wrong email or password!');
+        expect(wrapper.vm.error).toBe("You have passed wrong email or password!");
     });
 
 });

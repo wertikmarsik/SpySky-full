@@ -45,7 +45,7 @@
                 </option>
               </select>
             </form>
-            <button class="fill" @click="updatePersonalInfo">
+            <button id="updateBtn" class="fill" @click="updatePersonalInfo">
               Save the information
             </button>
           </div>
@@ -180,6 +180,7 @@ export default {
       email: "",
       oldPassword: "",
       newPassword: "",
+      cookie: ""
     };
   },
 
@@ -201,33 +202,32 @@ export default {
 
   methods: {
     async deactivateUser() {
-      await axios
-        .post(`${url}/users/deactivate`, {
+      try {
+        const res = await axios.post(`${url}/users/deactivate`, 
+        {
           email: this.email,
         })
-        .then((res) => {
-          alert(res.data);
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          this.$router.push("/login");
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+
+        alert(res.data);
+        
+        this.cookie = "";
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        this.$router.push("/login");
+
+      } catch (e) {
+        console.error(e.message);
+      }
     },
 
     async deleteUser() {
-      await axios
-        .delete(`${url}/users/${this.email}`)
-        .then((res) => {
-          alert(res.data);
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          this.$router.push("/");
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+      try {
+        const res = await axios.delete(`${url}/users/${this.email}`);
+        alert(res.data);
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        this.$router.push("/");
+      } catch (e) {
+        console.error(e.message);
+      }
     },
 
     fetchUserData() {
@@ -245,49 +245,44 @@ export default {
     },
 
     async updatePersonalInfo() {
-      await axios
-        .put(`${url}/users/profile`, {
+      try {
+        const res = await axios.put(`${url}/users/profile`, {
           first_name: this.first_name,
           last_name: this.last_name,
           email: this.email,
           country: this.findCountry(),
-        })
-        .then((res) => {
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          document.cookie = `token=${res.data}; path=/`;
-        })
-        .catch((e) => {
-          console.error(e.message);
         });
+
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = `token=${res.data}; path=/`;
+      } catch (e) {
+        console.error(e.message);
+      }
+      
     },
+
     async updatePassword() {
-      await axios
-        .put(`${url}/users/password`, {
+      try {
+        const res = await axios.put(`${url}/users/password`, {
           email: this.email,
           oldPassword: this.oldPassword,
-          newPassword: this.newPassword,
-        })
-        .then((res) => {
-          alert(res.data);
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          this.$router.push("/login");
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+      }) 
+        alert(res.data);
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        this.$router.push("/login");
+      } catch (e) {
+        console.error(e.message);
+      }
     },
 
     async getCountriesData() {
-      await axios
-        .get(`${url}/countries/`)
-        .then((res) => {
-          this.countries = res.data;
-        })
-        .catch((e) => {
-          console.error(`Error fetching countries data: ${e.message}`);
-        });
+      try {
+        const res = await axios.get(`${url}/countries/`);
+        this.countries = res.data;
+        console.log("r", this.countries);
+      } catch (e) {
+        console.error(`Error fetching countries data: ${e.message}`);
+      }
     },
 
     findCountry() {
