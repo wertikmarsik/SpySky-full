@@ -21,7 +21,7 @@
               </div>
             </div>
           </div>
-          <div id="burger-menu" @click="showNavLinks()">
+          <div id="burger-menu" @click="showNavLinks()" :class="{ opened: areNavlinksVisible }">
             <img src="../../assets/icons/burger.svg" alt="">
           </div>
         </div>
