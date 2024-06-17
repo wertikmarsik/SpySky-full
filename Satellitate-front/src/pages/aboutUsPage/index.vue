@@ -92,7 +92,7 @@
         </div>
         <p>
           SpySky team is a dynamic and collaborative group. With diverse skills
-          and knoledge, we work together seamlessly to achieve excellence and
+          and knowledge, we work together seamlessly to achieve excellence and
           drive innovation in our respective fields.
         </p>
       </div>
@@ -255,15 +255,13 @@ export default {
 
 #missions-grid {
   margin-top: 20px;
-  margin-bottom: 90px;
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-auto-rows: auto;
-  row-gap: 3.5rem;
+  grid-template-rows: auto;
   column-gap: 2rem;
 }
 
 #missions-grid > div:nth-child(1) {
+  display: flex;
   grid-column-start: 1;
   grid-column-end: 6;
   grid-row-start: 1;
@@ -276,6 +274,7 @@ export default {
 }
 
 #missions-grid > div:nth-child(2) {
+  display: flex;
   grid-column-start: 6;
   grid-column-end: 13;
   grid-row-start: 1;
@@ -287,6 +286,7 @@ export default {
 }
 
 #missions-grid > div:nth-child(3) {
+  display: flex;
   grid-column-start: 1;
   grid-column-end: 8;
   grid-row-start: 2;
@@ -298,6 +298,7 @@ export default {
 }
 
 #missions-grid > div:nth-child(4) {
+  display: flex;
   grid-column-start: 8;
   grid-column-end: 13;
   grid-row-start: 2;
@@ -307,4 +308,212 @@ export default {
   background-image: url("../../assets/background-textures/about-us-bg2.png");
   background-size: cover;
 }
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px){
+  #missions-grid {
+    margin-bottom: 60px;
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+  }
+  
+  #missions-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    height: 300px;
+  }
+  
+  #missions-grid > div:nth-child(2) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 25px;
+  }
+  
+  #missions-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    padding: 25px;
+  }
+  
+  #missions-grid > div:nth-child(4) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    height: 300px;
+  }
+}
+
+/*=============================== 601 - 904 px ========================================*/
+
+@media only screen and (min-width: 601px) and (max-width: 904px){
+  #missions-grid {
+    margin-bottom: 80px;
+    grid-template-columns: 1fr;
+    row-gap: 2.5rem;
+  }
+  
+  #missions-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    height: 300px;
+  }
+  
+  #missions-grid > div:nth-child(2) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 35px;
+  }
+  
+  #missions-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    padding: 35px;
+  }
+  
+  #missions-grid > div:nth-child(4) {
+    grid-column-start: 1;
+    grid-column-end: 2;
+    grid-row-start: 3;
+    grid-row-end: 4;
+    height: 300px;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px){
+  #missions-grid {
+    margin-bottom: 80px;
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: 3rem;
+  }
+  
+  #missions-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #missions-grid > div:nth-child(2) {
+    grid-column-start: 4;
+    grid-column-end: 13;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding: 30px;
+  }
+  
+  #missions-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 10;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 30px;
+  }
+  
+  #missions-grid > div:nth-child(4) {
+    grid-column-start: 10;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+}
+
+/*=============================== 1239 - 1439 px ========================================*/
+
+@media only screen and (min-width: 1239px) and (max-width: 1439px){
+  #missions-grid {
+    margin-bottom: 100px;
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: 3rem;
+  }
+  
+  #missions-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #missions-grid > div:nth-child(2) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding: 40px;
+  }
+  
+  #missions-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 40px;
+  }
+  
+  #missions-grid > div:nth-child(4) {
+    grid-column-start: 8;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+}
+
+
+/*=============================== 1440+ px ========================================*/
+
+@media only screen and (min-width: 1440px) {
+  #missions-grid {
+    margin-bottom: 100px;
+    grid-template-columns: repeat(12, 1fr);
+    row-gap: 3rem;
+  }
+  
+  #missions-grid > div:nth-child(1) {
+    grid-column-start: 1;
+    grid-column-end: 6;
+    grid-row-start: 1;
+    grid-row-end: 2;
+  }
+  
+  #missions-grid > div:nth-child(2) {
+    grid-column-start: 6;
+    grid-column-end: 13;
+    grid-row-start: 1;
+    grid-row-end: 2;
+    padding: 50px;
+  }
+  
+  #missions-grid > div:nth-child(3) {
+    grid-column-start: 1;
+    grid-column-end: 8;
+    grid-row-start: 2;
+    grid-row-end: 3;
+    padding: 50px;
+  }
+  
+  #missions-grid > div:nth-child(4) {
+    grid-column-start: 8;
+    grid-column-end: 13;
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+}
+
 </style>

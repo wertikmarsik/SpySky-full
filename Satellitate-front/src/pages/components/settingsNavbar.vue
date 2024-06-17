@@ -1,5 +1,5 @@
 <template>
-  <div id="left-navbar">
+  <div id="left-navbar" v-if="isData">
     <div id="navbar-content">
       <div>
         <div><img src="../../assets/icons/test_profile_photo.png" id="user-photo"></div>
@@ -21,26 +21,39 @@
         </router-link>
       </div>
       <hr>
-      <div @click="deleteCookieAndRedirect">
-        <img src="../../assets/icons/log-out.svg">
-        <p>Log out</p>
-      </div>
+      <router-link to="/" id="no">
+        <div @click="deleteCookie" id="log-out-btn">
+          <img src="../../assets/icons/log-out.svg">
+          <p>Log out</p>
+        </div>
+      </router-link>
 
     </div>
   </div>
 </template>
 
-<script lang="ts">
-
+<script>
 export default {
   name: "settingsNavbar",
   props: ["data"],
+  data () {
+    return {
+      cookies: document.cookie
+    }
+  },
 
+  computed: {
+    isData() {
+      return this.cookies !== ""; 
+    }
+  },
 
   methods: {
-    deleteCookieAndRedirect() {
-      document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-      this.$router.push('/login')
+    deleteCookie() {
+      if (this.cookies) {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+        this.cookies = document.cookie;
+      }
     }
   }
 }
@@ -121,5 +134,10 @@ export default {
   color: #FFC8C2;
   font-weight: 700;
   list-style-type: circle;
+}
+
+#log-out-btn {
+  display: flex !important;
+  flex-direction: row !important;
 }
 </style>

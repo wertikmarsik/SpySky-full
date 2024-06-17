@@ -5,8 +5,8 @@
     
 <script setup>
 
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
-
+// import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from "three";
 import { onBeforeMount, onMounted, ref, onUnmounted } from "vue";
 
 import gsap from 'gsap';
@@ -24,8 +24,8 @@ camera.position.z = 2;
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 const backgroundTexture = new THREE.TextureLoader().load('src/assets/background-textures/bg.png');
+backgroundTexture.encoding = THREE.sRGBEncoding
 scene.background = backgroundTexture;
-
 
 // --- Creating the Earth and Atmosphere ---
 
@@ -78,6 +78,22 @@ function handleWindowResize () {
     }
 
     camera.updateProjectionMatrix();
+
+    const targetAspect = newWidth / newHeight;
+    const imageAspect = 2048 / 1024;
+    const factor = imageAspect / targetAspect;
+    scene.background.offset.x = factor > 1 ? (1 - 1 / factor) / 2 : 0;
+    scene.background.repeat.x = factor > 1 ? 1 / factor : 1;
+    scene.background.offset.y = factor > 1 ? 0 : (1 - factor) / 2;
+    scene.background.repeat.y = factor > 1 ? 1 : factor;
+
+    if (newWidth < 601) {
+        group.position.x = 0;
+        group.position.y = 1.2;
+    } else {
+        group.position.x = 1.2;
+        group.position.y = 0.3;
+    }
 }
 
 onBeforeMount(() => {
@@ -137,7 +153,6 @@ function removeObject(obj) {
 onUnmounted(() => { 
   window.cancelAnimationFrame(id);
 
-  scene.dispose();
   backgroundTexture.dispose(); 
   material.uniforms.globeTexture.value.dispose(); 
 

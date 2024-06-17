@@ -1,9 +1,9 @@
 <template>
   <div id="overlay-login">
-    <Navbar />
     <div id="form-container-login">
       <div id="log-header">Log in</div>
-      <form>
+      <div id="error">{{ error }}</div>
+      <form @submit.prevent="loginUser">
         <div>
           <div>
             <input
@@ -24,9 +24,10 @@
                 placeholder="Password"
                 required
               />
-              <img
-                src="../../assets/icons/eye.svg"
+              <svg
+                class="visibilityButton"
                 @click="changeVisibility('input')"
+                :class="{ 'visible': isPasswordShown }"
               />
             </div>
             <div id="link-container">
@@ -36,15 +37,10 @@
         </div>
 
         <div class="buttons">
-          <router-link to="/welcome" id="no-underline">
-            <input
-              type="submit"
-              @click="loginUser"
-              value="Log in"
+            <button
               id="login-button"
               class="fill"
-            />
-          </router-link>
+            >Log in</button>
           <div id="socials">
             <button id="google" class="stroke">
               <img src="../../assets/icons/google.svg" alt="google" />
@@ -60,39 +56,40 @@
         <div id="signup-link-container">
           <p id="signup-link">
             Don't have an account?
-            <router-link to="/" id="no-underline">
+            <router-link to="/signup" id="no-underline">
               <span>Sign up</span>
             </router-link>
           </p>
         </div>
       </form>
     </div>
+    <planetModel />
   </div>
-  <planetModel />
 </template>
 
 <script>
 import { ref, onMounted } from "vue";
+import { useRouter } from 'vue-router';
 
 import planetModel from "../components/planetScriptLog.vue";
-import Navbar from "../components/navbar.vue";
 import axios from "axios";
 
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
-// const url = "http://localhost:8080";
 
 export default {
   name: "login-page",
   components: {
-    planetModel,
-    Navbar,
+    planetModel
   },
 
   data() {
     return {
       email: "",
       password: "",
+      error: "",
+      router: useRouter(),
+      isPasswordShown: false
     };
   },
 
@@ -108,26 +105,28 @@ export default {
 
   methods: {
     async loginUser() {
-      await axios
-        .post(`${url}/users/login`, {
+      await axios.post(`${url}/users/login`, {
           email: this.email,
           password: this.password,
         })
         .then((res) => {
           document.cookie = `token=${res.data}; path=/`;
+          this.router.push('/');
         })
         .catch((e) => {
-          alert(e.message);
-        });
+          this.error = "You have passed wrong email or password!";
+        })
     },
 
     changeVisibility(reference) {
       const inputRef = this.$refs[reference];
-
-      if (inputRef.type === "password") {
-        inputRef.type = "text";
-      } else {
-        inputRef.type = "password";
+      
+        if (inputRef.type === "password") {
+          inputRef.type = "text";
+          this.isPasswordShown = true;
+        } else {
+          inputRef.type = "password";
+          this.isPasswordShown = false;
       }
     },
   },
@@ -143,6 +142,8 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
 }
 
 #overlay-login div > input::placeholder {
@@ -152,9 +153,7 @@ export default {
 #form-container-login {
   position: relative;
   z-index: 1000;
-  width: 55%;
   box-sizing: border-box;
-  padding: 40px 90px 70px 90px;
   border-radius: 8px;
   background-color: rgba(0, 14, 31, 0.85);
   backdrop-filter: blur(16px);
@@ -232,7 +231,6 @@ export default {
 
 #form-container-login form .password-input input,
 #form-container-login form #email {
-  font-size: 16px;
   font-weight: 700;
   background-color: transparent;
   border: 0;
@@ -245,20 +243,21 @@ export default {
   box-sizing: border-box;
 }
 
+#form-container-login input:-webkit-autofill,
+#form-container-login input:-webkit-autofill:hover, 
+#form-container-login input:-webkit-autofill:focus, 
+#form-container-login input:-webkit-autofill:active{
+  color : rgb(255, 255, 255) !important;
+  -webkit-text-fill-color: rgb(255, 255, 255) !important;
+  transition: background-color 500000s;
+}
+
 #form-container-login #link-container {
   width: 100%;
   text-align: end;
-  margin-top: 20px;
-}
-
-#forgot-password {
-  font-size: 20px;
-  font-weight: 400;
-  text-decoration: none;
 }
 
 #signup-link {
-  font-size: 16px;
   font-weight: 700;
   text-decoration: none;
 }
@@ -277,19 +276,199 @@ export default {
   position: relative;
 }
 
-#form-container-login .password-input img {
+#form-container-login .visibilityButton {
   position: absolute;
+  width: 25px;
+  height: 25px;
   right: 20px;
   bottom: 20px;
   filter: invert(100%);
-  width: 25px;
   cursor: pointer;
+  background-image: url("../../assets/icons/eye-slash.svg");
+  background-size: contain;
+}
+
+#form-container-login .visible {
+  background-image: url("../../assets/icons/eye.svg");
 }
 
 #form-container-login #forgot-password {
   color: white;
-  font-size: 16px;
-  font-weight: 500;
   line-height: 150%;
+  font-weight: 400;
+  text-decoration: none;
 }
+
+#error {
+  color: #ff8c71;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px){
+  #overlay-login {
+    padding: 0px 5%;
+  }
+    
+  #form-container-login {
+    width: 100%;
+    padding: 25px 25px 50px;
+  }
+  
+  #form-container-login #login-button {
+    width: 100%;
+  }
+  
+  #form-container-login .buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 24px;
+  }
+  
+  #form-container-login #socials button {
+    width: 100%;
+  }
+  
+  #form-container-login form .password-input input,
+  #form-container-login form #email {
+    font-size: 18px;
+  }
+  
+  #form-container-login #link-container {
+    margin-top: 30px;
+  }
+
+  #signup-link {
+    font-size: 20px;
+  }
+  
+  #form-container-login #forgot-password {
+    font-size: 20px;
+  }
+}
+
+/*=============================== 601 - 904 px ========================================*/
+
+@media only screen and (min-width: 601px) and (max-width: 904px){
+  #overlay-login {
+    padding: 0px 7%;
+  }
+    
+  #form-container-login {
+    width: 100%;
+    padding: 35px 35px 60px;
+  }
+    
+  #form-container-login #login-button {
+    width: fit-content;
+  }
+  
+  #form-container-login .buttons {
+    flex-direction: row;
+    width: 100%;
+  }
+  
+  #form-container-login #socials button {
+    width: fit-content;
+  }
+  
+  #form-container-login form .password-input input,
+  #form-container-login form #email {
+    font-size: 18px;
+  }
+  
+  #form-container-login #link-container {
+    margin-top: 30px;
+  }
+
+  #signup-link {
+    font-size: 18px;
+  }
+  
+  #form-container-login #forgot-password {
+    font-size: 18px;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px){
+  #form-container-login {
+    width: 65%;
+    padding: 40px 50px 60px 50px;
+  }
+    
+  #form-container-login #login-button {
+    width: fit-content;
+  }
+  
+  #form-container-login .buttons {
+    flex-direction: row;
+  }
+  
+  #form-container-login #socials button {
+    width: fit-content;
+  }
+  
+  #form-container-login form .password-input input,
+  #form-container-login form #email {
+    font-size: 16px;
+  }
+  
+  #form-container-login #link-container {
+    margin-top: 20px;
+  }
+
+  #signup-link {
+    font-size: 16px;
+  }
+  
+  #form-container-login #forgot-password {
+    font-size: 16px;
+  }
+}
+
+/*=============================== 1239+ px ========================================*/
+
+@media only screen and (min-width: 1239px) {
+  #form-container-login {
+    width: 55%;
+    padding: 40px 90px 70px 90px;
+  }
+    
+  #form-container-login #login-button {
+    width: fit-content;
+  }
+    
+  #form-container-login .buttons {
+    flex-direction: row;
+  }
+  
+  #form-container-login #socials button {
+    width: fit-content;
+  }
+  
+  #form-container-login form .password-input input,
+  #form-container-login form #email {
+    font-size: 16px;
+  }
+  
+  #form-container-login #link-container {
+    margin-top: 20px;
+  }
+  
+  #signup-link {
+    font-size: 16px;
+  }
+
+  #form-container-login #forgot-password {
+    font-size: 16px;
+  }
+}
+
 </style>

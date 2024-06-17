@@ -23,11 +23,11 @@ const routes = [
     component: login,
   },
   {
-    path: "/",
+    path: "/signup",
     component: signup,
   },
   {
-    path: "/welcome",
+    path: "/",
     component: welcome,
   },
   {

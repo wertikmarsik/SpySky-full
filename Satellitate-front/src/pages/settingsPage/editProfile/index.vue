@@ -4,7 +4,7 @@
 
     <!-- ============================= CONTENT ============================= -->
 
-    <div id="main-container">
+    <div id="main-container" v-if="isData">
       <SettingsNavbar
         :data="{
           email: this.email,
@@ -45,7 +45,7 @@
                 </option>
               </select>
             </form>
-            <button class="fill" @click="updatePersonalInfo">
+            <button id="updateBtn" class="fill" @click="updatePersonalInfo">
               Save the information
             </button>
           </div>
@@ -149,7 +149,7 @@
       </div>
     </div>
 
-    <Footer />
+    <Footer v-if="isData"/>
   </div>
 </template>
 
@@ -162,7 +162,6 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
-// const url = "http://localhost:8080";
 
 export default {
   name: "editProfile-page",
@@ -181,7 +180,14 @@ export default {
       email: "",
       oldPassword: "",
       newPassword: "",
+      cookie: ""
     };
+  },
+
+  computed: {
+    isData() {
+      return this.email !== ""; 
+    }
   },
 
   setup() {
@@ -196,91 +202,87 @@ export default {
 
   methods: {
     async deactivateUser() {
-      await axios
-        .post(`${url}/users/deactivate`, {
+      try {
+        const res = await axios.post(`${url}/users/deactivate`, 
+        {
           email: this.email,
         })
-        .then((res) => {
-          alert(res.data);
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          this.$router.push("/login");
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+
+        alert(res.data);
+        
+        this.cookie = "";
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        this.$router.push("/login");
+
+      } catch (e) {
+        console.error(e.message);
+      }
     },
 
     async deleteUser() {
-      await axios
-        .delete(`${url}/users/${this.email}`)
-        .then((res) => {
-          alert(res.data);
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          this.$router.push("/");
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+      try {
+        const res = await axios.delete(`${url}/users/${this.email}`);
+        alert(res.data);
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        this.$router.push("/");
+      } catch (e) {
+        console.error(e.message);
+      }
     },
 
     fetchUserData() {
-      const token = document.cookie
+      if (document.cookie) {
+        const token = document.cookie
         .split("; ")
         .find((cookie) => cookie.startsWith("token="))
         .split("=")[1];
-      const decoded = jwtDecode(token);
-      this.first_name = decoded.first_name;
-      this.last_name = decoded.last_name;
-      this.email = decoded.email;
-      console.log(this.first_name);
+        const decoded = jwtDecode(token);
+        this.first_name = decoded.first_name;
+        this.last_name = decoded.last_name;
+        this.email = decoded.email;
+        console.log(this.first_name);
+      }
     },
 
     async updatePersonalInfo() {
-      await axios
-        .put(`${url}/users/profile`, {
+      try {
+        const res = await axios.put(`${url}/users/profile`, {
           first_name: this.first_name,
           last_name: this.last_name,
           email: this.email,
           country: this.findCountry(),
-        })
-        .then((res) => {
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          document.cookie = `token=${res.data}; path=/`;
-        })
-        .catch((e) => {
-          console.error(e.message);
         });
+
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        document.cookie = `token=${res.data}; path=/`;
+      } catch (e) {
+        console.error(e.message);
+      }
+      
     },
+
     async updatePassword() {
-      await axios
-        .put(`${url}/users/password`, {
+      try {
+        const res = await axios.put(`${url}/users/password`, {
           email: this.email,
           oldPassword: this.oldPassword,
-          newPassword: this.newPassword,
-        })
-        .then((res) => {
-          alert(res.data);
-          document.cookie =
-            "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          this.$router.push("/login");
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+      }) 
+        alert(res.data);
+        document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        this.$router.push("/login");
+      } catch (e) {
+        console.error(e.message);
+      }
     },
 
     async getCountriesData() {
-      await axios
-        .get(`${url}/countries/`)
-        .then((res) => {
-          this.countries = res.data;
-        })
-        .catch((e) => {
-          console.error(`Error fetching countries data: ${e.message}`);
-        });
+      try {
+        const res = await axios.get(`${url}/countries/`);
+        this.countries = res.data;
+        console.log("r", this.countries);
+      } catch (e) {
+        console.error(`Error fetching countries data: ${e.message}`);
+      }
     },
 
     findCountry() {
@@ -302,8 +304,8 @@ export default {
   },
 
   mounted() {
-    this.fetchUserData();
-    this.getCountriesData();
+      this.fetchUserData();
+      this.getCountriesData();
   },
 };
 </script>

@@ -1,9 +1,13 @@
 /*========================== APP =================================*/
 
+body {
+  background-color: black;
+}
+
 #app {
   width: 100vw;
   overflow-x: hidden;
-  background-color: black;
+  background-color: rgb(0, 0, 0);
 }
 
 * {
@@ -18,6 +22,18 @@ body {
 ::selection {
   color: black;
   background: #FF8C71;
+}
+
+/*=========================== CONTAINER ===============================*/
+
+.main-container {
+  width: 100vw;
+  position: relative;
+  color: white;
+  font-family: 'Exo 2', sans-serif;
+  box-sizing: border-box;
+  padding: 0 150px;
+  background-color: black;
 }
 
 /*===================== GENERAL STYLES ================================*/
@@ -57,18 +73,8 @@ align-items: center;
 height: 40px;
 }
 
-.main-container {
-  width: 100vw;
-  position: relative;
-  color: white;
-  font-family: 'Exo 2', sans-serif;
-  box-sizing: border-box;
-  padding: 0 150px;
-  background-color: black;
-}
-
 .hero-container {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
 }
 
@@ -80,7 +86,7 @@ height: 40px;
   flex-direction: column;
   justify-content: center;
   box-sizing: border-box;
-  width: 40%;
+  width: 45%;
 }
 
 .block-count {
@@ -175,7 +181,7 @@ button:hover {
 
 .hero-container #asteroid1 {
   position: absolute;
-  width: 250px;
+  width: 230px;
   bottom: 5%;
   right: -20%;
   transform: rotate(50deg);
@@ -189,7 +195,7 @@ button:hover {
 
 .hero-container #asteroid2 {
   position: absolute;
-  width: 250px;
+  width: 230px;
   bottom: 50%;
   right: -70%;
   transition: 2s;
@@ -326,20 +332,13 @@ background: rgb(56, 56, 56);
   flex-direction: column;
   align-items: center;
   position: relative;
-  gap: 3rem;
   box-sizing: border-box;
-  padding: 150px 0;
-}
-
-#contact-us-block .block-header {
-  width: 40%;
 }
 
 #contact-us-block #contact-us-background {
   position: absolute;
-  left: -150px;
-  top: 0px; 
-  bottom: 0px;
+  top: 0; 
+  bottom: 0;
   z-index: 0;
   border-top: 2px solid #00142D;
   border-bottom: 2px solid #00142D;
@@ -381,4 +380,349 @@ background: rgb(56, 56, 56);
 #contact-us-block #short-form > input:focus {
   outline: none;
   box-shadow: 0px 0px 8.8px 7px rgba(0, 20, 45, 0.85);
+}
+
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+  .main-container {
+    padding: 0 5%;
+  }
+  
+  .hero-container #asteroid1, 
+  .hero-container #asteroid2, 
+  .hero-container #asteroid3 {
+    display: none;
+  }
+
+  .hero-overlay {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-overlay .hero-nav {
+    margin-top: 350px;
+  }
+
+  .hero-overlay .hero-nav p,
+  .hero-overlay div {
+    text-align: center;
+    align-items: center;
+  }
+
+  .hero-overlay .hero-nav p {
+    width: 100%;
+  }
+
+  .hero-nav #header {
+    font-size: 36px;
+  }
+
+  .block-count {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+  }
+
+  .header-mid {
+    font-size: 32px;
+  }
+
+  .block-header {
+    width: 100%;
+    margin-bottom: 3rem;
+  }
+
+  #contact-us-block {
+    padding: 100px 0;
+  }
+
+  #contact-us-block #contact-us-background {
+    left: -5%;
+  }
+
+  #contact-us-block #short-form {
+    flex-direction: column;
+    align-items: center;
+  }  
+}
+
+/*=============================== 601 - 904 px ========================================*/
+
+@media only screen and (min-width: 601px) and (max-width: 904px) {
+  .main-container {
+    padding: 0 7%;
+  }
+
+  .hero-container #asteroid1,
+  .hero-container #asteroid2,
+  .hero-container #asteroid3 {
+    pointer-events: none;
+  }
+
+  .hero-container #asteroid1 {
+    width: 40%;
+    bottom: 15%;
+    right: -60%;
+  }
+  
+  .hero-container #asteroid2 {
+    width: 45%;
+    bottom: 50%;
+    right: -80%;
+  }
+  
+  .hero-container #asteroid3 {
+    width: 15%;
+    top: 15%;
+    right: -10%;
+  }
+
+  .hero-overlay {
+    width: 55%;
+  }
+
+  .hero-overlay .hero-nav p {
+    width: 100%;
+  }
+
+  .block-count {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+
+  .header-mid {
+    font-size: 32px;
+  }
+
+  .block-header {
+    width: 85%;
+    margin-bottom: 3rem;
+  }
+
+  #contact-us-block {
+    padding: 100px 0;
+    gap: 1rem;
+  }
+
+  #contact-us-block #contact-us-background {
+    left: -8%;
+  }
+
+  #contact-us-block #short-form {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px) {
+  .main-container {
+    padding: 0 10%;
+  }
+
+  .hero-container #asteroid1 {
+    position: absolute;
+    width: 180px;
+    bottom: 5%;
+    right: -40%;
+    pointer-events: all;
+  }
+  
+  .hero-container #asteroid1:hover {
+    right: -35%;
+  }
+  
+  .hero-container #asteroid2 {
+    width: 180px;
+    bottom: 50%;
+    right: -100%;
+    pointer-events: all;
+  }
+  
+  .hero-container #asteroid2:hover {
+    right: -90%;
+  }
+  
+  .hero-container #asteroid3 {
+    width: 70px;
+    top: 12%;
+    right: -20%;
+    pointer-events: all;
+  }
+  
+  .hero-container #asteroid3:hover {
+    top: 10%;
+    right: -10%;
+  }
+
+  .hero-overlay {
+    width: 52%;
+  }
+
+  .hero-nav #header {
+    font-size: 48px;
+  }
+
+  .block-count {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+
+  .header-mid {
+    font-size: 2.25rem;
+  }
+
+  .block-header {
+    width: 60%;
+    margin-bottom: 3rem;
+  }
+
+  #contact-us-block {
+    padding: 120px 0;
+  }
+
+  #contact-us-block #contact-us-background {
+    left: -12.5%;
+  }
+
+  #contact-us-block #short-form {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/*=============================== 1239 - 1439 px ========================================*/
+
+@media only screen and (min-width: 1239px) and (max-width: 1439px) {
+  .main-container {
+    padding: 0 10%;
+  }
+
+  .hero-container #asteroid1 {
+    position: absolute;
+    width: 250px;
+    bottom: 5%;
+    right: -40%;
+    pointer-events: all;
+  }
+  
+  .hero-container #asteroid1:hover {
+    right: -35%;
+  }
+  
+  .hero-container #asteroid2 {
+    width: 250px;
+    bottom: 50%;
+    right: -100%;
+    pointer-events: all;
+  }
+  
+  .hero-container #asteroid2:hover {
+    right: -90%;
+  }
+  
+  .hero-container #asteroid3 {
+    width: 70px;
+    top: 12%;
+    right: -20%;
+    pointer-events: all;
+  }
+  
+  .hero-container #asteroid3:hover {
+    top: 10%;
+    right: -10%;
+  }
+
+  .hero-overlay {
+    width: 50%;
+  }
+
+  .hero-nav #header {
+    font-size: 48px;
+  }
+
+  .block-count {
+    font-size: 3rem;
+    margin-bottom: 20px;
+  }
+
+  .header-mid {
+    font-size: 2.25rem;
+  }
+
+  .block-header {
+    width: 50%;
+    margin-bottom: 3rem;
+  }
+
+  #contact-us-block {
+    padding: 120px 0;
+  }
+
+  #contact-us-block #contact-us-background {
+    left: -12.5%;
+  }
+
+  #contact-us-block #short-form {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/*=============================== 1440+ px ========================================*/
+
+@media only screen and (min-width: 1440px) {
+  .main-container {
+    padding: 0 12%;
+  }
+
+  .block-header {
+    margin-bottom: 4rem !important;
+  }
+
+  .hero-container #asteroid1 {
+    width: 250px;
+    bottom: 5%;
+    right: -40%;
+    pointer-events: all !important;
+  }
+  
+  .hero-container #asteroid1:hover {
+    right: -35%;
+  }
+  
+  .hero-container #asteroid2 {
+    width: 250px;
+    bottom: 50%;
+    right: -90%;
+    pointer-events: all !important;
+  }
+  
+  .hero-container #asteroid2:hover {
+    right: -85%;
+  }
+  
+  .hero-container #asteroid3 {
+    width: 70px;
+    top: 12%;
+    right: -10%;
+    pointer-events: all !important;
+  }
+  
+  .hero-container #asteroid3:hover {
+    top: 10%;
+    right: -5%;
+  }
+
+  #contact-us-block {
+    padding: 150px 0;
+  }
+
+  #contact-us-block #contact-us-background {
+    left: -16%;
+  }
 }

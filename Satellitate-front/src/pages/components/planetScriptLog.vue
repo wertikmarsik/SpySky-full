@@ -4,7 +4,8 @@
 
 <script setup>
 
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+// import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.118/build/three.module.js";
+import * as THREE from "three";
 import { onBeforeMount, onBeforeUnmount, onMounted, ref } from "vue";
 import vertexShader from "../../assets/shaders-folder/vertex.glsl";
 import fragmentShader from "../../assets/shaders-folder/fragment.glsl";
@@ -21,6 +22,7 @@ camera.position.z = 1.4;
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 
 const backgroundTexture = new THREE.TextureLoader().load('src/assets/background-textures/bg.png');
+backgroundTexture.encoding = THREE.sRGBEncoding
 scene.background = backgroundTexture;
 
 // --- Creating the Earth ---
@@ -68,6 +70,22 @@ function handleWindowResize () {
     }
 
     camera.updateProjectionMatrix();
+
+    const targetAspect = newWidth / newHeight;
+    const imageAspect = 2048 / 1024;
+    const factor = imageAspect / targetAspect;
+    scene.background.offset.x = factor > 1 ? (1 - 1 / factor) / 2 : 0;
+    scene.background.repeat.x = factor > 1 ? 1 / factor : 1;
+    scene.background.offset.y = factor > 1 ? 0 : (1 - factor) / 2;
+    scene.background.repeat.y = factor > 1 ? 1 : factor;
+
+    if (newWidth <= 600) {
+      sphere.scale.set(0.7, 0.7, 0.7);
+      atmosphere.scale.set(0.75, 0.75, 0.75);
+    } else {
+      sphere.scale.set(1, 1, 1);
+      atmosphere.scale.set(1.05, 1.05, 1.05);
+    } 
 }
 
 onBeforeMount(() => {
@@ -126,7 +144,6 @@ onBeforeUnmount(() => {
     scene.remove(camera);
 
     renderer.dispose();
-    scene.dispose();
   
   containerLog.value.removeChild(renderer.domElement);
   window.removeEventListener('resize', handleWindowResize);

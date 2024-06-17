@@ -58,4 +58,52 @@ export default {
 #footer #footer-logo img {
   height: 35px;
 }
+
+@media only screen and (max-width: 600px) {
+  #footer {
+    align-items: center;
+    text-align: center;
+  }
+
+  #footer ul {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  #footer ul li {
+    font-size: 24px;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  #footer {
+    align-items: center;
+    text-align: center;
+  }
+
+  #footer ul {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  #footer ul li {
+    font-size: 22px;
+  }
+}
+
+@media only screen and (min-width: 905px) {
+  #footer {
+    align-items: center;
+    text-align: start;
+  }
+
+  #footer ul {
+    flex-direction: row;
+    gap: 1.5rem;
+  }
+
+  #footer ul li {
+    font-size: 1rem;
+  }
+}
 </style>

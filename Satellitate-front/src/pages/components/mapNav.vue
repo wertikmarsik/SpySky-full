@@ -4,7 +4,7 @@
         <div class="nav-buttons">
           <div id="user" @click="showDropdown()">
             <img src="../../assets/icons/test_profile_photo.png" id="user-photo">
-            <div id="user-dropdown">
+            <div id="user-dropdown" v-show="isDropdownVisible">
               <div>
                 <router-link to="/settings" id="no-underline-dropdown">
                   <p>Profile settings</p>
@@ -15,18 +15,18 @@
                 <p>Dashboard</p>
               </div>
               <hr>
-              <div id="logout">
+              <div id="logout" @click="deleteCookieAndRedirect()">
                 <img src="../../assets/icons/log-out.svg" alt="">
                 <div>Log out</div>
               </div>
             </div>
           </div>
-          <div id="burger-menu" @click="showNavLinks()">
+          <div id="burger-menu" @click="showNavLinks()" :class="{ opened: areNavlinksVisible }">
             <img src="../../assets/icons/burger.svg" alt="">
           </div>
         </div>
     </div>
-    <ul id="burger-menu-navlinks">
+    <ul v-bind:class="{ 'burger-menu-navlinks': true, 'burger-menu-navlinks-hidden': areNavlinksVisible }">
       <router-link to="/about-us" id="no-underline"><li>About Us</li></router-link>
       <router-link to="/our-mission" id="no-underline"><li>Our Mission</li></router-link>
       <router-link to="/our-team" id="no-underline"><li>SpySKy Team</li></router-link>
@@ -37,40 +37,37 @@
 </template>
 
 <script>
-
+import { useRouter } from 'vue-router';
 
 export default {
   name: 'mapNavbar-component',
   data () {
-    document.addEventListener("click", (event) => {
-      let dropdown = document.getElementById("user-dropdown")
-      let icon = document.querySelector(".nav-buttons #user");
-      let isClickInside = icon.contains(event.target);
-      if (!isClickInside) {
-        dropdown.classList.remove("show");
-      }
-    });
+    return {
+      isDropdownVisible: false,
+      areNavlinksVisible: false,
+      router: useRouter(),
+    }
   },
+
   methods: {
     showDropdown() {
-      let dropdown = document.getElementById("user-dropdown")
-      if (dropdown.classList.contains("show")) {
-        dropdown.classList.remove("show");
-      } else {
-        dropdown.classList.toggle("show");
+      this.isDropdownVisible = !this.isDropdownVisible;
+    },
+
+    showNavLinks() {
+      this.areNavlinksVisible = !this.areNavlinksVisible;
+    },
+
+    deleteCookieAndRedirect() {
+      try {
+        document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
+        this.cookies = document.cookie;
+        this.router.push("/");
+      } catch (e) {
+        console.log(e);
       }
-  },
-  showNavLinks() {
-    let burgerMenu = document.getElementById("burger-menu-navlinks");
-    let burgerIcon = document.getElementById("burger-menu");
-    if (burgerMenu.classList.contains("show")) {
-      burgerMenu.classList.remove("show");
-      burgerIcon.classList.remove("opened");
-    } else {
-      burgerMenu.classList.toggle("show");
-      burgerIcon.classList.toggle("opened");
+
     }
-  }
 },
 }
 </script>
@@ -86,7 +83,7 @@ export default {
     width: 100%;
     height: 75px;
     z-index: 10000;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 1);
     backdrop-filter: blur(6px);
     display: flex;
     flex-direction: row;
@@ -146,24 +143,35 @@ export default {
     box-sizing: border-box;
     gap: 30px;
     border-radius: 0.5rem;
-    visibility: hidden; 
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out, visibility 0s linear 0.3s; 
+    animation: dropdown-show 0.5s ease-in-out forwards;
   }
 
-  #mapNavbar #user-dropdown.show {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 0.3s ease-in-out, visibility 0s linear;
+  #mapNavbar #user-dropdown p {
+    transition: 0.5s;
   }
 
-  #burger-menu-navlinks {
-    position: relative;
+  #mapNavbar #user-dropdown p:hover {
+    color: #FFC8C2;
+    cursor: pointer;
+  }
+
+  @keyframes dropdown-show {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .burger-menu-navlinks {
+    position: fixed;
     top: 0px;
     font-size: 14px;
     color: white;
     font-family: 'Exo 2', sans-serif;
-    position: fixed;
     left: 0;
     width: 100%;
     z-index: 9000;
@@ -176,32 +184,31 @@ export default {
     align-items: center;
     padding: 12px 30px;
     border-bottom: 2px solid #00142D;
-    opacity: 0;
-    transition: all 0.3s ease;
-    height: 0;
     list-style: none;
     gap: 2rem;
+    transform: translateY(0px);
+    transition: transform 0.5s ease-in-out;
   }
 
-  #burger-menu-navlinks li {
+  .burger-menu-navlinks-hidden {
+    transform: translateY(75px);
+    transition: transform 0.5s ease-in-out;
+  }
+
+  .burger-menu-navlinks li {
     transition: 0.5s;
     cursor: pointer;
   }
 
-  #burger-menu-navlinks li:hover {
+  .burger-menu-navlinks li:hover {
     color: #FFC8C2;
-  }
-
-  #burger-menu-navlinks.show {
-    opacity: 1;
-    transform: translateY(75px);
-    height: fit-content;
   }
 
   #mapNavbar #user-dropdown #logout {
     display: flex;
     flex-direction: row;
     gap: 1rem;
+    cursor: pointer;
   }
 
   #mapNavbar #burger-menu {
@@ -213,6 +220,7 @@ export default {
     border-radius: 0.25rem;
     padding: 8px;
     box-sizing: border-box;
+    background-color: none;
   }
 
   #mapNavbar #burger-menu img {
@@ -220,10 +228,7 @@ export default {
     height: 18px;
   }
 
-  #mapNavbar #burger-menu:hover {
-    background-color: #4C5CBC;
-  }
-
+  #mapNavbar #burger-menu:hover,
   #mapNavbar #burger-menu.opened {
     background-color: #4C5CBC;
   }

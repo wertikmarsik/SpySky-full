@@ -1,65 +1,64 @@
 <template>
   <div id="overlay-signup">
-    <Navbar/>
     <div id="form-container-signup">
       <div id="signup-header">Sign up</div>
       <form id="form-first" v-if="currentPage === 'page1'">
         <div>
           <div class="name-inputs">
             <input
-                type="text"
-                id="first-name"
-                v-model="firstName"
-                placeholder="First name"
+              type="text"
+              id="first-name"
+              v-model="firstName"
+              placeholder="First name"
             />
             <input
-                type="text"
-                id="last-name"
-                v-model="lastName"
-                placeholder="Last name"
+              type="text"
+              id="last-name"
+              v-model="lastName"
+              placeholder="Last name"
             />
           </div>
-          <div>
-            <select id="country" v-model="selectedCountry">
-              <option value="">Select a country</option>
-              <option
-                  v-for="country in countries"
-                  :key="country.id"
-                  :value="country.id"
-              >
+          <div class="countries" @click="showCountries()">
+            <p id="selectedCountry">{{ selectedCountry }}</p>
+            <img src="../../assets/icons/caret-down-fill.svg" />
+            <ul id="country-options" v-show="showOptions">
+              <li class="country-option"
+              v-for="country in countries"
+              :key="country.id"
+              :value="country.id"
+              @click="selectOption(country)">
                 {{ country.country_name }}
-              </option>
-            </select>
+              </li>
+            </ul>
           </div>
           <div>
             <input
-                type="tel"
-                id="phone-number"
-                v-model="phone_number"
-                placeholder="Phone number"
-                pattern="+38-[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                required
+              type="tel"
+              id="phone-number"
+              v-model="phone_number"
+              placeholder="Phone number"
+              required
             />
           </div>
         </div>
 
         <div class="buttons">
           <button
-              id="next-button"
-              class="fill"
-              @click.prevent="changePage('page2')"
+            id="next-button"
+            class="fill"
+            @click.prevent="changePage('page2')"
           >
             Next
           </button>
           <div id="socials">
             <button id="google" class="stroke">
-              <img src="../../assets/icons/google.svg" alt="google"/>
+              <img src="../../assets/icons/google.svg" alt="google" />
             </button>
             <button id="facebook" class="stroke">
-              <img src="../../assets/icons/facebook.svg" alt="facebook"/>
+              <img src="../../assets/icons/facebook.svg" alt="facebook" />
             </button>
             <button id="apple" class="stroke">
-              <img src="../../assets/icons/apple.svg" alt="apple"/>
+              <img src="../../assets/icons/apple.svg" alt="apple" />
             </button>
           </div>
         </div>
@@ -75,33 +74,35 @@
       <form id="form-second" v-if="currentPage === 'page2'">
         <div>
           <div>
-            <input type="text" id="email" v-model="email" placeholder="Email"/>
+            <input type="text" id="email" v-model="email" placeholder="Email" />
           </div>
           <div class="password-input">
             <input
-                type="password"
-                class="password"
-                v-model="password"
-                ref="input"
-                placeholder="Password"
-                required
+              type="password"
+              class="password"
+              v-model="password"
+              ref="input"
+              placeholder="Password"
+              required
             />
-            <img
-                src="../../assets/icons/eye.svg"
-                @click="changeVisibility('input')"
+            <svg
+              id="visibilityButton1"
+              @click="changeVisibility('input')"
+              :class="{ 'visible': isPasswordShown }"
             />
           </div>
           <div class="password-input">
             <input
-                type="password"
-                class="password"
-                ref="inputConfirm"
-                placeholder="Confirm password"
-                required
+              type="password"
+              class="password"
+              ref="inputConfirm"
+              placeholder="Confirm password"
+              required
             />
-            <img
-                src="../../assets/icons/eye.svg"
-                @click="changeVisibility('inputConfirm')"
+            <svg
+              id="visibilityButton2"
+              @click="changeVisibility('inputConfirm')"
+              :class="{ 'visible': isConfirmPasswordShown }"
             />
           </div>
         </div>
@@ -110,11 +111,11 @@
             Back
           </button>
           <input
-              type="submit"
-              value="Sign up"
-              id="signup-button"
-              class="fill"
-              @click.prevent="registerUser"
+            type="submit"
+            value="Sign up"
+            id="signup-button"
+            class="fill"
+            @click.prevent="registerUser"
           />
         </div>
         <div id="login-link-container">
@@ -132,52 +133,61 @@
             <label>Enter the confirmation code</label>
             <div id="code-input">
               <input
-                  type="text"
-                  placeholder="Enter code"
-                  v-model="confirmCode"
-                  id="code"
+                type="text"
+                placeholder="Enter code"
+                v-model="confirmCode"
+                id="code"
               />
             </div>
             <div>
-              <button
-                  id="back"
-                  class="stroke"
-                  @click.prevent="changePage('page2')"
-              >
-                Back
-              </button>
-              <router-link to="/welcome" id="no-underline" @click="confirmUser">
+              <button id="back" class="stroke" @click.prevent="changePage('page2')">Back</button>
                 <input
-                    type="submit"
-                    id="signup-button"
-                    class="fill"
-                    value="Confirm email address"
+                  @click.prevent="confirmUser"
+                  type="submit"
+                  id="signup-button"
+                  class="fill"
+                  value="Confirm email address"
                 />
-              </router-link>
             </div>
           </form>
         </div>
       </form>
     </div>
+    <planetModel />
   </div>
-  <planetModel/>
 </template>
 
 <script>
-import {onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
+import { useRouter } from 'vue-router';
 
-import Navbar from "../components/navbar.vue";
 import planetModel from "../components/planetScriptLog.vue";
 import axios from "axios";
 
 const url = "https://famous-plexus-417323.lm.r.appspot.com/";
-// const url = "http://localhost:8080";
 
 export default {
   name: "signup-page",
   components: {
-    Navbar,
-    planetModel,
+    planetModel
+  },
+  data() {
+    return {
+      currentPage: ref("page1"),
+      selectedCountry: "Select a country",
+      countries: [],
+      firstName: "",
+      lastName: "",
+      country: "",
+      phone_number: "",
+      email: "",
+      password: "",
+      confirmCode: "",
+      router: useRouter(),
+      showOptions: false,
+      isPasswordShown: false,
+      isConfirmPasswordShown: false
+    };
   },
   setup() {
     const input = ref(null);
@@ -188,73 +198,69 @@ export default {
       inputConfirm.value = document.getElementById("confirmPassword");
     });
 
-    return {input, inputConfirm};
-  },
-
-  data() {
-    return {
-      currentPage: ref("page1"),
-      selectedCountry: "",
-      countries: [],
-      firstName: "",
-      lastName: "",
-      country: "",
-      phone_number: "",
-      email: "",
-      password: "",
-      confirmCode: "",
-    };
+    return { input, inputConfirm };
   },
 
   methods: {
-    async getCountriesData() {
-      await axios
-          .get(`${url}/countries/`)
-          .then((res) => {
-            this.countries = res.data;
-          })
-          .catch((e) => {
-            console.error(`Error fetching countries data: ${e.message}`);
-          });
+    showCountries() {
+      this.showOptions = !this.showOptions;
     },
 
-    findCountry() {
-      const c = this.countries.find(
-          (country) => country.id === this.selectedCountry
-      );
-      return c.country_name;
+    selectOption(country) {
+      event.stopPropagation();
+      this.selectedCountry = country.country_name;
+      this.showOptions = false;
     },
+
+    async getCountriesData() {
+      try {
+        await axios
+        .get(`${url}/countries/`)
+        .then((res) => {
+          this.countries = res.data;
+          console.log(this.countries)
+        });
+      } catch (error) {
+        console.log(`Error fetching countries data: ${error.message}`)
+      }
+    },
+
+    // findCountry() {
+    //   const c = this.countries.find(
+    //       (country) => country.id === this.selectedCountry
+    //   );
+    //   return c.country_name;
+    // },
 
     async registerUser() {
       await axios
-          .post(`${url}/users/register`, {
-            first_name: this.firstName,
-            last_name: this.lastName,
-            country: this.findCountry(),
-            phone_number: this.phone_number,
-            email: this.email,
-            password: this.password,
-          })
-          .then((res) => {
-            document.cookie = `token=${res.data}; path=/`;
-            this.changePage("page3");
-          })
-          .catch((e) => {
-            console.error(`${e.message}`);
-          });
+        .post(`${url}/users/register`, {
+          first_name: this.firstName,
+          last_name: this.lastName,
+          country: this.selectedCountry,
+          phone_number: this.phone_number,
+          email: this.email,
+          password: this.password,
+        })
+        .then((res) => {
+          document.cookie = `token=${res.data}; path=/`;
+          this.changePage("page3");
+        })
+        .catch((e) => {
+          console.error(`${e.message}`);
+        });
     },
 
     async confirmUser() {
-      await axios
-          .post(`${url}/users/confirm`, {
-            confirmationCode: this.confirmCode,
-          })
-          .then((res) => {
-            console.log(res.data);
-          })
-          .catch((e) => {
-            console.error(e.message);
-          });
+      await axios.post(`${url}/users/confirm`, {
+          confirmationCode: this.confirmCode,
+        })
+        .then((res) => {
+          this.router.push('/');
+        })
+        .catch((e) => {
+          console.error(e.message);
+        });
     },
 
     changePage(page) {
@@ -263,11 +269,24 @@ export default {
 
     changeVisibility(reference) {
       const inputRef = this.$refs[reference];
+      const clickedSvg = event.target;
 
-      if (inputRef.type === "password") {
-        inputRef.type = "text";
-      } else {
-        inputRef.type = "password";
+      if (clickedSvg.id == "visibilityButton1") {
+        if (inputRef.type === "password") {
+          inputRef.type = "text";
+          this.isPasswordShown = true;
+        } else {
+          inputRef.type = "password";
+          this.isPasswordShown = false;
+        }
+      } else if (clickedSvg.id == "visibilityButton2") {
+        if (inputRef.type === "password") {
+          inputRef.type = "text";
+          this.isConfirmPasswordShown = true;
+        } else {
+          inputRef.type = "password";
+          this.isConfirmPasswordShown = false;
+        }
       }
     },
   },
@@ -286,6 +305,8 @@ export default {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
 }
 
 #overlay-signup div > input::placeholder {
@@ -295,9 +316,7 @@ export default {
 #form-container-signup {
   position: relative;
   z-index: 1000;
-  width: 55%;
   box-sizing: border-box;
-  padding: 40px 90px 70px 90px;
   border-radius: 8px;
   background-color: rgba(0, 14, 31, 0.85);
   backdrop-filter: blur(16px);
@@ -327,6 +346,10 @@ export default {
   gap: 24px;
 }
 
+#form-container-signup .visible {
+  background-image: url("../../assets/icons/eye.svg") !important;
+}
+
 #form-container-signup #signup-header {
   font-size: 24px;
   font-weight: 700;
@@ -342,7 +365,7 @@ export default {
 #form-container-signup #code {
   font-size: 16px;
   font-weight: 700;
-  background-color: transparent;
+  background-color: transparent !important;
   border: 0;
   border-bottom: 1px solid white;
   line-height: 100%;
@@ -353,44 +376,49 @@ export default {
   box-sizing: border-box;
 }
 
+#form-container-signup input:-webkit-autofill,
+#form-container-signup input:-webkit-autofill:hover, 
+#form-container-signup input:-webkit-autofill:focus, 
+#form-container-signup input:-webkit-autofill:active{
+  color : rgb(255, 255, 255) !important;
+  -webkit-text-fill-color: rgb(255, 255, 255) !important;
+  transition: background-color 500000s;
+}
+
 #form-container-signup .password-input {
   position: relative;
 }
 
-#form-container-signup .password-input img {
+#form-container-signup .password-input svg {
   position: absolute;
   bottom: 20px;
   right: 20px;
   filter: invert(100%);
   width: 25px;
+  height: 25px;
   cursor: pointer;
+  background-image: url("../../assets/icons/eye-slash.svg");
+  background-size: contain;
 }
 
 #form-container-signup .name-inputs {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
+  gap: 24px;
 }
 
 #form-container-signup #country:not(:first-of-type) {
   color: white;
 }
 
-#form-container-signup #country option {
-  background: rgba(0, 0, 0, 0.3);
-}
-
 #form-container-signup .buttons,
 #form-container-signup .buttons-second {
   display: flex;
-  flex-direction: row;
   gap: 40px;
   justify-content: center;
 }
 
 #form-container-signup #socials {
   display: flex;
-  flex-direction: row;
   gap: 20px;
 }
 
@@ -465,5 +493,254 @@ export default {
 
 #confirm-email form #code-input {
   width: 100%;
+}
+
+/*==================== DROPDOWNS BLOCK ==============================*/
+
+#form-container-signup .countries {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 700;
+  background-color: transparent;
+  border: 0;
+  border-bottom: 1px solid white;
+  line-height: 100%;
+  width: 100%;
+  outline: none;
+  color: white;
+  padding: 20px;
+  box-sizing: border-box;
+  cursor: pointer;
+  position: relative;
+}
+
+#form-container-signup .countries p {
+  text-transform: none;
+}
+
+#form-container-signup .countries img {
+  filter: invert(74%) sepia(5%) saturate(5%) hue-rotate(314deg) brightness(87%)
+    contrast(86%);
+  height: 12px;
+  width: 12px;
+}
+
+#country-options {
+  flex-direction: column;
+  height: 210px;
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  cursor: pointer;
+  width: 100%;
+  color: #a1a1a1;
+  font-weight: 700;
+  font-size: 1rem;
+  background-color: #000e1f;
+  overflow-y: scroll;
+  position: absolute;
+  display: flex;
+  left: 0;
+  bottom: -220px;
+  z-index: 1000;
+}
+
+.country-option {
+  padding: 20px;
+  outline: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  list-style: none;
+  background-color: #000e1f;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.country-option:hover,
+.country-option.show {
+  background-color: #011932;
+  color: white;
+}
+
+
+/*============================= RESPONSIVENESS ======================================*/
+
+/*=============================== 0 - 600 px ========================================*/
+
+@media only screen and (min-width: 0px) and (max-width: 600px){
+  #overlay-signup {
+    padding: 0px 5%;
+  }
+  
+  #form-container-signup {
+    width: 100%;
+    padding: 25px 25px 50px;
+    margin: 90px 0 0 0;
+  }
+      
+  #form-container-signup .name-inputs input,
+  #form-container-signup #phone-number,
+  #form-container-signup #country,
+  #form-container-signup .password-input input,
+  #form-container-signup #email,
+  #form-container-signup #code {
+    font-size: 18px;
+  }
+  
+  #form-container-signup .name-inputs {
+    flex-direction: column;
+  }
+  
+  #form-container-signup .buttons,
+  #form-container-signup .buttons-second {
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+  }
+
+  #form-container-signup .buttons button,
+  #form-container-signup .buttons-second button {
+    width: 100%;
+  }
+    
+  #login-link {
+    font-size: 20px;
+  }
+  
+  #signup-button {
+    width: 100%;
+  }
+}
+
+/*=============================== 601 - 904 px ========================================*/
+
+@media only screen and (min-width: 601px) and (max-width: 904px){
+  #overlay-signup {
+    padding: 0px 7%;
+  }
+  
+  #form-container-signup {
+    width: 100%;
+    padding: 35px 35px 60px;
+    margin: 90px 0 0 0;
+  }
+      
+  #form-container-signup .name-inputs input,
+  #form-container-signup #phone-number,
+  #form-container-signup #country,
+  #form-container-signup .password-input input,
+  #form-container-signup #email,
+  #form-container-signup #code {
+    font-size: 18px;
+  }
+  
+  #form-container-signup .name-inputs {
+    flex-direction: column;
+  }
+  
+  #form-container-signup .buttons,
+  #form-container-signup .buttons-second {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  #form-container-signup .buttons button,
+  #form-container-signup .buttons-second button {
+    width: fit-content;
+  }
+    
+  #login-link {
+    font-size: 18px;
+  }
+  
+  #signup-button {
+    width: fit-content;
+  }
+}
+
+/*=============================== 905 - 1238 px ========================================*/
+
+@media only screen and (min-width: 905px) and (max-width: 1238px){
+  #form-container-signup {
+    width: 65%;
+    padding: 40px 50px 60px 50px;
+  }
+      
+  #form-container-signup .name-inputs input,
+  #form-container-signup #phone-number,
+  #form-container-signup #country,
+  #form-container-signup .password-input input,
+  #form-container-signup #email,
+  #form-container-signup #code {
+    font-size: 16px;
+  }
+  
+  #form-container-signup .name-inputs {
+    flex-direction: row;
+  }
+  
+  #form-container-signup .buttons,
+  #form-container-signup .buttons-second {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  #form-container-signup .buttons button,
+  #form-container-signup .buttons-second button {
+    width: fit-content;
+  }
+    
+  #login-link {
+    font-size: 16px;
+  }
+  
+  #signup-button {
+    width: fit-content;
+  }
+ }
+
+/*=============================== 1239+ px ========================================*/
+
+@media only screen and (min-width: 1239px) {
+  #form-container-signup {
+    width: 55%;
+    padding: 40px 90px 70px 90px;
+  }
+      
+  #form-container-signup .name-inputs input,
+  #form-container-signup #phone-number,
+  #form-container-signup #country,
+  #form-container-signup .password-input input,
+  #form-container-signup #email,
+  #form-container-signup #code {
+    font-size: 16px;
+  }
+  
+  #form-container-signup .name-inputs {
+    flex-direction: row;
+  }
+  
+  #form-container-signup .buttons,
+  #form-container-signup .buttons-second {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  #form-container-signup .buttons button,
+  #form-container-signup .buttons-second button {
+    width: fit-content;
+  }
+    
+  #login-link {
+    font-size: 16px;
+  }
+  
+  #signup-button {
+    width: fit-content;
+  }
 }
 </style>

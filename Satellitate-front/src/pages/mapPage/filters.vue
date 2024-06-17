@@ -1,6 +1,6 @@
 <template>
   <div id="left-filters">
-    <div id="filters">
+    <div class="filters" v-bind:class="{ 'filters': true, 'filters--collapsed': areFiltersVisible }">
       <div id="arrow" @click="showFilters()">
         <img src="../../assets/icons/arrows-filter.svg" alt="" />
       </div>
@@ -10,58 +10,38 @@
       <div>
         <p>Search</p>
         <div class="satellite-names">
-          <p>Satellite name</p>
+          <p id="selected-name" @click.stop="showNamesDropdown()">{{ selectedName }}</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
-          <ul class="satellite-names-options">
+          <ul class="satellite-names-options" v-show="isNamesDropdownVisible">
             <li
               class="satellite-name"
-              v-for="satellite in this.$props.data"
-              :key="satellite.object_id"
+              v-for="object in objects"
+              :key="object.object_id"
+              :value="object.object_id"
+              @click="selectNameOption(object)"
             >
-              {{ satellite.object_name }}
+              {{ object.object_name }}
             </li>
           </ul>
         </div>
 
         <div class="object-ids">
-          <p>Object's ID</p>
+          <p id="selected-id" @click.stop="showIdsDropdown()">{{ selectedId }}</p>
           <img src="../../assets/icons/caret-down-fill.svg" />
-          <ul class="objects-id-options">
+          <ul class="objects-id-options" v-show="isIdsDropdownVisible">
             <li
               class="object-id"
-              v-for="satellite in this.$props.data"
-              :key="satellite.object_id"
+              v-for="object in objects"
+              :key="object.object_id"
+              :value="object.object_id"
+              @click="selectIdOption(object)"
+              :class="{ selectedOption: selectedId }"
             >
-              {{ satellite.object_id }}
+              {{ object.object_id }}
             </li>
           </ul>
         </div>
-      </div>
-
-      <!-- =================== OBJECT TYPE FILTER ======================================= -->
-
-      <div>
-        <p>Object type</p>
-        <div class="object-types">
-          <p>Object types</p>
-          <img src="../../assets/icons/caret-down-fill.svg" />
-          <ul class="objects-type-options">
-            <li class="object-type">
-              <label class="objects-type-checkbox-container"
-                >Satellites
-                <input type="checkbox" name="Satellite" />
-                <div class="checkmark"></div>
-              </label>
-            </li>
-            <li class="object-type">
-              <label class="objects-type-checkbox-container"
-                >Debris
-                <input type="checkbox" name="Satellite" />
-                <div class="checkmark"></div>
-              </label>
-            </li>
-          </ul>
-        </div>
+        <button id="clear-filters" class="fill" @click="clearFilters()">Clear filters</button>
       </div>
 
       <!-- =================== TIME PERIOD SLIDER ======================================= -->
@@ -74,206 +54,186 @@
             <input
               type="range"
               class="range-min"
-              min="1900"
-              max="2020"
-              value="1900"
+              min="0"
+              max="4"
+              value="0"
             />
             <input
               type="range"
               class="range-max"
-              min="1900"
-              max="2020"
-              value="1960"
+              min="0"
+              max="4"
+              value="4"
             />
           </div>
         </div>
         <div class="value-input">
-          <p>From: {{ this.minValue }}</p>
-          <p>To: {{ this.maxValue }}</p>
+          <p>From: {{ minValue }}</p>
+          <p>To: {{ maxValue }}</p>
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup>
-import { onMounted } from "vue";
-
-/*=============================== DROPDOWNS =================================*/
-onMounted(() => {
-  const selectedName = document.querySelector(".satellite-names > p");
-  const nameOptions = document.querySelectorAll(
-    ".satellite-names .satellite-names-options li"
-  );
-  const satelliteNames = document.querySelector(".satellite-names");
-  const satelliteNamesDropdown = document.querySelector(
-    ".satellite-names .satellite-names-options"
-  );
-
-  satelliteNames.addEventListener("click", showNamesDropdown);
-
-  const selectedId = document.querySelector(".object-ids > p");
-  const idOptions = document.querySelectorAll(
-    ".object-ids .objects-id-options li"
-  );
-  const objectIds = document.querySelector(".object-ids");
-  const objectIdDropdown = document.querySelector(
-    ".object-ids .objects-id-options"
-  );
-
-  objectIds.addEventListener("click", showIdsDropdown);
-
-  const objectTypes = document.querySelector(".object-types");
-  const objectTypesDropdown = document.querySelector(
-    ".object-types .objects-type-options"
-  );
-
-  objectTypes.addEventListener("click", showTypesDropdown);
-
-  document.addEventListener("click", (event) => {
-    const isInsideNamesDropdown = satelliteNames.contains(event.target);
-    const isInsideIdsDropdown = objectIds.contains(event.target);
-    const isInsideTypesDropdown = objectTypes.contains(event.target);
-
-    if (!isInsideNamesDropdown) {
-      satelliteNamesDropdown.classList.remove("show");
-    }
-    if (!isInsideIdsDropdown) {
-      objectIdDropdown.classList.remove("show");
-    }
-    if (!isInsideTypesDropdown) {
-      objectTypesDropdown.classList.remove("show");
-    }
-  });
-
-  nameOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      nameOptions.forEach((e) => {
-        e.classList.remove("show");
-      });
-      let text = option.innerHTML;
-      selectedName.innerHTML = text;
-      option.classList.toggle("show");
-    });
-  });
-
-  idOptions.forEach((option) => {
-    option.addEventListener("click", () => {
-      idOptions.forEach((e) => {
-        e.classList.remove("show");
-      });
-      let text = option.innerHTML;
-      selectedId.innerHTML = text;
-      option.classList.toggle("show");
-    });
-  });
-
-  /*=============================== SLIDER =================================*/
-
-  const rangeInput = document.querySelectorAll(".range-input input");
-  const progress = document.querySelector(".range-slider-container #progress");
-  const values = document.querySelectorAll(
-    ".range-slider-container .value-input p"
-  );
-  const gap = 10;
-
-  rangeInput.forEach((input) => {
-    input.addEventListener("input", (e) => {
-      const minV = parseInt(rangeInput[0].value);
-      const maxV = parseInt(rangeInput[1].value);
-
-      if (maxV - minV < gap) {
-        if (e.target.className === "range-min") {
-          rangeInput[0].value = maxV - gap;
-          values[0].innerHTML = "From: year " + (maxV - gap);
-        } else {
-          rangeInput[1].value = minV + gap;
-          values[1].innerHTML = "To: year " + (minV + gap);
-        }
-      } else {
-        values[0].innerHTML = "From: year " + minV;
-        values[1].innerHTML = "To: year " + maxV;
-        progress.style.left =
-          ((minV - rangeInput[0].min) /
-            (rangeInput[0].max - rangeInput[0].min)) *
-            100 +
-          "%";
-        progress.style.right =
-          100 -
-          ((maxV - rangeInput[0].min) /
-            (rangeInput[0].max - rangeInput[0].min)) *
-            100 +
-          "%";
-      }
-    });
-  });
-
-  function showNamesDropdown() {
-    let satelliteNamesDropdown = document.querySelector(
-      ".satellite-names .satellite-names-options"
-    );
-    if (satelliteNamesDropdown.classList.contains("show")) {
-      satelliteNamesDropdown.classList.remove("show");
-    } else {
-      satelliteNamesDropdown.classList.toggle("show");
-    }
-  }
-
-  function showIdsDropdown() {
-    let objectIdDropdown = document.querySelector(
-      ".object-ids .objects-id-options"
-    );
-    if (objectIdDropdown.classList.contains("show")) {
-      objectIdDropdown.classList.remove("show");
-    } else {
-      objectIdDropdown.classList.toggle("show");
-    }
-  }
-
-  function showTypesDropdown() {
-    let objectTypesDropdown = document.querySelector(
-      ".object-types .objects-type-options"
-    );
-    if (objectTypesDropdown.classList.contains("show")) {
-      objectTypesDropdown.classList.remove("show");
-    } else {
-      objectTypesDropdown.classList.toggle("show");
-    }
-  }
-});
-</script>
-
 <script>
 import axios from "axios";
 
-const url = "http://localhost:8080";
+const url = "https://famous-plexus-417323.lm.r.appspot.com/";
 
 export default {
   name: "Filters-component",
+  data() {
+    return {
+      minValue: "",
+      maxValue: "",
+      isNamesDropdownVisible: false,
+      isIdsDropdownVisible: false,
+      areFiltersVisible: false,
+      objects: [],
+      epochs: {},
+      selectedId: "Select an id",
+      selectedName: "Select a name",
+      selectedTime: {
+        fromValue: "",
+        toValue: ""
+      },
+    };
+  },
+
   methods: {
     showFilters() {
-      let filters = document.getElementById("filters");
-      if (filters.classList.contains("show")) {
-        filters.classList.remove("show");
-      } else {
-        filters.classList.toggle("show");
+      this.areFiltersVisible = !this.areFiltersVisible;
+    },
+
+    showNamesDropdown() {
+      this.isNamesDropdownVisible = !this.isNamesDropdownVisible;
+    },
+
+    showIdsDropdown() {
+      this.isIdsDropdownVisible = !this.isIdsDropdownVisible;
+    },
+
+    selectNameOption(object) {
+      if (this.selectedId != "Select an id") {
+        this.selectedId = "Select an id";
+      }
+      this.selectedName = object.object_name;
+      this.isNamesDropdownVisible = false;
+      this.$emit('nameWasSelected', this.selectedName);
+      this.$emit('filtersChanged');
+    },
+
+    selectIdOption(object) {
+      if (this.selectedName != "Select a name") {
+        this.selectedName = "Select a name";
+      }
+      this.selectedId = object.object_id;
+      this.isIdsDropdownVisible = false;
+      this.$emit('idWasSelected', this.selectedId);
+      this.$emit('filtersChanged');
+    },
+
+    clearFilters() {
+      const rangeInput = document.querySelectorAll(".range-input input");
+      const progress = document.querySelector(".range-slider-container #progress");
+
+      this.selectedId = "Select an id";
+      this.selectedName = "Select a name";
+
+      this.selectedTime["fromValue"] = this.minValue;
+      this.selectedTime["toValue"] = this.maxValue;
+
+      if (progress) {      
+        progress.style.left = 0;
+        progress.style.right = 0;
+      }
+
+      if (rangeInput.min && rangeInput.max) {
+        rangeInput[0].value = rangeInput[0].min;
+        rangeInput[1].value = rangeInput[0].max;
+      }
+
+      this.$emit('nameWasSelected', this.selectedName);
+      this.$emit('idWasSelected', this.selectedId);
+      this.$emit('timeWasSelected', this.selectedTime);
+      this.$emit('filtersChanged');
+    },
+
+    async getSatellitesNames() {
+      try {
+        const res = await axios.get(`${url}/satellites/`);
+        this.objects = res.data;
+      } catch(e) {
+        console.error(`Error fetching names data: ${e.message}`)
       }
     },
-    async getMaxMin() {
-      await axios
-        .get(`${url}/satellites/maxmin/premium`)
-        .then((res) => {
-          this.maxValue = res.data.maxValue.toString().substring(0, 10);
-          this.minValue = res.data.minValue.toString().substring(0, 10);
-        })
-        .catch((e) => {
-          console.error(e.message);
-        });
+
+    getEpochs() {
+      let id = 0;
+      let timeDiff = new Date(this.maxValue).getTime() - new Date(this.minValue).getTime();
+      let daysDiff = Math.round(timeDiff / (1000 * 3600 * 24));
+      let curr_date = new Date(this.minValue);
+
+      while (daysDiff >= 0) {
+        this.epochs[id] = curr_date.toISOString().substring(0, 10);
+        curr_date = new Date(curr_date.setDate(curr_date.getDate()+1));
+        daysDiff--;
+        id++;
+      }
+    },
+
+     async getMaxMin() {
+      try {
+        const res = await axios.get(`${url}/satellites/maxmin/premium`);
+        this.maxValue = res.data.maxValue.toString().substring(0, 10);
+        this.minValue = res.data.minValue.toString().substring(0, 10);
+        this.getEpochs();
+        this.selectedTime["fromValue"] = this.minValue;
+        this.selectedTime["toValue"] = this.maxValue;
+      } catch (e) {
+        console.error(e.message);
+      }
     },
   },
+
   mounted() {
     this.getMaxMin();
+    this.getSatellitesNames();
+
+    const rangeInput = document.querySelectorAll(".range-input input");
+    const progress = document.querySelector(".range-slider-container #progress");
+    const values = document.querySelectorAll(".range-slider-container .value-input p");
+
+    rangeInput.forEach((input) => {
+      input.addEventListener("input", (e) => {
+        const minV = parseInt(rangeInput[0].value);
+        const maxV = parseInt(rangeInput[1].value);
+
+        if (maxV - minV < 1) {
+          if (e.target.className === "range-min") {
+            rangeInput[0].value = maxV - 1;
+            values[0].textContent = "From: " + this.epochs[maxV - 1];
+          } else {
+            rangeInput[1].value = minV + 1;
+            values[1].textContent = "To: " + this.epochs[minV + 1];
+          }
+        } else {
+          values[0].textContent = "From: " + this.epochs[minV];
+          values[1].textContent = "To: " + this.epochs[maxV];
+          progress.style.left = ((minV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
+          progress.style.right = 100 - ((maxV - rangeInput[0].min) / (rangeInput[0].max - rangeInput[0].min)) * 100 + "%";
+
+          this.selectedTime["fromValue"] = this.epochs[minV];
+          this.selectedTime["toValue"] = this.epochs[maxV];
+
+          this.$emit('timeWasSelected', this.selectedTime);
+          this.$emit('filtersChanged');
+        }
+      });
+    });
   },
+  
 };
 </script>
 
@@ -312,7 +272,7 @@ export default {
   right: -24px;
 }
 
-#filters {
+.filters {
   position: relative;
   background-color: #000000;
   padding: 20px 10px 30px 0px;
@@ -326,33 +286,46 @@ export default {
   transition: width 0.3s ease-in-out;
 }
 
-#filters.show {
+.filters * {
+  visibility: hidden;
+  width: 0;
+}
+
+.filters #clear-filters {
+  display: none;
+  width: 0;
+  font-size: 1rem !important;
+  transition: 0.5s !important;
+}
+
+.filters #arrow img {
+  transform: scaleX(-1);
+}
+
+.filters * p {
+  height: 19.2px;
+}
+
+.filters--collapsed {
   width: 350px;
   padding: 20px 20px 30px 20px;
   transition: width 0.3s ease-in-out;
 }
 
-#filters.show * {
+.filters--collapsed * {
   visibility: visible;
   width: 100%;
-  transition: visibility 0s linear;
+  transition: visibility 0.4s linear;
 }
 
-#filters.show #arrow img {
+.filters--collapsed #clear-filters {
+  display: block;
+  width: fit-content;
+  transition: visibility 0.4s linear;
+}
+
+.filters--collapsed #arrow img {
   transform: scaleX(1);
-}
-
-#filters * {
-  visibility: hidden;
-  width: 0;
-}
-
-#filters #arrow img {
-  transform: scaleX(-1);
-}
-
-#filters * p {
-  height: 19.2px;
 }
 
 #left-filters #arrow {
@@ -383,8 +356,7 @@ export default {
 /*==================== DROPDOWNS BLOCK ==============================*/
 
 #left-filters .satellite-names,
-#left-filters .object-ids,
-#left-filters .object-types {
+#left-filters .object-ids {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -405,14 +377,12 @@ export default {
 }
 
 #left-filters .satellite-names p,
-#left-filters .object-ids p,
-#left-filters .object-types p {
+#left-filters .object-ids p {
   text-transform: none;
 }
 
 #left-filters .satellite-names img,
-#left-filters .object-ids img,
-#left-filters .object-types img {
+#left-filters .object-ids img {
   filter: invert(74%) sepia(5%) saturate(5%) hue-rotate(314deg) brightness(87%)
     contrast(86%);
   height: 12px;
@@ -420,8 +390,7 @@ export default {
 }
 
 #left-filters .satellite-names .satellite-names-options,
-#left-filters .object-ids .objects-id-options,
-#left-filters .object-types .objects-type-options {
+#left-filters .object-ids .objects-id-options {
   flex-direction: column;
   height: 130px;
   border-radius: 0.5rem;
@@ -434,28 +403,14 @@ export default {
   background-color: #000e1f;
   overflow-y: scroll;
   position: absolute;
-  display: none;
+  display: flex;
   left: 0;
   bottom: -130px;
   z-index: 1000;
 }
 
-#left-filters .object-types .objects-type-options {
-  height: 100px;
-  bottom: -100px;
-  z-index: 1000;
-  overflow-y: visible;
-}
-
-#left-filters .satellite-names .satellite-names-options.show,
-#left-filters .object-ids .objects-id-options.show,
-#left-filters .object-types .objects-type-options.show {
-  display: flex;
-}
-
 #left-filters .satellite-names .satellite-names-options .satellite-name,
-#left-filters .object-ids .objects-id-options .object-id,
-#left-filters .object-types .objects-type-options .object-type {
+#left-filters .object-ids .objects-id-options .object-id {
   padding: 20px;
   outline: none;
   box-sizing: border-box;
@@ -468,10 +423,6 @@ export default {
   gap: 20px;
 }
 
-#left-filters .object-types .objects-type-options .object-type input {
-  width: auto;
-}
-
 #left-filters .satellite-names .satellite-names-options .satellite-name:hover,
 #left-filters .object-ids .objects-id-options .object-id:hover,
 #left-filters .satellite-names .satellite-names-options .satellite-name.show,
@@ -480,52 +431,10 @@ export default {
   color: white;
 }
 
-#left-filters .objects-type-checkbox-container {
-  position: relative;
-  padding-left: 41px;
-  cursor: pointer;
-  user-select: none;
-}
-
-#left-filters .objects-type-checkbox-container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-#left-filters .checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 20px;
-  width: 20px !important;
-  border-radius: 0.4rem;
-  background: none;
-  border: 2px solid #a1a1a1;
-  transition: 0.3s !important;
-}
-
-#left-filters .objects-type-checkbox-container input:checked ~ .checkmark {
-  background-color: #4c5cbc;
-  border: 2px solid #4c5cbc;
-}
-
-#left-filters .objects-type-checkbox-container:hover input ~ .checkmark {
-  border: 2px solid #4c5cbc;
-}
-
-#left-filters .checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
 /*==================== TIME SLIDER BLOCK ==============================*/
 
 .range-slider-container {
-  width: 100px;
+  width: 100%;
 }
 
 .range-slider-container #time-slider {
@@ -573,7 +482,7 @@ export default {
   position: absolute;
   border-radius: 5px;
   left: 0%;
-  right: 50%;
+  right: 0%;
   width: auto;
 }
 
@@ -596,5 +505,6 @@ export default {
   background-color: #4c5cbc;
   border-radius: 50%;
   pointer-events: auto;
+  cursor: pointer;
 }
 </style>
