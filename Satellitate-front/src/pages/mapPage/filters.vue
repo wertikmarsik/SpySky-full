@@ -79,7 +79,8 @@
 <script>
 import axios from "axios";
 
-const url = "https://famous-plexus-417323.lm.r.appspot.com/";
+// const url = "https://famous-plexus-417323.lm.r.appspot.com/";
+const url = "http://localhost:8080";
 
 export default {
   name: "Filters-component",
